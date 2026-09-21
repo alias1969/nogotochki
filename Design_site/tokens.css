@@ -1,0 +1,98 @@
+/* Ноготочки — дизайн-токены. Подключать первым, до компонентных стилей.
+   Вечерняя тема: <html data-theme="dark">. */
+
+:root {
+  /* цвет — базовая палитра */
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6;
+  --oak:#C8A479; --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622;
+  --taupe:#7A6B60; --ink:#1F1C1A; --glow:#F2D8A7; --sage:#7E8A6B;
+
+  /* цвет — семантика */
+  --bg-page:#F7F2EC; --bg-surface:#FFFDF9; --bg-elevated:#FFFFFC; --bg-subtle:#EAE1D7;
+  --text-primary:#2E2622; --text-secondary:#7A6B60; --text-disabled:#A79689; --text-link:#7C5E33;
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:#B08D57;
+  --action-primary:#1F1C1A; --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:#B08D57; --focus-ring-halo:rgba(176,141,87,.28);
+
+  /* цвет — функциональный */
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A;   --error-text:#9C3F2A;   --error-bg:#F9E9E3;   --error-border:#E4C3B6;
+  --info:#6E6259;    --info-text:#635749;    --info-bg:#F0EAE3;    --info-border:#D8CCC0;
+
+  /* слоты времени */
+  --slot-free-bg:#FFFDF9;      --slot-free-border:#E2D7C9;  --slot-free-text:#2E2622;
+  --slot-hover-bg:#F6EDE0;     --slot-hover-border:#B08D57;
+  --slot-selected-bg:#FBEFD8;  --slot-selected-border:#B08D57; --slot-selected-text:#2E2622;
+  --slot-busy-bg:#EAE1D7;      --slot-busy-border:#DFD4C6;  --slot-busy-text:#A79689;
+  --slot-past-bg:transparent;  --slot-past-border:#DED3C4;  --slot-past-text:#A79689;
+
+  /* статусы записи */
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:#7C5E33;
+  --st-done-bg:#ECEFE6;     --st-done-border:#C6D0BA;     --st-done-text:#4F6647;
+  --st-cx-user-bg:#EAE1D7;  --st-cx-user-border:#D6C8B8;  --st-cx-user-text:#635749;
+  --st-cx-admin-bg:#F9E9E3; --st-cx-admin-border:#E4C3B6; --st-cx-admin-text:#9C3F2A;
+
+  /* шрифты */
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+
+  /* размеры текста: mobile / desktop */
+  --text-display:36px;  --text-display-lh:40px;  --text-display-d:64px; --text-display-d-lh:67px;
+  --text-h1:28px;       --text-h1-lh:32px;       --text-h1-d:44px;      --text-h1-d-lh:48px;
+  --text-h2:22px;       --text-h2-lh:26px;       --text-h2-d:32px;      --text-h2-d-lh:37px;
+  --text-h3:18px;       --text-h3-lh:23px;       --text-h3-d:20px;      --text-h3-d-lh:26px;
+  --text-body-l:17px;   --text-body-l-lh:26px;   --text-body-l-d:18px;  --text-body-l-d-lh:29px;
+  --text-body-m:15px;   --text-body-m-lh:23px;   --text-body-m-d:16px;  --text-body-m-d-lh:25px;
+  --text-body-s:13px;   --text-body-s-lh:19px;   --text-body-s-d:14px;  --text-body-s-d-lh:21px;
+  --text-caption:12px;  --text-caption-lh:16px;
+  --text-overline:11px; --text-overline-lh:13px; --text-overline-tracking:.2em;
+
+  /* отступы */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-6:24px; --s-8:32px; --s-12:48px; --s-16:64px;
+
+  /* скругления */
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+
+  /* тени и свечение */
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+  --glow-strong:0 0 0 1px rgba(176,141,87,.5), 0 0 28px rgba(242,216,167,1);
+}
+
+[data-theme="dark"] {
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14);  --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70;   --error-text:#E08A70;   --error-bg:rgba(224,138,112,.14);   --error-border:rgba(224,138,112,.36);
+  --info:#B3A698;    --info-text:#B3A698;    --info-bg:rgba(179,166,152,.12);    --info-border:rgba(179,166,152,.32);
+
+  --slot-free-bg:#2E2824;     --slot-free-border:#3B332D; --slot-free-text:#F3ECE3;
+  --slot-hover-bg:#3A322B;    --slot-hover-border:#C9A46A;
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --slot-busy-bg:#1E1A17;     --slot-busy-border:#332C26;  --slot-busy-text:#6F645B;
+  --slot-past-bg:transparent; --slot-past-border:#332C26;  --slot-past-text:#6F645B;
+
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4);  --st-upcoming-text:#D9B77E;
+  --st-done-bg:rgba(143,175,131,.14);     --st-done-border:rgba(143,175,131,.38);     --st-done-text:#8FAF83;
+  --st-cx-user-bg:rgba(179,166,152,.1);   --st-cx-user-border:#3B332D;                --st-cx-user-text:#B3A698;
+  --st-cx-admin-bg:rgba(224,138,112,.14); --st-cx-admin-border:rgba(224,138,112,.36); --st-cx-admin-text:#E08A70;
+
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+  --glow-strong:0 0 0 1px rgba(201,164,106,.6), 0 0 40px rgba(240,201,138,.5);
+}
