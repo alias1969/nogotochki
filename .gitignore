@@ -141,3 +141,14 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# --- Ноготочки: база данных SQLite ---
+# Файл базы в репозиторий не попадает: у каждого разработчика он свой,
+# а на сервере он и есть боевые данные. Восстанавливается командами
+# npm run migrate и npm run seed.
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+server/data/backups/
