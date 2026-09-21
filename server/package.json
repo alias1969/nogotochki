@@ -1,0 +1,17 @@
+{
+  "name": "nogotochki-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Бэкенд сервиса записи «Ноготочки»",
+  "type": "module",
+  "engines": {
+    "node": ">=23.4.0"
+  },
+  "scripts": {
+    "migrate": "node src/db/migrate.js",
+    "seed": "node src/db/seed.js",
+    "db:reset": "node src/db/reset.js",
+    "db:verify": "node src/db/verify.js",
+    "db:describe": "node src/db/describe.js"
+  }
+}
