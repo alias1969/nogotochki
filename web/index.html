@@ -65,7 +65,13 @@
     <a href="#o-salone">О салоне</a>
     <a href="#kontakty">Контакты</a>
     <a href="#voprosy">Вопросы</a>
-    <a class="menu__login" data-screen="C1" href="#">Войти в личный кабинет</a>
+    <a class="menu__login" id="menu-login" data-screen="C1" href="#">Войти в личный кабинет</a>
+    <!-- У вошедшего вместо входа — те же два действия, что в шапке
+         на широком экране: кабинет и выход. Имя в шапке при такой ширине
+         не помещается, и без этих пунктов на телефоне до кабинета
+         было бы не добраться. -->
+    <a class="menu__login" id="menu-profile" data-screen="K5" href="#" hidden>Личный кабинет</a>
+    <button class="menu__logout" id="menu-logout" type="button" hidden>Выйти из аккаунта</button>
   </div>
 </header>
 

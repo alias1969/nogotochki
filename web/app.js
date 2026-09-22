@@ -69,6 +69,11 @@ async function setupSession() {
   }
 
   $('#header-login').hidden = true;
+  // То же самое в мобильном меню: там шапка коротка, и без этих строк
+  // вошедший не нашёл бы ни кабинета, ни выхода.
+  $('#menu-login').hidden = true;
+  $('#menu-profile').hidden = false;
+  $('#menu-logout').hidden = false;
   $('#user-face').textContent = initials(me.full_name);
   $('#user-name').textContent = (me.full_name ?? '').split(/\s+/)[0] ?? '';
   $('#user-chip').hidden = false;
@@ -79,7 +84,7 @@ async function setupSession() {
   $('.cta-short', cta).textContent = 'Выйти';
   $('.cta-long', cta).textContent = 'Выйти';
 
-  cta.addEventListener('click', async (event) => {
+  const logout = async (event) => {
     event.preventDefault();
     try {
       // Сессию гасит сервер: стёртой куки мало, токен продолжил бы работать.
@@ -91,7 +96,10 @@ async function setupSession() {
       });
     } catch { /* не дошло — страницу всё равно перезагружаем */ }
     location.href = SCREENS.L1;
-  });
+  };
+
+  cta.addEventListener('click', logout);
+  $('#menu-logout').addEventListener('click', logout);
 }
 
 // --------------------------------------------------------------------------

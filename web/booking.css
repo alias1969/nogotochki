@@ -4,7 +4,6 @@
 
 :root {
   --step-mark: calc(var(--s-6) + var(--s-1));   /* 28px — кружок с номером шага */
-  --progress-h: var(--s-1);                     /* 4px — полоса на мобильном */
   --pick-box: calc(var(--s-4) + var(--s-1));    /* 20px — флажок и радио */
   --m-avatar: calc(var(--s-16) + var(--s-2));   /* 72px — фото мастера */
 }
@@ -68,11 +67,25 @@ a.step--done:hover .step__mark { border-color: var(--accent-brand); }
 .steps__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
 .steps__head b { font-size: var(--text-body-m); }
 .steps__head span { font-size: var(--text-caption); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
-.progress {
-  margin-top: var(--s-2); height: var(--progress-h);
-  border-radius: var(--r-pill); background: var(--bg-subtle); overflow: hidden;
+/* Кружки шагов на узком экране. Те же три состояния, что у ленты
+   на широком, и пройденные так же нажимаются. */
+.steps__dots { margin-top: var(--s-2); display: flex; gap: var(--s-2); }
+
+.dot {
+  width: var(--step-mark); height: var(--step-mark); flex: none;
+  border-radius: var(--r-pill); border: 1px solid var(--border-default);
+  display: grid; place-items: center;
+  font-size: var(--text-caption); font-weight: 600; font-variant-numeric: tabular-nums;
+  color: var(--text-disabled);
 }
-.progress i { display: block; height: 100%; background: var(--accent-brand); }
+.dot--done {
+  border-color: var(--success-border); background: var(--success-bg); color: var(--success-text);
+}
+a.dot--done:hover { border-color: var(--accent-brand); }
+.dot--now {
+  border-color: var(--accent-brand); color: var(--text-primary);
+  box-shadow: var(--glow-soft);
+}
 
 /* --- основная часть ----------------------------------------------------- */
 
@@ -84,7 +97,7 @@ a.step--done:hover .step__mark { border-color: var(--accent-brand); }
 }
 .bk__sub { margin: var(--s-2) 0 0; font-size: var(--text-body-m); color: var(--text-secondary); }
 
-.bk-grid { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+.bk-grid { margin-top: var(--s-6); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
 
 /* --- поиск и категории -------------------------------------------------- */
 
@@ -229,6 +242,7 @@ a.step--done:hover .step__mark { border-color: var(--accent-brand); }
   }
   .steps__row { display: flex; }
   .steps__compact { display: none; }
+  .steps__dots { display: none; }
 
   .bk { padding: var(--s-12) 0 var(--sec-pad); }
   .bk h1 { font-size: var(--text-h1-d); line-height: var(--text-h1-d-lh); }
@@ -267,7 +281,7 @@ a.step--done:hover .step__mark { border-color: var(--accent-brand); }
   --legend-mark: calc(var(--s-3) + 2px);          /* 14px — образец в легенде */
 }
 
-.bk-cols { margin-top: var(--s-6); display: grid; gap: var(--s-4); }
+.bk-cols { margin-top: var(--s-6); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
 
 .panel {
   padding: var(--s-4);
@@ -487,16 +501,28 @@ a.step--done:hover .step__mark { border-color: var(--accent-brand); }
 
 /* --- две колонки: слева форма, справа сводка ---------------------------- */
 
-.confirm-cols { margin-top: var(--s-6); display: grid; gap: var(--s-4); align-items: start; }
+/* minmax(0, 1fr) обязателен: у неявной колонки grid минимальный размер
+   равен содержимому, и одно длинное слово — e-mail — распирало колонку
+   шире экрана, сколько бы переносов ни разрешал сам текст. */
+.confirm-cols {
+  margin-top: var(--s-6);
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4); align-items: start;
+}
 
 .sum__head {
   display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center;
   padding-bottom: var(--s-4); border-bottom: 1px solid var(--border-default);
 }
 
-/* Счётчик переносов на узком экране уходит под имя: рядом с длинным
-   именем мастера он ломает его на три строки. */
+/* Счётчик переносов и ссылка «Изменить» на узком экране уходят под имя:
+   рядом с длинным именем мастера они отнимали у него ширину, и имя
+   обрезалось на середине слова. */
 .sum__head .ap__moves { flex: 1 0 100%; text-align: center; }
+
+@media (max-width: 379px) {
+  .sum__head .sum__edit { flex: 1 0 100%; justify-content: center; }
+}
 
 /* Две колонки карточки переноса на телефоне встают друг под друга. */
 .sum__row--split { flex-direction: column; gap: var(--s-4); }
@@ -522,7 +548,11 @@ a.step--done:hover .step__mark { border-color: var(--accent-brand); }
 }
 .sum__edit:hover { border-color: var(--accent-brand); }
 
-.sum__name { display: block; margin-top: var(--s-1); font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; }
+.sum__name {
+  display: block; margin-top: var(--s-1);
+  font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600;
+  min-width: 0; overflow-wrap: anywhere;
+}
 .sum__sub { font-size: var(--text-body-s); color: var(--text-secondary); }
 /* «Было / станет» при переносе. */
 .move-line { display: flex; gap: var(--s-2); align-items: baseline; }
@@ -556,9 +586,17 @@ a.step--done:hover .step__mark { border-color: var(--accent-brand); }
 /* --- форма клиента ------------------------------------------------------ */
 
 .who { display: grid; gap: var(--s-3); }
-.who__item { display: flex; justify-content: space-between; gap: var(--s-4); align-items: baseline; }
-.who__label { font-size: var(--text-body-s); color: var(--text-secondary); }
-.who__value { font-size: var(--text-body-m); font-weight: 600; text-align: right; min-width: 0; word-break: break-word; }
+/* Значение переносится по любому месту, а не только по пробелу:
+   e-mail — одно длинное слово, и на узком экране он раздвигал карточку
+   шире экрана. min-width:0 нужен, чтобы перенос вообще случился —
+   у элемента flex минимальная ширина по умолчанию равна содержимому. */
+.who__item { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-1) var(--s-4); align-items: baseline; }
+.who__label { flex: none; font-size: var(--text-body-s); color: var(--text-secondary); }
+.who__value {
+  flex: 1 1 auto; min-width: 0;
+  font-size: var(--text-body-m); font-weight: 600; text-align: right;
+  overflow-wrap: anywhere;
+}
 
 .note-field { margin-top: var(--s-6); display: grid; gap: var(--s-2); }
 .note-field__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }

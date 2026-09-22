@@ -17,18 +17,24 @@
   background: var(--bg-page); border-bottom: 1px solid var(--border-default);
 }
 .cab-header__inner {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--s-2);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--s-2);
   padding: var(--s-2) var(--layout-gutter);
+}
+
+/* Уже 380px логотип, колокольчик, тема и «Записаться» в одну строку
+   не помещаются — надпись логотипа начинала обрезаться в «Но…».
+   Кнопка уходит на свою строку во всю ширину: ничего не пропадает,
+   шапка просто становится на строку выше. */
+@media (max-width: 379px) {
+  .cab-actions { flex: 1 0 100%; justify-content: flex-start; }
+  /* Кнопка добирает остаток строки — так действия укладываются
+     в один ряд, а шапка вырастает ровно на него. */
+  .cab-actions .btn { flex: 1; }
 }
 
 /* Верхние вкладки помещаются только на широком экране; на телефоне
    их роль играет нижняя навигация. */
-/* В шапке кабинета, кроме логотипа, стоят колокольчик, переключатель темы
-   и кнопка записи — на телефоне надпись логотипа в строку уже не лезет
-   и обрезается многоточием. Оставляем один знак: он и так ссылка
-   на главную, а ориентироваться помогает нижняя навигация. */
-.cab-header .logo__word { display: none; }
-
 .cab-nav { display: none; align-items: center; gap: var(--s-6); }
 .cab-nav a, .cab-nav span {
   display: inline-flex; align-items: center; min-height: var(--tap);
@@ -97,7 +103,8 @@
   background: var(--slot-selected-bg); color: var(--slot-selected-text);
 }
 
-.cab-list { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+/* minmax(0, 1fr): иначе длинное слово в карточке распирает колонку. */
+.cab-list { margin-top: var(--s-6); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
 
 /* --- карточка записи ---------------------------------------------------- */
 
@@ -109,8 +116,13 @@
 }
 .ap--past { background: var(--bg-subtle); box-shadow: none; }
 
-.ap__top { display: flex; gap: var(--s-3); justify-content: space-between; align-items: flex-start; }
+/* Статус и счётчик переносов на узком экране встают друг под друга:
+   рядом они наезжали, а дата под ними ломалась на три строки. */
+.ap__top { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); justify-content: space-between; align-items: flex-start; }
+.ap__head { flex: 1 1 100%; }
+.ap__top .ap__moves { order: -1; }
 .ap__head { min-width: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.ap__when, .ap__range { text-wrap: pretty; }
 .ap__badges { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
 .ap__when { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; font-variant-numeric: tabular-nums; }
 .ap__range { font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
@@ -164,7 +176,7 @@
 
 /* --- уведомления -------------------------------------------------------- */
 
-.note-list { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
+.note-list { margin-top: var(--s-4); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
 
 /* На узком экране ссылка уходит на свою строку: рядом с заголовком она
    отнимает половину ширины, и заголовок ломается на два слова. */
@@ -271,7 +283,6 @@
 
 @media (min-width: 900px) {
   .cab-header__inner { max-width: var(--layout-max); margin: 0 auto; padding: var(--s-3) var(--layout-gutter-d); gap: var(--s-6); }
-  .cab-header .logo__word { display: inline; }
   .nt { flex-wrap: nowrap; }
   .nt__link { flex: none; margin-left: 0; border: 0; justify-content: flex-start; }
   .nt__link:hover { background: var(--bg-subtle); }
@@ -281,6 +292,9 @@
   .cab h1 { font-size: var(--text-h1-d); line-height: var(--text-h1-d-lh); }
   .cab__title-row { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: var(--s-6); }
   .cab-list { gap: var(--s-4); }
+  .cab-actions .btn { flex: none; }
+  .ap__head { flex: 1 1 auto; }
+  .ap__top .ap__moves { order: 0; }
   .ap { padding: var(--s-6); }
   .ap__body { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--s-6); align-items: start; }
   .ap__foot { grid-auto-flow: column; justify-content: space-between; align-items: center; }

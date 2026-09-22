@@ -59,10 +59,33 @@ export function renderSteps(current, picked) {
 
   row.replaceChildren(...nodes);
 
-  // Та же лента для узкого экрана — полосой и подписью «Шаг N из 4».
+  // Узкий экран: подпись «Шаг N из 4» и та же лента кружками.
   $('#step-title').textContent = STEPS[current - 1].title;
   $('#step-count').textContent = `Шаг ${current} из ${STEPS.length}`;
-  $('#step-bar').style.width = `${(current / STEPS.length) * 100}%`;
+
+  // Кружки повторяют ленту, а не заменяют её смыслом: пройденные —
+  // такие же ссылки, будущие — такой же приглушённый текст. Иначе
+  // на телефоне вернуться к выбранным услугам было бы нечем.
+  const dots = $('#steps-dots');
+  if (!dots) return;
+
+  dots.replaceChildren(...STEPS.map((step, index) => {
+    const number = index + 1;
+    const done = number < current;
+    const now = number === current;
+    const kind = done ? 'done' : (now ? 'now' : 'next');
+
+    const node = done && step.screen ? el('a', `dot dot--${kind}`) : el('span', `dot dot--${kind}`);
+    if (done && step.screen) {
+      node.href = selection.href(step.screen, picked);
+      node.setAttribute('aria-label', `Вернуться к шагу ${number}: ${step.title}`);
+    }
+    if (now) node.setAttribute('aria-current', 'step');
+
+    if (done) node.innerHTML = CHECK; else node.textContent = String(number);
+    if (!done) node.title = step.title;
+    return node;
+  }));
 }
 
 // --------------------------------------------------------------------------
