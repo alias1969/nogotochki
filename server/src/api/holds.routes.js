@@ -25,6 +25,10 @@ export function registerHoldRoutes(router) {
    * оставшихся свободных точек: клиенту есть что выбрать, не перезагружая экран.
    */
   router.post('/api/holds', async (ctx) => {
+    // Входа не требует намеренно: гость выбирает время до регистрации.
+    // Принадлежность при этом проверяется — резерв закрепляется
+    // за токеном браузера (ctx.owner) и чужим не отдаётся.
+    ctx.allowPublic('резерв слота гостем; владелец — токен браузера');
     const body = v.object(await ctx.body());
     const masterId = v.id(body.master_id, 'master_id');
     const startsAt = v.instant(body.starts_at, 'starts_at');
@@ -60,6 +64,7 @@ export function registerHoldRoutes(router) {
    * уход на почту по ссылке.
    */
   router.get('/api/holds/:id', async (ctx) => {
+    ctx.allowPublic('свой резерв; принадлежность проверяет findOwnedHold');
     const hold = findOwnedHold(v.id(ctx.params.id, 'id'), ctx.owner);
     return ctx.json(200, {
       hold: views.hold(hold, loadHoldServices(hold.id), ctx.settings, secondsLeft(hold, ctx.now)),
@@ -73,6 +78,7 @@ export function registerHoldRoutes(router) {
    * сразу, не дожидаясь истечения десяти минут.
    */
   router.delete('/api/holds/:id', async (ctx) => {
+    ctx.allowPublic('свой резерв; принадлежность проверяет releaseHold');
     releaseHold(v.id(ctx.params.id, 'id'), ctx.owner);
     return ctx.json(200, { ok: true });
   });

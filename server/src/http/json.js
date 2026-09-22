@@ -25,13 +25,19 @@ export function sendError(res, error) {
     // подробности схемы и путь к файлу базы.
     console.error('Необработанная ошибка:', error);
   }
-  sendJson(res, known ? error.status : 500, {
-    error: {
-      code: known ? error.code : 'internal_error',
-      message: known ? error.message : 'Внутренняя ошибка сервера',
-      ...(known && error.details ? { details: error.details } : {}),
+  sendJson(
+    res,
+    known ? error.status : 500,
+    {
+      error: {
+        code: known ? error.code : 'internal_error',
+        message: known ? error.message : 'Внутренняя ошибка сервера',
+        ...(known && error.details ? { details: error.details } : {}),
+      },
     },
-  });
+    // Заголовки несёт только своя ошибка: 429 обязана вернуть Retry-After.
+    known && error.headers ? error.headers : {},
+  );
 }
 
 /** Читает тело и разбирает его как JSON. Пустое тело — пустой объект. */

@@ -9,6 +9,19 @@
  * Поэтому DELETE здесь означает «снять с витрины», а не «стереть».
  */
 import { getDb, transaction } from '../db/connection.js';
+import { setClause } from '../db/sql.js';
+
+/**
+ * Колонки, разрешённые к правке в каждой таблице.
+ *
+ * Повторяют списки полей, которые разбирает обработчик, и стоят
+ * последним рубежом перед SQL: поле не из списка в запрос не попадёт
+ * (см. db/sql.js).
+ */
+const EDITABLE_CATEGORY = ['name', 'sort_order', 'is_active'];
+const EDITABLE_SERVICE = [
+  'category_id', 'name', 'description', 'duration_min', 'price_kopecks', 'is_active', 'sort_order',
+];
 import { conflict, notFound, unprocessable } from '../lib/http-error.js';
 import { now } from '../lib/time.js';
 import { writeAudit, actorRoleOf } from './journal.js';
@@ -86,8 +99,8 @@ export function updateCategory(actor, categoryId, patch) {
     const fields = Object.keys(patch);
     if (fields.length === 0) throw unprocessable('nothing_to_update', 'Не передано ни одного поля');
 
-    const assignments = fields.map((field) => `${field} = :${field}`).join(', ');
-    db.prepare(`UPDATE service_categories SET ${assignments} WHERE id = :id`)
+    const { clause } = setClause(patch, EDITABLE_CATEGORY);
+    db.prepare(`UPDATE service_categories SET ${clause} WHERE id = :id`)
       .run({ ...patch, id: categoryId });
 
     writeAudit(db, {
@@ -171,9 +184,9 @@ export function updateService(actor, serviceId, patch) {
 
     const fields = Object.keys(patch);
     if (fields.length === 0) return serviceId;
-    const assignments = fields.map((field) => `${field} = :${field}`).join(', ');
+    const { clause } = setClause(patch, EDITABLE_SERVICE);
     try {
-      db.prepare(`UPDATE services SET ${assignments}, updated_at = :updated_at WHERE id = :id`)
+      db.prepare(`UPDATE services SET ${clause}, updated_at = :updated_at WHERE id = :id`)
         .run({ ...patch, updated_at: now(), id: serviceId });
     } catch (error) {
       if (String(error.message).includes('UNIQUE')) {
@@ -203,15 +216,19 @@ export function deactivateService(actor, serviceId) {
  * Карточка мастера.
  *
  * user_id необязателен: карточку можно завести до того, как у мастера
- * появится вход в кабинет. Если аккаунт указан, его роль должна быть master —
- * иначе мастер не сможет войти в свой кабинет, а клиент увидел бы
- * в списке мастеров администратора.
+ * появится вход в кабинет. Если аккаунт указан, роль master должна быть
+ * в списке его ролей — иначе мастер не сможет войти в свой кабинет.
+ *
+ * Именно «в списке», а не «единственная»: у владелицы студии рядом стоит
+ * роль администратора, а карточка мастера нужна ей не меньше, чем
+ * наёмному мастеру.
  */
 function assertMasterAccount(db, userId, masterId = null) {
   if (userId === null) return;
-  const user = db.prepare('SELECT id, role FROM users WHERE id = ?').get(userId);
+  const user = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
   if (!user) throw unprocessable('user_not_found', 'Такого пользователя нет');
-  if (user.role !== 'master') {
+  const roles = db.prepare('SELECT role FROM user_roles WHERE user_id = ?').all(userId).map((r) => r.role);
+  if (!roles.includes('master')) {
     throw unprocessable('user_not_master', 'У аккаунта должна быть роль master');
   }
   const taken = db.prepare('SELECT id FROM masters WHERE user_id = ?').get(userId);
@@ -219,6 +236,8 @@ function assertMasterAccount(db, userId, masterId = null) {
     throw conflict('account_already_linked', 'К этому аккаунту уже привязана карточка мастера');
   }
 }
+
+const EDITABLE_MASTER = ['user_id', 'display_name', 'specialization', 'bio', 'photo_url', 'is_active', 'sort_order'];
 
 export function createMaster(actor, data) {
   return transaction((db) => {
@@ -255,8 +274,8 @@ export function updateMaster(actor, masterId, patch) {
     if (fields.user_id !== undefined) assertMasterAccount(db, fields.user_id, masterId);
 
     if (Object.keys(fields).length > 0) {
-      const assignments = Object.keys(fields).map((field) => `${field} = :${field}`).join(', ');
-      db.prepare(`UPDATE masters SET ${assignments}, updated_at = :updated_at WHERE id = :id`)
+      const { clause } = setClause(fields, EDITABLE_MASTER);
+      db.prepare(`UPDATE masters SET ${clause}, updated_at = :updated_at WHERE id = :id`)
         .run({ ...fields, updated_at: now(), id: masterId });
     }
     if (serviceIds) setMasterServices(db, masterId, serviceIds);

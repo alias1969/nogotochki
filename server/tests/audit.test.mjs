@@ -11,9 +11,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:audit
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA, IRINA, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -32,9 +33,9 @@ const db = new DatabaseSync(DB_FILE);
 db.exec('PRAGMA foreign_keys = ON');
 
 const AT = (await call('POST', '/api/auth/login', {
-  body: { email: 'admin@nogotochki.local', password: 'admin12345' } })).body.token;
+  body: { email: ADMIN.email, password: ADMIN.password } })).body.token;
 const MT = (await call('POST', '/api/auth/login', {
-  body: { email: 'olga@nogotochki.local', password: 'master12345' } })).body.token;
+  body: { email: OLGA.email, password: MASTER_PASSWORD } })).body.token;
 
 const PASSWORD = 'secret12345';
 const client = (await call('POST', '/api/auth/register', {
@@ -158,10 +159,14 @@ const pwdEntry = db.prepare(
 check('смена пароля записана', !!pwdEntry, pwdEntry);
 check('пароля в ней нет', !/secret12345|auditnew12345/.test(pwdEntry?.details ?? ''), pwdEntry?.details);
 
+// Пароли приходят из .env и могут содержать символы, значимые для RegExp.
+const escapeForRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
+
 const all = db.prepare('SELECT details FROM audit_log WHERE details IS NOT NULL').all()
   .map((row) => row.details).join(' ');
 check('во всём журнале нет паролей и токенов',
-  !/secret12345|admin12345|master12345|client12345|scrypt\$|Bearer /.test(all),
+  !new RegExp(['secret12345', 'scrypt\\$', 'Bearer ',
+               ...[ADMIN.password, MASTER_PASSWORD, ANNA.password].map(escapeForRegExp)].join('|')).test(all),
   all.slice(0, 200));
 check('и нет хешей токенов', !/[0-9a-f]{64}/.test(all), all.slice(0, 200));
 

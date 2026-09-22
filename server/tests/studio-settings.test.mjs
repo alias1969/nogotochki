@@ -13,9 +13,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:studio
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA, IRINA, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -34,7 +35,7 @@ const db = new DatabaseSync(DB_FILE);
 db.exec('PRAGMA foreign_keys = ON');
 
 const AT = (await call('POST', '/api/auth/login', {
-  body: { email: 'admin@nogotochki.local', password: 'admin12345' } })).body.token;
+  body: { email: ADMIN.email, password: ADMIN.password } })).body.token;
 const client = await (async () => {
   const r = await call('POST', '/api/auth/register', {
     body: { email: `set-${Date.now()}@example.com`, password: 'secret12345',

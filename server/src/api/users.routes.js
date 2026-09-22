@@ -15,8 +15,7 @@ import {
   updateUser,
   permissionMatrix,
 } from '../services/users.js';
-
-const ROLES = ['user', 'master', 'admin'];
+import { ROLES } from '../lib/roles.js';
 
 export function registerUserRoutes(router) {
   /**
@@ -76,7 +75,9 @@ export function registerUserRoutes(router) {
   /**
    * POST /api/admin/users — завести аккаунт.
    *
-   * Тело: `email`, `full_name`, `phone`, необязательная `role`.
+   * Тело: `email`, `full_name`, `phone`, необязательный список `roles`.
+   * Ролей можно выдать сразу несколько — мастер, который и сам ходит
+   * в студию как клиент, заводится одной строкой.
    *
    * Пароль не задаётся: аккаунт создаётся с пустым `password_hash` —
    * предусмотренное схемой состояние «заведён вручную, вход не
@@ -94,7 +95,7 @@ export function registerUserRoutes(router) {
         email: v.email(body.email),
         full_name: v.string(body.full_name, 'full_name', { min: 2, max: 120 }),
         phone: v.phone(body.phone),
-        role: body.role === undefined ? 'user' : v.oneOf(body.role, 'role', ROLES),
+        roles: body.roles === undefined ? ['user'] : v.roleList(body.roles, 'roles'),
       },
     });
 
@@ -105,17 +106,20 @@ export function registerUserRoutes(router) {
   });
 
   /**
-   * PATCH /api/admin/users/:id — контакты, e-mail, роль, активность.
+   * PATCH /api/admin/users/:id — контакты, e-mail, роли, активность.
    *
-   * Смена роли и отключение закрывают все сессии этого человека: роль
-   * зафиксирована в сессии на момент входа, и продолжать работать
+   * `roles` — список, который заменяет прежний целиком: на экране виден
+   * набор галочек, и присылается то, что на нём отмечено.
+   *
+   * Смена ролей и отключение закрывают все сессии этого человека: список
+   * ролей зафиксирован в сессии на момент входа, и продолжать работать
    * со старыми правами он не должен.
    *
-   * Чего сделать нельзя: сменить роль себе, отключить себя, оставить
-   * студию без единого действующего администратора и увести в другую
-   * роль мастера с привязанной карточкой. Каждый случай отвечает
-   * своим кодом и текстом — человек чаще всего просто промахнулся
-   * строкой в списке.
+   * Чего сделать нельзя: менять роли себе, отключить себя, оставить
+   * студию без единого действующего администратора, снять роль мастера
+   * с привязанной карточкой и оставить аккаунт вовсе без ролей. Каждый
+   * случай отвечает своим кодом и текстом — человек чаще всего просто
+   * промахнулся строкой в списке.
    *
    * Тему оформления администратор не трогает: это выбор владельца.
    */
@@ -128,7 +132,7 @@ export function registerUserRoutes(router) {
     if (body.full_name !== undefined) patch.full_name = v.string(body.full_name, 'full_name', { min: 2, max: 120 });
     if (body.phone !== undefined) patch.phone = v.phone(body.phone);
     if (body.email !== undefined) patch.email = v.email(body.email);
-    if (body.role !== undefined) patch.role = v.oneOf(body.role, 'role', ROLES);
+    if (body.roles !== undefined) patch.roles = v.roleList(body.roles, 'roles');
     if (body.is_active !== undefined) patch.is_active = v.boolean(body.is_active, 'is_active') ? 1 : 0;
 
     const result = updateUser({ admin, user, patch });

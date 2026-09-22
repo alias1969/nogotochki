@@ -7,6 +7,8 @@
  * отсутствие уведомления.
  */
 
+import { strongest } from '../lib/roles.js';
+
 /**
  * Журнал. Пишется на действия над чужими объектами: администратор отменил
  * запись клиента, изменил услугу, выключил мастера. Свои собственные
@@ -65,7 +67,16 @@ export function notifyBothSides(db, { appointmentId, clientId, masterId, actorRo
   if (userId) notify(db, { userId, appointmentId, ...master });
 }
 
-/** Роль в журнале и в полях отмены: клиент называется client, а не user. */
+/**
+ * Роль в журнале и в полях отмены: клиент называется client, а не user.
+ *
+ * Ролей у человека может быть несколько, а в журнал пишется одна — та,
+ * в которой он действовал, то есть самая сильная из его ролей. Иначе
+ * строка «мастер отменил визит» появлялась бы там, где действовал
+ * администратор, и журнал вводил бы в заблуждение именно в тех местах,
+ * ради которых его и читают.
+ */
 export function actorRoleOf(user) {
-  return user.role === 'user' ? 'client' : user.role;
+  const role = strongest(user);
+  return role === 'user' ? 'client' : role;
 }

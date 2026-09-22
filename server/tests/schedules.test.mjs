@@ -12,9 +12,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:schedules
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA, IRINA, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -33,7 +34,7 @@ const db = new DatabaseSync(DB_FILE);
 db.exec('PRAGMA foreign_keys = ON');
 
 const AT = (await call('POST', '/api/auth/login', {
-  body: { email: 'admin@nogotochki.local', password: 'admin12345' },
+  body: { email: ADMIN.email, password: ADMIN.password },
 })).body.token;
 
 /** Ближайшая дата с нужным днём недели (1 — понедельник). */

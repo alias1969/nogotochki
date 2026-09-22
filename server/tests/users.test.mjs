@@ -9,9 +9,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:users
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA, IRINA, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -30,8 +31,10 @@ const db = new DatabaseSync(DB_FILE);
 db.exec('PRAGMA foreign_keys = ON');
 
 const AT = (await call('POST', '/api/auth/login', {
-  body: { email: 'admin@nogotochki.local', password: 'admin12345' } })).body.token;
+  body: { email: ADMIN.email, password: ADMIN.password } })).body.token;
 const row = (id) => db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+const rolesOf = (id) => db.prepare('SELECT role FROM user_roles WHERE user_id = ? ORDER BY role')
+  .all(id).map((r) => r.role);
 const made = [];
 
 // =====================================================================
@@ -73,7 +76,7 @@ check('вторая страница не повторяет первую',
   !page2.body.users.some((u) => r.body.users.some((x) => x.id === u.id)));
 
 r = await call('GET', '/api/admin/users?role=master', { token: AT });
-check('фильтр по роли', r.body.users.every((u) => u.role === 'master') && r.body.users.length >= 2);
+check('фильтр по роли', r.body.users.every((u) => u.roles.includes('master')) && r.body.users.length >= 2);
 check('у мастера видна карточка', r.body.users.find((u) => u.id === 2).master_id === 1);
 
 r = await call('GET', `/api/admin/users?search=${encodeURIComponent('Клиент Ролей')}`, { token: AT });
@@ -106,7 +109,7 @@ r = await call('POST', '/api/admin/users', {
 check('аккаунт создан', r.status === 201, JSON.stringify(r.body).slice(0, 200));
 const walkIn = r.body.user.id;
 made.push(walkIn);
-check('роль по умолчанию user', r.body.user.role === 'user');
+check('роли по умолчанию — только user', r.body.user.roles.join(',') === 'user', r.body.user.roles);
 check('пароль не задан', r.body.user.has_password === false && row(walkIn).password_hash === null);
 check('в ответе сказано, как активировать вход', /восстановлен/i.test(r.body.activation), r.body.activation);
 
@@ -126,7 +129,7 @@ r = await call('POST', '/api/admin/users', { token: AT, body: { email: 'не-п�
 check('битые данные → 400', r.status === 400, r.status);
 
 // =====================================================================
-console.log('\n4. Правка и смена роли');
+console.log('\n4. Правка и смена ролей');
 r = await call('PATCH', `/api/admin/users/${walkIn}`, {
   token: AT, body: { full_name: 'Мария Ковалёва', phone: '+7 (900) 222-33-44' } });
 check('контакты изменены', r.status === 200 && r.body.user.full_name === 'Мария Ковалёва', JSON.stringify(r.body).slice(0, 150));
@@ -137,7 +140,7 @@ r = await call('PATCH', `/api/admin/users/${walkIn}`, { token: AT, body: { email
 check('администратор меняет e-mail', r.status === 200 && r.body.user.email === newEmail);
 check('вход по новому адресу работает',
   (await call('POST', '/api/auth/login', { body: { email: newEmail, password: 'ownpass12345' } })).status === 200);
-r = await call('PATCH', `/api/admin/users/${walkIn}`, { token: AT, body: { email: 'admin@nogotochki.local' } });
+r = await call('PATCH', `/api/admin/users/${walkIn}`, { token: AT, body: { email: ADMIN.email } });
 check('занятый e-mail → 409', r.status === 409, r.status);
 
 // Смена роли выбрасывает из аккаунта.
@@ -147,16 +150,16 @@ const promoted = (await call('POST', '/api/auth/register', {
 made.push(promoted.user.id);
 check('его сессия жива', (await call('GET', '/api/auth/me', { token: promoted.token })).status === 200);
 
-r = await call('PATCH', `/api/admin/users/${promoted.user.id}`, { token: AT, body: { role: 'master' } });
-check('роль изменена', r.status === 200 && r.body.user.role === 'master', JSON.stringify(r.body).slice(0, 150));
+r = await call('PATCH', `/api/admin/users/${promoted.user.id}`, { token: AT, body: { roles: ['master'] } });
+check('роли изменены', r.status === 200 && r.body.user.roles.join(',') === 'master', JSON.stringify(r.body).slice(0, 150));
 check('сессии закрыты', r.body.sessions_revoked >= 1, r.body.sessions_revoked);
 check('старый токен больше не работает',
   (await call('GET', '/api/auth/me', { token: promoted.token })).status === 401);
 
 const audit = db.prepare(
   "SELECT action, details FROM audit_log WHERE entity_type='user' AND entity_id=? ORDER BY id DESC").get(promoted.user.id);
-check('смена роли записана отдельным действием', audit?.action === 'role_change', audit?.action);
-check('видно, с какой роли на какую', /user.*master/.test(audit?.details ?? ''), audit?.details?.slice(0, 120));
+check('смена ролей записана отдельным действием', audit?.action === 'role_change', audit?.action);
+check('видно, какой список был и какой стал', /user.*master/.test(audit?.details ?? ''), audit?.details?.slice(0, 120));
 
 // Отключение аккаунта.
 r = await call('PATCH', `/api/admin/users/${promoted.user.id}`, { token: AT, body: { is_active: false } });
@@ -174,39 +177,53 @@ check('тема осталась прежней', row(walkIn).theme === 'day');
 
 // =====================================================================
 console.log('\n5. Четыре запрета');
-r = await call('PATCH', '/api/admin/users/1', { token: AT, body: { role: 'user' } });
+r = await call('PATCH', '/api/admin/users/1', { token: AT, body: { roles: ['user'] } });
 check('себя разжаловать нельзя → 422', r.status === 422 && r.body.error.code === 'self_demotion',
   `${r.status} ${JSON.stringify(r.body).slice(0, 140)}`);
 r = await call('PATCH', '/api/admin/users/1', { token: AT, body: { is_active: false } });
 check('себя отключить нельзя → 422', r.status === 422 && r.body.error.code === 'self_demotion', r.body.error?.code);
-check('администратор цел', row(1).role === 'admin' && row(1).is_active === 1);
+check('администратор цел', rolesOf(1).includes('admin') && row(1).is_active === 1);
 
 // Другого администратора — можно: студия не остаётся без доступа.
 const second = (await call('POST', '/api/admin/users', {
   token: AT, body: { email: `adm2-${Date.now()}@example.com`, full_name: 'Второй Админ',
-                     phone: '+79009998877', role: 'admin' } })).body.user;
+                     phone: '+79009998877', roles: ['admin'] } })).body.user;
 made.push(second.id);
 r = await call('PATCH', `/api/admin/users/${second.id}`, { token: AT, body: { is_active: false } });
 check('другого администратора отключить можно', r.status === 200, r.status);
-r = await call('PATCH', `/api/admin/users/${second.id}`, { token: AT, body: { role: 'user' } });
+r = await call('PATCH', `/api/admin/users/${second.id}`, { token: AT, body: { roles: ['user'] } });
 check('и разжаловать можно', r.status === 200, JSON.stringify(r.body).slice(0, 140));
 check('действующий администратор в студии остался',
-  db.prepare("SELECT COUNT(*) c FROM users WHERE role='admin' AND is_active=1").get().c >= 1);
+  db.prepare(`SELECT COUNT(*) c FROM users u WHERE u.is_active = 1
+                AND EXISTS (SELECT 1 FROM user_roles ur WHERE ur.user_id = u.id AND ur.role = 'admin')`).get().c >= 1);
 
 // Проверка «последний администратор» через этот эндпоинт недостижима:
 // вызывает его сам действующий администратор, а себя он трогать не может.
 // Поэтому проверяется то, что достижимо, — порядок правил: на себе
 // срабатывает запрет self_demotion, а не last_admin.
-r = await call('PATCH', '/api/admin/users/1', { token: AT, body: { role: 'user', is_active: false } });
+r = await call('PATCH', '/api/admin/users/1', { token: AT, body: { roles: ['user'], is_active: false } });
 check('на себе срабатывает именно запрет на себя',
   r.status === 422 && r.body.error.code === 'self_demotion', r.body.error?.code);
 
 // Мастер с привязанной карточкой.
-r = await call('PATCH', '/api/admin/users/2', { token: AT, body: { role: 'user' } });
-check('мастера с карточкой не разжаловать → 409', r.status === 409 && r.body.error.code === 'master_card_linked',
+r = await call('PATCH', '/api/admin/users/2', { token: AT, body: { roles: ['user'] } });
+check('у мастера с карточкой роль master не отнять → 409', r.status === 409 && r.body.error.code === 'master_card_linked',
   `${r.status} ${JSON.stringify(r.body).slice(0, 150)}`);
 check('в отказе указана карточка', r.body.error.details?.master_id === 1);
-check('роль не изменилась', row(2).role === 'master');
+check('роли не изменились', rolesOf(2).join(',') === 'master', rolesOf(2));
+
+// А вот добавить мастеру роль администратора карточка не мешает —
+// ради этого списки и заведены.
+r = await call('PATCH', '/api/admin/users/2', { token: AT, body: { roles: ['master', 'admin'] } });
+check('мастеру можно добавить роль администратора', r.status === 200 && r.body.user.roles.join(',') === 'admin,master',
+  JSON.stringify(r.body).slice(0, 150));
+await call('PATCH', '/api/admin/users/2', { token: AT, body: { roles: ['master'] } });
+check('роли мастера возвращены', rolesOf(2).join(',') === 'master', rolesOf(2));
+
+r = await call('PATCH', `/api/admin/users/${walkIn}`, { token: AT, body: { roles: [] } });
+check('оставить аккаунт без ролей нельзя → 400', r.status === 400, `${r.status} ${JSON.stringify(r.body).slice(0, 120)}`);
+r = await call('PATCH', `/api/admin/users/${walkIn}`, { token: AT, body: { roles: ['выдумка'] } });
+check('несуществующая роль → 400', r.status === 400, r.status);
 
 // --- уборка ---
 for (const id of made.reverse()) {

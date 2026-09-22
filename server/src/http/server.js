@@ -42,7 +42,10 @@ export function buildRouter() {
   registerAuditRoutes(router);
 
   /** Проверка живости для мониторинга и деплоя. Базу не трогает. */
-  router.get('/api/health', async (ctx) => ctx.json(200, { status: 'ok', time: ctx.now }));
+  router.get('/api/health', async (ctx) => {
+    ctx.allowPublic('проверка живости для мониторинга; данных не отдаёт');
+    return ctx.json(200, { status: 'ok', time: ctx.now });
+  });
 
   return router;
 }

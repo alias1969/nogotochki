@@ -20,6 +20,7 @@ import {
   OUTCOME_STATUSES,
 } from '../services/appointments.js';
 import { findOwnedHold } from '../services/holds.js';
+import { strongest } from '../lib/roles.js';
 import { forbidden } from '../lib/http-error.js';
 
 /**
@@ -44,14 +45,29 @@ export function findRescheduleTarget(appointmentId, ctx) {
  * другие основания и другие ограничения, поэтому им эти поля не уходят
  * вовсе. Показать чужие правила хуже, чем не показать никаких:
  * по ним нарисовали бы кнопки, которые сервер потом не пропустит.
+ *
+ * Ролей у человека может быть несколько, и два вопроса решаются
+ * по-разному.
+ *
+ * **Что показать** — по сильнейшей роли: мастер видит контакты клиента,
+ * администратор — ещё и служебные поля.
+ *
+ * **Какие правила показать** — по отношению к самой записи. Правила
+ * клиента (срок отмены, остаток переносов) получает тот, кто в этой
+ * записи клиент, кем бы он ни работал: ровно по ним сервер и разрешит
+ * или откажет (см. authorizeChange в services/appointments.js).
+ * Мастер, записавшийся к коллеге, — клиент этого визита и отменяет его
+ * по клиентским правилам; в чужих записях своего расписания правил
+ * клиента он не видит вовсе.
  */
 function present(row, ctx) {
-  const isClient = ctx.user?.role === 'user';
+  const role = strongest(ctx.user);
+  const isOwnVisit = row.client_id === ctx.user.id;
   return views.appointment(row, loadAppointmentServices(row.id), ctx.settings, {
     // Роль смотрящего и решает, что он увидит: клиент — свой визит,
     // мастер — плюс контакты клиента, администратор — плюс служебное.
-    audience: isClient ? 'client' : ctx.user.role,
-    abilities: isClient ? clientAbilities(row, ctx.settings, ctx.now) : null,
+    audience: role === 'user' ? 'client' : role,
+    abilities: isOwnVisit ? clientAbilities(row, ctx.settings, ctx.now) : null,
   });
 }
 

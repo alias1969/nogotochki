@@ -16,11 +16,20 @@ import { getDb, transaction } from '../db/connection.js';
 import { conflict, notFound, unprocessable } from '../lib/http-error.js';
 import { now } from '../lib/time.js';
 import { writeAudit } from './journal.js';
+import { ROLES } from '../lib/roles.js';
+import { setClause, placeholders } from '../db/sql.js';
 
-const ROLES = ['user', 'master', 'admin'];
+/**
+ * Колонки users, которые вправе править администратор.
+ *
+ * Роли здесь нет намеренно: они лежат в user_roles и правятся отдельно.
+ * Нет и theme — это выбор владельца аккаунта, — и password_hash:
+ * пароль администратор не задаёт никогда.
+ */
+const EDITABLE_COLUMNS = ['full_name', 'phone', 'email', 'is_active'];
 
 const USER_SQL = `
-SELECT u.id, u.email, u.full_name, u.phone, u.role, u.is_active,
+SELECT u.id, u.email, u.full_name, u.phone, u.is_active,
        u.created_at, u.updated_at,
        (u.password_hash IS NOT NULL) AS has_password,
        m.id AS master_id
@@ -28,14 +37,37 @@ SELECT u.id, u.email, u.full_name, u.phone, u.role, u.is_active,
   LEFT JOIN masters m ON m.user_id = u.id
 `;
 
+/**
+ * Дописывает каждому найденному человеку его список ролей.
+ *
+ * Одним запросом на всю страницу, а не по запросу на строку: список
+ * пользователей открывается с фильтром и листанием, и запрос на каждую
+ * строку превратил бы один экран в полсотни обращений к базе.
+ */
+function attachRoles(rows, db = getDb()) {
+  if (rows.length === 0) return rows;
+  const byUser = new Map(rows.map((row) => [row.id, []]));
+  const found = db
+    .prepare(
+      `SELECT user_id, role FROM user_roles
+        WHERE user_id IN (${placeholders(rows.length)}) ORDER BY user_id, role`,
+    )
+    .all(...rows.map((row) => row.id));
+  for (const item of found) byUser.get(item.user_id)?.push(item.role);
+  return rows.map((row) => ({ ...row, roles: byUser.get(row.id) ?? [] }));
+}
+
 export function findUser(userId) {
   const row = getDb().prepare(`${USER_SQL} WHERE u.id = ?`).get(userId);
   if (!row) throw notFound('Пользователь не найден');
-  return row;
+  return attachRoles([row])[0];
 }
 
 /**
  * Список пользователей.
+ *
+ * Фильтр `role` спрашивает «у кого эта роль есть», а не «чья роль равна»:
+ * мастер, который заодно администратор, обязан находиться в обоих списках.
  *
  * Поиск идёт по имени, e-mail и телефону сразу: администратор ищет
  * человека тем, что помнит, а помнит он обычно что-то одно.
@@ -48,10 +80,12 @@ export function findUser(userId) {
  */
 export function listUsers({ role = null, isActive = null, search = null, limit = 50, afterId = null } = {}) {
   const pattern = search ? `%${search.toLowerCase()}%` : null;
-  return getDb()
+  const rows = getDb()
     .prepare(
       `${USER_SQL}
-        WHERE (:role IS NULL OR u.role = :role)
+        WHERE (:role IS NULL
+               OR EXISTS (SELECT 1 FROM user_roles ur
+                           WHERE ur.user_id = u.id AND ur.role = :role))
           AND (:is_active IS NULL OR u.is_active = :is_active)
           AND (:pattern IS NULL OR ulower(u.full_name) LIKE :pattern
                OR u.email_normalized LIKE :pattern
@@ -61,6 +95,7 @@ export function listUsers({ role = null, isActive = null, search = null, limit =
         LIMIT :limit`,
     )
     .all({ role, is_active: isActive, pattern, after_id: afterId, limit });
+  return attachRoles(rows);
 }
 
 /** Сводка по визитам — карточка клиента на экране A8 без второго запроса. */
@@ -100,12 +135,23 @@ function assertEmailFree(db, email, exceptId = null) {
   }
 }
 
+/** Выдать роли списком. granted_by — кто выдал, для разбора «откуда у него права». */
+function grantRoles(db, userId, roles, grantedBy) {
+  const insert = db.prepare(
+    `INSERT INTO user_roles(user_id, role, granted_by) VALUES (?, ?, ?)
+     ON CONFLICT(user_id, role) DO NOTHING`,
+  );
+  for (const role of roles) insert.run(userId, role, grantedBy);
+}
+
 /**
  * Создать аккаунт.
  *
  * Без пароля — владелец задаёт его себе сам через восстановление.
- * Роль по умолчанию `user`: так администратор заводит клиента, который
- * пришёл без записи, чтобы визит и контакты не потерялись.
+ * Роли по умолчанию — только `user`: так администратор заводит клиента,
+ * который пришёл без записи, чтобы визит и контакты не потерялись.
+ * Ролей можно выдать сразу несколько: мастер, который и сам ходит
+ * в студию как клиент, заводится одной строкой.
  */
 export function createUser({ admin, data }) {
   return transaction((db) => {
@@ -113,19 +159,21 @@ export function createUser({ admin, data }) {
 
     const inserted = db
       .prepare(
-        `INSERT INTO users(email, full_name, phone, role, is_active)
-         VALUES (:email, :full_name, :phone, :role, 1)`,
+        `INSERT INTO users(email, full_name, phone, is_active)
+         VALUES (:email, :full_name, :phone, 1)`,
       )
-      .run(data);
+      .run({ email: data.email, full_name: data.full_name, phone: data.phone });
 
     const id = Number(inserted.lastInsertRowid);
+    grantRoles(db, id, data.roles, admin.id);
+
     writeAudit(db, {
       actorUserId: admin.id,
       actorRole: 'admin',
       action: 'create',
       entityType: 'user',
       entityId: id,
-      details: { role: data.role, email: data.email },
+      details: { roles: data.roles, email: data.email },
     });
     return id;
   });
@@ -137,24 +185,38 @@ export function createUser({ admin, data }) {
  * Считается до записи: студия без единого администратора — это студия,
  * в которую больше никто не войдёт с правами, и чинить это придётся
  * руками в базе.
+ *
+ * Роль администратора теперь одна из нескольких, поэтому вопрос звучит
+ * «у скольких людей роль admin есть», а не «у скольких она единственная».
  */
 function activeAdminsAfter(db, user, patch) {
   const current = db
-    .prepare("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND is_active = 1")
+    .prepare(
+      `SELECT COUNT(*) AS count FROM users u
+        WHERE u.is_active = 1
+          AND EXISTS (SELECT 1 FROM user_roles ur
+                       WHERE ur.user_id = u.id AND ur.role = 'admin')`,
+    )
     .get().count;
 
-  const wasAdmin = user.role === 'admin' && user.is_active === 1;
+  const wasAdmin = user.roles.includes('admin') && user.is_active === 1;
   const willBeAdmin =
-    (patch.role ?? user.role) === 'admin' &&
+    (patch.roles ?? user.roles).includes('admin') &&
     (patch.is_active ?? user.is_active) === 1;
 
   return current - (wasAdmin ? 1 : 0) + (willBeAdmin ? 1 : 0);
 }
 
 /**
- * Изменить чужой аккаунт: контакты, e-mail, роль, признак активности.
+ * Изменить чужой аккаунт: контакты, e-mail, роли, признак активности.
  *
- * Три правила, каждое из которых закрывает свою дыру.
+ * Роли приходят списком и заменяют прежний целиком: администратор видит
+ * на экране набор галочек и присылает то, что на нём отмечено. Присылать
+ * «добавь эту, убери ту» было бы правдивее по смыслу, но на экране всё
+ * равно виден весь набор, и разница между «список пуст» и «ничего
+ * не менять» стала бы неразличимой.
+ *
+ * Четыре правила, каждое закрывает свою дыру.
  *
  * 1. Себя администратор не разжалует и не отключит. Формально это частный
  *    случай правила о последнем администраторе, но сообщение нужно другое:
@@ -170,13 +232,17 @@ function activeAdminsAfter(db, user, patch) {
  *    если правило 1 когда-нибудь ослабят или появится другой путь правки —
  *    перенос владения, массовый импорт, служебный скрипт.
  *
- * 3. Мастера с привязанной карточкой нельзя перевести в другую роль.
+ * 3. У мастера с привязанной карточкой нельзя отнять роль master.
  *    Карточка осталась бы висеть на аккаунте, который в кабинет мастера
- *    уже не попадает, а проверка привязки требует роли `master`.
- *    Сначала отвязать карточку, потом менять роль.
+ *    уже не попадает. Сначала отвязать карточку, потом снимать роль.
+ *    Остальные роли при этом меняются свободно: выдать мастеру роль
+ *    администратора карточке не мешает — ради этого списки и заведены.
  *
- * Смена роли и отключение закрывают все сессии этого человека: роль
- * зафиксирована в сессии на момент входа, и продолжать работать
+ * 4. Список ролей не бывает пустым. Аккаунт без единой роли — это не
+ *    «клиент», а человек, которому недоступны даже собственные записи.
+ *
+ * Смена ролей и отключение закрывают все сессии этого человека: список
+ * ролей зафиксирован в сессии на момент входа, и продолжать работать
  * со старыми правами он не должен.
  */
 export function updateUser({ admin, user, patch }) {
@@ -185,19 +251,26 @@ export function updateUser({ admin, user, patch }) {
     throw unprocessable('nothing_to_update', 'Не передано ни одного поля');
   }
 
-  const roleChanges = patch.role !== undefined && patch.role !== user.role;
+  // Список сравнивается как множество: порядок галочек на экране
+  // не должен выглядеть сменой ролей.
+  const nextRoles = patch.roles === undefined ? null : [...new Set(patch.roles)].sort();
+  const rolesChange = nextRoles !== null && nextRoles.join(',') !== [...user.roles].sort().join(',');
   const deactivates = patch.is_active === 0 && user.is_active === 1;
 
-  if ((roleChanges || deactivates) && user.id === admin.id) {
+  if (nextRoles !== null && nextRoles.length === 0) {
+    throw unprocessable('roles_empty', 'У аккаунта должна остаться хотя бы одна роль');
+  }
+
+  if ((rolesChange || deactivates) && user.id === admin.id) {
     throw unprocessable(
       'self_demotion',
-      roleChanges
-        ? 'Нельзя сменить роль самому себе — попросите другого администратора'
+      rolesChange
+        ? 'Нельзя менять роли самому себе — попросите другого администратора'
         : 'Нельзя отключить собственный аккаунт',
     );
   }
 
-  if (roleChanges && user.role === 'master' && user.master_id !== null) {
+  if (rolesChange && user.master_id !== null && !nextRoles.includes('master')) {
     throw conflict(
       'master_card_linked',
       'К аккаунту привязана карточка мастера — сначала отвяжите её на экране мастеров',
@@ -206,8 +279,8 @@ export function updateUser({ admin, user, patch }) {
   }
 
   return transaction((db) => {
-    if (roleChanges || patch.is_active !== undefined) {
-      if (activeAdminsAfter(db, user, patch) < 1) {
+    if (rolesChange || patch.is_active !== undefined) {
+      if (activeAdminsAfter(db, user, { ...patch, roles: nextRoles ?? user.roles }) < 1) {
         throw unprocessable(
           'last_admin',
           'Это последний действующий администратор — студия останется без доступа',
@@ -216,15 +289,30 @@ export function updateUser({ admin, user, patch }) {
     }
     if (patch.email !== undefined) assertEmailFree(db, patch.email, user.id);
 
-    const assignments = fields.map((field) => `${field} = :${field}`).join(', ');
-    db.prepare(`UPDATE users SET ${assignments}, updated_at = :now WHERE id = :id`)
-      .run({ ...patch, now: now(), id: user.id });
+    // Роли лежат в отдельной таблице, поэтому в UPDATE users они не идут.
+    const { roles, ...columns } = patch;
+    const { fields: columnNames, clause, params } = setClause(columns, EDITABLE_COLUMNS);
+    if (columnNames.length > 0) {
+      db.prepare(`UPDATE users SET ${clause}, updated_at = :now WHERE id = :id`)
+        .run({ ...params, now: now(), id: user.id });
+    }
 
-    // Роль зафиксирована в сессии на момент входа — со старыми правами
-    // работать нельзя. Отключённый аккаунт тем более не должен остаться
-    // с живой сессией.
+    if (rolesChange) {
+      const removed = user.roles.filter((role) => !nextRoles.includes(role));
+      if (removed.length > 0) {
+        db.prepare(
+          `DELETE FROM user_roles WHERE user_id = ? AND role IN (${placeholders(removed.length)})`,
+        ).run(user.id, ...removed);
+      }
+      grantRoles(db, user.id, nextRoles.filter((role) => !user.roles.includes(role)), admin.id);
+      db.prepare('UPDATE users SET updated_at = ? WHERE id = ?').run(now(), user.id);
+    }
+
+    // Список ролей зафиксирован в сессии на момент входа — со старыми
+    // правами работать нельзя. Отключённый аккаунт тем более не должен
+    // остаться с живой сессией.
     let revoked = 0;
-    if (roleChanges || deactivates) {
+    if (rolesChange || deactivates) {
       revoked = db
         .prepare('UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL')
         .run(now(), user.id).changes;
@@ -233,13 +321,16 @@ export function updateUser({ admin, user, patch }) {
     writeAudit(db, {
       actorUserId: admin.id,
       actorRole: 'admin',
-      // Смена роли — отдельное действие в журнале: его ищут отдельно
+      // Смена ролей — отдельное действие в журнале: его ищут отдельно
       // и смотрят внимательнее остальных правок.
-      action: roleChanges ? 'role_change' : 'update',
+      action: rolesChange ? 'role_change' : 'update',
       entityType: 'user',
       entityId: user.id,
       details: {
-        ...Object.fromEntries(fields.map((field) => [field, { from: user[field], to: patch[field] }])),
+        ...Object.fromEntries(
+          columnNames.map((field) => [field, { from: user[field], to: patch[field] }]),
+        ),
+        ...(rolesChange ? { roles: { from: user.roles, to: nextRoles } } : {}),
         sessions_revoked: revoked,
       },
     });

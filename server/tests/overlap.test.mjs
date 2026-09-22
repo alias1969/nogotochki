@@ -13,9 +13,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:overlap
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {

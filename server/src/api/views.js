@@ -32,14 +32,21 @@ export function moment(instant, settings) {
   };
 }
 
-/** Собственный профиль. E-mail и телефон здесь свои, а не чужие. */
+/**
+ * Собственный профиль. E-mail и телефон здесь свои, а не чужие.
+ *
+ * Роли отдаются списком, и поля `role` в ответе нет намеренно: одно
+ * значение подталкивало бы клиентский код к сравнению `role === 'admin'`,
+ * то есть ровно к той ошибке, от которой список и заведён. Пусть проверка
+ * на экране выглядит так же, как на сервере, — поиском в списке.
+ */
 export function user(row) {
   return {
     id: row.id,
     email: row.email,
     full_name: row.full_name,
     phone: row.phone,
-    role: row.role,
+    roles: row.roles,
     theme: row.theme,
   };
 }
@@ -376,7 +383,7 @@ export function adminUser(row, settings) {
     email: row.email,
     full_name: row.full_name,
     phone: row.phone,
-    role: row.role,
+    roles: row.roles,
     is_active: row.is_active === 1,
     has_password: row.has_password === 1,
     master_id: row.master_id ?? null,

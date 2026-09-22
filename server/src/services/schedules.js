@@ -20,6 +20,7 @@ import { getDb, transaction } from '../db/connection.js';
 import { forbidden, notFound, unprocessable } from '../lib/http-error.js';
 import { now, addDays, utcDate, localDate, localDayBounds, weekdayOf, toLocalParts } from '../lib/time.js';
 import { writeAudit } from './journal.js';
+import { ROLES, has, pickPolicy } from '../lib/roles.js';
 
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7];
 
@@ -263,14 +264,28 @@ const EXCEPTION_POLICY = {
   },
 };
 
-/** Разрешённые этой роли виды отклонений — нужно и обработчику для проверки. */
-export function allowedExceptionKinds(role) {
-  return EXCEPTION_POLICY[role]?.kinds ?? [];
+/**
+ * Разрешённые человеку виды отклонений — нужно и обработчику для проверки.
+ *
+ * Объединение по всем его ролям: мастер-администратор вправе и закрыть
+ * себе время, и назначить отпуск, хотя по отдельности это права разных ролей.
+ */
+export function allowedExceptionKinds(user) {
+  const kinds = new Set();
+  for (const role of ROLES) {
+    if (!has(user, role)) continue;
+    for (const kind of EXCEPTION_POLICY[role]?.kinds ?? []) kinds.add(kind);
+  }
+  return [...kinds];
 }
 
 function authorizeException({ actor, masterId, kind }) {
-  const policy = EXCEPTION_POLICY[actor.role];
-  if (!policy) throw forbidden('Эта роль не меняет графики');
+  // Самая сильная роль, которой разрешён именно этот вид отклонения:
+  // мастер-администратор закрывает себе время как мастер, а отпуск
+  // назначает как администратор — и в последнем случае ownOnly не мешает.
+  const picked = pickPolicy(actor, EXCEPTION_POLICY, (p) => p.kinds.includes(kind));
+  if (!picked) throw forbidden('Эта роль не меняет графики');
+  const policy = picked.policy;
   if (!policy.kinds.includes(kind)) {
     throw forbidden(
       kind === 'vacation' || kind === 'day_off'

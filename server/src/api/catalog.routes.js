@@ -13,6 +13,7 @@ export function registerCatalogRoutes(router) {
    * это шаг B1, открытый из карточки мастера.
    */
   router.get('/api/services', async (ctx) => {
+    ctx.allowPublic('витрина услуг — экраны B1 и лендинг');
     const masterId = ctx.query.master_id ? v.id(ctx.query.master_id, 'master_id') : null;
     const rows = listServices({ masterId });
     return ctx.json(200, { services: rows.map((row) => views.service(row)) });
@@ -25,6 +26,7 @@ export function registerCatalogRoutes(router) {
    * мастер, который делает половину, на шаге B2 не подходит.
    */
   router.get('/api/masters', async (ctx) => {
+    ctx.allowPublic('список мастеров — экран B2 и лендинг');
     const serviceIds = ctx.query.service_ids
       ? v.idList(ctx.query.service_ids, 'service_ids')
       : null;
@@ -34,6 +36,7 @@ export function registerCatalogRoutes(router) {
 
   /** GET /api/masters/:id — карточка мастера. */
   router.get('/api/masters/:id', async (ctx) => {
+    ctx.allowPublic('карточка мастера на витрине');
     const masterId = v.id(ctx.params.id, 'id');
     const row = findMaster(masterId);
     return ctx.json(200, {
@@ -43,5 +46,8 @@ export function registerCatalogRoutes(router) {
   });
 
   /** GET /api/studio — название, часовой пояс и правила записи для экранов. */
-  router.get('/api/studio', async (ctx) => ctx.json(200, { studio: views.studio(ctx.settings) }));
+  router.get('/api/studio', async (ctx) => {
+    ctx.allowPublic('название, часовой пояс и правила записи — нужны до входа');
+    return ctx.json(200, { studio: views.studio(ctx.settings) });
+  });
 }
