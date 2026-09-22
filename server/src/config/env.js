@@ -67,6 +67,25 @@ export const env = {
   sessionSecret:
     nodeEnv === 'production' ? required('SESSION_SECRET') : optional('SESSION_SECRET', 'dev-secret'),
   sessionTtlHours: number('SESSION_TTL_HOURS', 24 * 14),
+
+  /**
+   * Срок жизни ссылки восстановления пароля.
+   *
+   * Здесь, а не в settings: это параметр безопасности, а не правило
+   * работы студии. Администратору незачем и опасно двигать его
+   * с экрана настроек — сутки вместо часа заметно расширяют окно,
+   * в котором утёкшее письмо ещё пускает в аккаунт.
+   */
+  passwordResetTtlMinutes: number('PASSWORD_RESET_TTL_MINUTES', 60),
+
+  /**
+   * Адрес сайта — из него собирается ссылка в письме.
+   *
+   * Сервер не знает, под каким доменом его открывают: заголовок Host
+   * приходит из запроса и подделывается, а ссылку восстановления
+   * по подделанному адресу отправлять нельзя.
+   */
+  appUrl: optional('APP_URL', `http://localhost:${number('PORT', 3000)}`),
   passwordPepper:
     nodeEnv === 'production' ? required('PASSWORD_PEPPER') : optional('PASSWORD_PEPPER', 'dev-pepper'),
 
