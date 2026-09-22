@@ -152,3 +152,15 @@ vite.config.ts.timestamp-*
 *.sqlite
 *.sqlite3
 server/data/backups/
+
+# --- мусор операционных систем ---
+# .DS_Store macOS создаёт в каждой папке, куда заглянул Finder.
+# К проекту он отношения не имеет, а в diff попадает регулярно.
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini

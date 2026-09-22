@@ -1,0 +1,60 @@
+# Нормализация переводов строки и разметка двоичных файлов.
+#
+# Зачем это нужно именно здесь: проект ведётся на macOS, а разворачивается
+# на Linux-VPS; если в репозиторий однажды попадут файлы с CRLF, diff
+# распухнет на весь файл, а миграции и .sh-скрипты начнут ломаться
+# на сервере. Настройка core.autocrlf у каждого своя, а .gitattributes
+# лежит в репозитории и действует одинаково для всех.
+
+# По умолчанию: Git сам решает, текст это или двоичное, а текст хранит
+# и выдаёт с LF.
+* text=auto eol=lf
+
+# --- исходники и данные ---
+*.js    text eol=lf
+*.mjs   text eol=lf
+*.json  text eol=lf
+*.sql   text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf diff=markdown
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+# Файлы окружения и точечные настройки — тоже текст, несмотря на имена
+# без расширения.
+.env.example  text eol=lf
+.gitignore    text eol=lf
+.gitattributes text eol=lf
+.nvmrc        text eol=lf
+.npmrc        text eol=lf
+
+# --- двоичное: не трогать и не пытаться слить ---
+# Помечено явно, чтобы Git не принял их за текст и не «нормализовал»
+# переводы строк внутри, испортив файл.
+*.xlsx  binary
+*.xls   binary
+*.docx  binary
+*.pdf   binary
+*.pages binary
+*.zip   binary
+*.db    binary
+*.sqlite binary
+*.sqlite3 binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+
+# --- экспорт прототипа ---
+# Экраны из Claude Design — машинный вывод в одну строку на весь файл.
+# Diff по ним всё равно нечитаем, а конфликты в них решаются заменой
+# файла целиком, а не построчным слиянием.
+Design_site/**/*.dc.html -diff -merge
+Design_site/support.js   -diff
