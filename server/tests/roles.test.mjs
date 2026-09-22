@@ -194,6 +194,98 @@ await call('PATCH', '/api/admin/users/2', { token: AT, body: { roles: ['master']
 check('мастер возвращён к одной роли', rolesOf(2).join(',') === 'master', rolesOf(2));
 
 // =====================================================================
+console.log('\n3a. Роль действия должна быть связана с самой записью');
+
+// Доступ к записи складывается по ролям, а действует человек в одной роли.
+// На пересечении этих правил и была дыра: мастер, записавшийся к коллеге,
+// получал доступ к записи как клиент, а действовал над ней как мастер.
+await call('PATCH', '/api/admin/users/2', { token: AT, body: { roles: ['master', 'user'] } });
+const dual = await login(OLGA.email, MASTER_PASSWORD);
+
+// Записываем его клиентом к ДРУГОМУ мастеру (карточка 2, его собственная — 1).
+r = await call('POST', '/api/admin/appointments', {
+  token: AT, body: { client_id: 2, master_id: 2, starts_at: await firstSlot(2), service_ids: [1] },
+});
+const visitAtColleague = r.body.appointment?.id;
+check('визит у коллеги создан', typeof visitAtColleague === 'number', JSON.stringify(r.body).slice(0, 150));
+
+// Исход отмечают только по прошедшему визиту — сдвигаем его в прошлое.
+const intoPast = (id) => db.prepare(
+  `UPDATE appointments SET starts_at = strftime('%Y-%m-%dT%H:%M:%SZ','now','-2 hours'),
+                           ends_at   = strftime('%Y-%m-%dT%H:%M:%SZ','now','-1 hours')
+    WHERE id = ?`).run(id);
+intoPast(visitAtColleague);
+
+r = await call('POST', `/api/appointments/${visitAtColleague}/status`, {
+  token: dual.token, body: { status: 'completed' } });
+check('исход чужой работы мастер не отмечает → 404', r.status === 404,
+  `${r.status} ${JSON.stringify(r.body).slice(0, 120)}`);
+check('и статус в базе не изменился',
+  db.prepare('SELECT status FROM appointments WHERE id = ?').get(visitAtColleague).status === 'booked');
+
+// А мастер этого расписания — отмечает.
+const colleague = await login(IRINA.email, MASTER_PASSWORD);
+r = await call('POST', `/api/appointments/${visitAtColleague}/status`, {
+  token: colleague.token, body: { status: 'completed' } });
+check('мастер своего расписания отмечает исход', r.status === 200, `${r.status} ${JSON.stringify(r.body).slice(0, 120)}`);
+check('в журнале действие записано за мастером',
+  db.prepare(`SELECT actor_user_id FROM audit_log WHERE entity_id = ? AND action = 'status_change'
+               ORDER BY id DESC`).get(visitAtColleague)?.actor_user_id === 3);
+
+// Администратор проходит по своей роли, а не по мастерской.
+r = await call('POST', `/api/appointments/${visitAtColleague}/status`, {
+  token: AT, body: { status: 'no_show' } });
+check('администратору доступны все записи студии', r.status === 200, r.status);
+
+// --- правила клиента над собственной записью ---
+// Срок отмены действует и на мастера, когда он сам клиент: студия теряет
+// слот одинаково, кем бы ни работал тот, кто отменил за час до визита.
+r = await call('POST', '/api/admin/appointments', {
+  token: AT, body: { client_id: 2, master_id: 2, starts_at: await firstSlot(2), service_ids: [1] },
+});
+const ownSoon = r.body.appointment?.id;
+check('вторая запись у коллеги создана', typeof ownSoon === 'number', JSON.stringify(r.body).slice(0, 150));
+
+// Срок отмены расширяем до недели (168 ч — предел настройки) вместо того,
+// чтобы двигать визит в ближайший час: сдвиг времени упёрся бы в триггер
+// против пересечения записей, а правило отмены проверяется одинаково
+// при любом сроке. Визит назначен на завтра, поэтому в неделю он попадает.
+const deadlineBefore = (await call('GET', '/api/admin/settings', { token: AT }))
+  .body.settings.find((item) => item.key === 'cancel_deadline_hours').value;
+await call('PATCH', '/api/admin/settings', {
+  token: AT, body: { settings: { cancel_deadline_hours: 168 } } });
+
+r = await call('POST', `/api/appointments/${ownSoon}/cancel`, {
+  token: dual.token, body: { reason: 'передумал' } });
+check('свою запись мастер отменяет по правилам клиента → 422 срок',
+  r.status === 422 && r.body.error?.code === 'deadline_passed',
+  `${r.status} ${JSON.stringify(r.body).slice(0, 140)}`);
+
+// Тот же человек в чужой записи своего расписания остаётся мастером:
+// срок на него не действует, но нужна причина.
+r = await call('GET', `/api/appointments/${ownSoon}`, { token: dual.token });
+check('в своей записи видны правила клиента', r.body.appointment?.can_cancel !== undefined,
+  JSON.stringify(r.body.appointment).slice(0, 160));
+
+// Мастер этого расписания отменяет ту же запись без оглядки на срок.
+r = await call('POST', `/api/appointments/${ownSoon}/cancel`, {
+  token: colleague.token, body: { reason: 'мастер заболел' } });
+check('мастер расписания отменяет без срока', r.status === 200, `${r.status} ${JSON.stringify(r.body).slice(0, 120)}`);
+
+await call('PATCH', '/api/admin/settings', {
+  token: AT, body: { settings: { cancel_deadline_hours: Number(deadlineBefore) } } });
+check('срок отмены возвращён', (await call('GET', '/api/admin/settings', { token: AT }))
+  .body.settings.find((item) => item.key === 'cancel_deadline_hours').value === deadlineBefore);
+
+// уборка
+db.prepare('DELETE FROM appointment_services WHERE appointment_id IN (?, ?)').run(visitAtColleague, ownSoon);
+db.prepare('DELETE FROM audit_log WHERE entity_type = ? AND entity_id IN (?, ?)')
+  .run('appointment', visitAtColleague, ownSoon);
+db.prepare('DELETE FROM notifications WHERE appointment_id IN (?, ?)').run(visitAtColleague, ownSoon);
+db.prepare('DELETE FROM appointments WHERE id IN (?, ?)').run(visitAtColleague, ownSoon);
+await call('PATCH', '/api/admin/users/2', { token: AT, body: { roles: ['master'] } });
+
+// =====================================================================
 console.log('\n4. Три проверки на каждом эндпоинте');
 
 const routes = buildRouter().list();

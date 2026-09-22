@@ -81,6 +81,35 @@ export function findAccessible(appointmentId, user) {
   throw notFound('Запись не найдена');
 }
 
+/**
+ * Карточка мастера, привязанная к аккаунту. null — привязки нет.
+ *
+ * Роль `master` и карточка мастера — разные вещи: роль выдаёт администратор
+ * на экране A10, карточку заводит там же, но отдельно. Действия над чужим
+ * расписанием требуют именно карточки.
+ */
+function masterCardOf(userId) {
+  return getDb().prepare('SELECT id FROM masters WHERE user_id = ?').get(userId) ?? null;
+}
+
+/**
+ * Мастер ли этой записи тот, кто действует.
+ *
+ * Нужна там, где доступ к записи и право действовать над ней решаются
+ * по-разному. Доступ складывается по всем ролям (findAccessible), а роль
+ * действия выбирается одна, самая сильная (pickPolicy) — и на пересечении
+ * этих двух правил возникает дыра: мастер, записавшийся к коллеге,
+ * получает доступ к записи **как клиент**, а действует над ней **как
+ * мастер**, хотя услугу оказывал другой человек.
+ *
+ * Поэтому роль, от которой идёт действие, должна быть связана с самим
+ * объектом: мастер распоряжается записями своего расписания, и только ими.
+ */
+function isMasterOfAppointment(actor, appointment) {
+  const card = masterCardOf(actor.id);
+  return card !== null && card.id === appointment.master_id;
+}
+
 /** Записи клиента. scope=upcoming — предстоящие, past — история, включая отменённые. */
 export function listForClient(clientId, { scope = 'all', limit = 100 } = {}) {
   const moment = now();
@@ -493,7 +522,20 @@ const CHANGE_POLICY = {
  * проверяется уже не «видно ли», а «можно ли менять».
  */
 function authorizeChange({ appointment, actor, reason, settings, action }) {
-  const picked = pickPolicy(actor, CHANGE_POLICY);
+  // Над записью, где человек сам клиент, действуют правила клиента —
+  // независимо от того, какие ещё роли у него есть.
+  //
+  // Выбор «самой сильной роли» здесь давал бы мастеру, записавшемуся
+  // к коллеге, отмену собственного визита за час до начала: студия
+  // теряет слот, ради сохранения которого срок и введён. А клиент —
+  // он и есть клиент, кем бы ни работал.
+  //
+  // То же правило применяет и показ записи (present в
+  // appointments.routes.js), поэтому кнопки на экране и ответ сервера
+  // не расходятся.
+  const picked = appointment.client_id === actor.id
+    ? { role: 'user', policy: CHANGE_POLICY.user }
+    : pickPolicy(actor, CHANGE_POLICY);
   if (!picked) throw forbidden('Эта роль не может менять записи');
   const policy = picked.policy;
 
@@ -655,6 +697,17 @@ export function setStatus({ appointment, actor, status, note }) {
   const picked = pickPolicy(actor, STATUS_POLICY);
   if (!picked) throw forbidden('Исход визита отмечает мастер или администратор');
   const policy = picked.policy;
+
+  // Мастер отмечает исход только по своему расписанию. Доступ к записи
+  // у него мог появиться и по другой роли — например, он сам клиент
+  // этого визита у коллеги, — но исход чужой работы отмечает тот,
+  // кто её выполнял, или администратор.
+  //
+  // 404, а не 403: по разнице ответов чужие записи можно было бы
+  // пересчитать перебором — та же причина, что и в findAccessible.
+  if (picked.role === 'master' && !isMasterOfAppointment(actor, appointment)) {
+    throw notFound('Запись не найдена');
+  }
 
   if (appointment.status === 'cancelled') {
     throw conflict('appointment_cancelled', 'Запись отменена — исход визита у неё не отмечают');
