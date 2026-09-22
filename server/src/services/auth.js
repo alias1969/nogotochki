@@ -145,7 +145,14 @@ export function register({ email, password, fullName, phone, userAgent }) {
  */
 export function login({ email, password, userAgent }) {
   const user = findByEmail(email);
-  const ok = user !== null && user.is_active === 1 && verifyPassword(password, user.password_hash);
+  const ok =
+    user !== null &&
+    user.is_active === 1 &&
+    // Аккаунт без единой роли — не клиент, а человек, которому недоступны
+    // даже собственные записи. Выдавать ему рабочий токен незачем:
+    // он получил бы отказ на первом же запросе.
+    user.roles.length > 0 &&
+    verifyPassword(password, user.password_hash);
   if (!ok) throw unauthorized('Неверный e-mail или пароль');
 
   delete user.password_hash;
@@ -182,6 +189,19 @@ export function authenticate(token) {
 
   const user = findUserById(session.user_id);
   if (!user || user.is_active !== 1) return null;
+
+  // Пустой список ролей не пускает.
+  //
+  // Сам по себе он прав не даёт — без ролей не проходит ни одна проверка
+  // роли, — но сессия при этом выглядит живой: человек попадает туда,
+  // где нужен только вход (свой профиль, свои уведомления). Снимок ролей
+  // такую сессию не ловит: пустая строка совпадает с пустой строкой.
+  //
+  // Через API аккаунт без ролей не создаётся — регистрация выдаёт `user`,
+  // правка ролей отклоняет пустой список, — но схема пустоту допускает
+  // (раздел 4.21: правило потребовало бы триггера на каждое удаление),
+  // поэтому рубеж стоит здесь.
+  if (user.roles.length === 0) return null;
 
   // Список ролей изменился после входа — сессия закрывается, нужен
   // повторный вход. Сравниваются оба списка целиком: и выданная роль,

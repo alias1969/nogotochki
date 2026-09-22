@@ -286,6 +286,39 @@ db.prepare('DELETE FROM appointments WHERE id IN (?, ?)').run(visitAtColleague, 
 await call('PATCH', '/api/admin/users/2', { token: AT, body: { roles: ['master'] } });
 
 // =====================================================================
+console.log('\n3b. Аккаунт без единой роли');
+
+// Через API такое состояние не создаётся: регистрация выдаёт `user`,
+// правка ролей отклоняет пустой список. Но схема пустоту допускает,
+// поэтому рубеж должен стоять в коде — иначе сессия выглядит живой,
+// и человек попадает туда, где нужен только вход.
+const roleless = await newClient('roleless');
+check('живая сессия до снятия ролей',
+  (await call('GET', '/api/auth/me', { token: roleless.token })).status === 200);
+
+db.prepare('DELETE FROM user_roles WHERE user_id = ?').run(roleless.id);
+check('ролей в базе не осталось',
+  db.prepare('SELECT COUNT(*) c FROM user_roles WHERE user_id = ?').get(roleless.id).c === 0);
+
+r = await call('GET', '/api/auth/me', { token: roleless.token });
+check('прежний токен перестаёт работать → 401', r.status === 401, r.status);
+r = await call('GET', '/api/notifications', { token: roleless.token });
+check('и на эндпоинт, где нужен только вход, тоже → 401', r.status === 401, r.status);
+
+// Повторный вход не выдаёт рабочий токен: отказ тот же, что при неверном
+// пароле, — причина отказа наружу не уточняется.
+const again = await call('POST', '/api/auth/login', {
+  body: { email: roleless.email, password: PASSWORD } });
+check('войти в такой аккаунт нельзя → 401', again.status === 401, again.status);
+check('и ответ не выдаёт причину',
+  again.body.error?.message === 'Неверный e-mail или пароль', again.body.error?.message);
+
+// Роль вернули — аккаунт снова рабочий.
+db.prepare("INSERT INTO user_roles(user_id, role) VALUES (?, 'user')").run(roleless.id);
+r = await call('POST', '/api/auth/login', { body: { email: roleless.email, password: PASSWORD } });
+check('с возвращённой ролью вход работает', r.status === 200, r.status);
+
+// =====================================================================
 console.log('\n4. Три проверки на каждом эндпоинте');
 
 const routes = buildRouter().list();
