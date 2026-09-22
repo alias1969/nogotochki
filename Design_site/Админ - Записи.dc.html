@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+@keyframes ng-toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="7">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-theme="{{ themeAttr }}" style="position:relative;width:100%;min-width:1280px;background:var(--bg-page);color:var(--text-primary);display:flex">
+
+    <aside data-screen-label="Меню админки" style="flex:none;width:236px;min-height:960px;border-right:1px solid var(--border-default);background:var(--bg-subtle);display:flex;flex-direction:column">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:10px">
+        <svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+          <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <circle cx="50" cy="52" r="34"></circle>
+            <path d="M40 70 C38 56 40 44 43 36"></path>
+            <path d="M50 71 C50 56 53 44 56 37"></path>
+            <path d="M59 71 C60 58 63 49 66 43"></path>
+            <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+            <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+          </g>
+        </svg>
+        <span style="display:grid">
+          <span style="font-family:var(--font-script);font-size:19px;line-height:1.1">Ноготочки</span>
+          <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">админ-панель</span>
+        </span>
+      </div>
+      <nav style="padding:12px 10px;display:grid;gap:2px">
+        <sc-for list="{{ menu }}" as="m" hint-placeholder-count="10">
+          <a href="{{ m.href }}" style="{{ m.style }}">
+            <span style="flex:none;display:inline-flex;color:{{ m.iconColor }}">{{ m.icon }}</span>
+            <span style="flex:1;min-width:0">{{ m.name }}</span>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto;padding:14px 16px;border-top:1px solid var(--border-default)">
+        <a href="Вход администратора.dc.html" style="display:flex;align-items:center;gap:9px;min-height:40px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+          Выйти
+        </a>
+      </div>
+    </aside>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <header data-screen-label="Верхняя строка" style="position:sticky;top:0;z-index:20;border-bottom:1px solid var(--border-default);background:var(--bg-page)">
+        <div style="padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+          <span style="display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:0 13px;border:1px solid var(--border-default);border-radius:8px;background:var(--bg-surface);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">
+            <span style="color:var(--accent-brand);display:inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg></span>
+            Пятница, 18 сентября 2026
+          </span>
+          <div style="display:flex;align-items:center;gap:10px;flex:none">
+            <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12.5px;font-weight:600;cursor:pointer">
+              <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+              {{ themeLabel }}
+            </button>
+            <span style="display:inline-flex;align-items:center;gap:9px;padding-left:6px;border-left:1px solid var(--border-default)">
+              <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12.5px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ОР</span>
+              <span style="display:grid">
+                <b style="font-size:13px;font-weight:600">Ольга Р.</b>
+                <span style="font-size:11px;color:var(--text-secondary)">администратор</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main data-screen-label="Записи" style="flex:1;padding:28px">
+        <div style="display:grid;gap:20px">
+
+          <div style="display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap">
+            <div style="min-width:0">
+              <h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:40px;line-height:1.08;letter-spacing:-.01em">Записи</h1>
+              <p style="margin:8px 0 0;font-size:14px;color:var(--text-secondary)">Все визиты студии — прошедшие и предстоящие</p>
+            </div>
+            <button type="button" onClick="{{ openCreate }}" style="flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:14.5px;font-weight:600;cursor:pointer">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Создать запись
+            </button>
+          </div>
+
+          <div style="padding:18px 20px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle);display:grid;gap:14px">
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.2fr);gap:12px;align-items:end">
+              <sc-for list="{{ selects }}" as="f" hint-placeholder-count="4">
+                <label style="display:grid;gap:6px;min-width:0">
+                  <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">{{ f.label }}</span>
+                  <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="width:100%;min-height:40px;padding:8px 12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+                    <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="4">
+                      <option value="{{ o }}">{{ o }}</option>
+                    </sc-for>
+                  </select>
+                </label>
+              </sc-for>
+              <label style="display:grid;gap:6px;min-width:0">
+                <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">клиент</span>
+                <span style="position:relative;display:block">
+                  <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-secondary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></span>
+                  <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Имя или телефон" style="width:100%;min-height:40px;padding:9px 12px 9px 34px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+                </span>
+              </label>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <span style="font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">{{ foundLine }}</span>
+              <button type="button" onClick="{{ resetFilters }}" style="min-height:36px;padding:0 14px;border-radius:var(--r-pill);border:1px solid var(--border-strong);background:transparent;color:var(--text-secondary);font-size:12.5px;font-weight:600;cursor:pointer">Сбросить фильтры</button>
+            </div>
+          </div>
+
+          <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:34px 24px;border:1px solid var(--error-border);border-radius:var(--r-card);background:var(--error-bg);text-align:center">
+              <span style="display:inline-flex;color:var(--error-text)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg></span>
+              <p style="margin:12px 0 4px;font-family:var(--font-display);font-weight:500;font-size:26px;color:var(--error-text)">Не удалось загрузить записи</p>
+              <p style="margin:0 0 18px;font-size:14px;color:var(--error-text)">Проверьте соединение и попробуйте снова</p>
+              <button type="button" onClick="{{ retry }}" style="min-height:44px;padding:0 22px;border-radius:var(--r-button);border:1px solid var(--error-border);background:var(--bg-surface);color:var(--error-text);font-size:14.5px;font-weight:600;cursor:pointer">Повторить</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);padding:20px;display:grid;gap:10px">
+              <sc-for list="{{ skelRows }}" as="r" hint-placeholder-count="8">
+                <i style="height:46px;border-radius:10px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:52px 24px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);text-align:center">
+              <svg width="76" height="76" viewBox="0 0 100 100" fill="none" stroke="var(--accent-brand)" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 14px;display:block">
+                <circle cx="44" cy="44" r="22"></circle>
+                <path d="M60 60l18 18"></path>
+                <path d="M34 44h20" stroke-dasharray="3 6"></path>
+              </svg>
+              <p style="margin:0 0 8px;font-family:var(--font-display);font-weight:500;font-size:28px">По этим фильтрам записей нет</p>
+              <p style="margin:0 auto 22px;max-width:44ch;font-size:14.5px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">Попробуйте расширить период, снять фильтр по мастеру или очистить поиск.</p>
+              <button type="button" onClick="{{ resetFilters }}" style="min-height:44px;padding:0 22px;border-radius:var(--r-button);border:1px solid var(--accent-brand);background:transparent;color:var(--text-primary);font-size:14.5px;font-weight:600;cursor:pointer">Сбросить фильтры</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showTable }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                <div style="display:grid;grid-template-columns:104px 158px 112px minmax(0,1fr) 76px 88px 116px 64px 122px;gap:0;background:var(--bg-subtle);border-bottom:1px solid var(--border-default)">
+                  <sc-for list="{{ columns }}" as="c" hint-placeholder-count="9">
+                    <button type="button" onClick="{{ c.onClick }}" style="{{ c.style }}">
+                      {{ c.label }}
+                      <span style="flex:none;display:inline-flex;opacity:{{ c.arrowOpacity }}">{{ c.arrow }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+                  <div style="{{ r.rowStyle }}">
+                    <span style="padding:12px 14px;display:grid;gap:2px;align-content:center">
+                      <b style="font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">{{ r.date }}</b>
+                      <span style="font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ r.time }}</span>
+                    </span>
+                    <span style="padding:12px 14px;display:grid;gap:2px;align-content:center;min-width:0">
+                      <a href="#zapis" style="font-size:13.5px;font-weight:600;color:var(--text-link)">{{ r.client }}</a>
+                      <a href="tel:{{ r.phoneHref }}" style="font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ r.phone }}</a>
+                    </span>
+                    <span style="padding:12px 14px;display:flex;align-items:center;font-size:13px;min-width:0">{{ r.master }}</span>
+                    <span style="padding:12px 14px;display:flex;align-items:center;font-size:13px;line-height:1.45;color:var(--text-secondary);min-width:0;text-wrap:pretty">{{ r.services }}</span>
+                    <span style="padding:12px 14px;display:flex;align-items:center;font-size:13px;font-variant-numeric:tabular-nums">{{ r.dur }}</span>
+                    <span style="padding:12px 14px;display:flex;align-items:center;font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">{{ r.sum }}</span>
+                    <span style="padding:12px 14px;display:flex;align-items:center">
+                      <span style="{{ r.statusStyle }}">{{ r.status }}</span>
+                    </span>
+                    <span style="padding:12px 14px;display:flex;align-items:center;font-size:13px;font-variant-numeric:tabular-nums;color:var(--text-secondary)">{{ r.moves }}</span>
+                    <span style="padding:10px 10px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+                      <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
+                        <button type="button" onClick="{{ a.onClick }}" title="{{ a.title }}" aria-label="{{ a.title }}" style="{{ a.style }}">{{ a.icon }}</button>
+                      </sc-for>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+                <span style="font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ pageInfo }}</span>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button type="button" onClick="{{ prevPage }}" disabled="{{ prevOff }}" style="{{ prevStyle }}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+                  </button>
+                  <sc-for list="{{ pages }}" as="p" hint-placeholder-count="7">
+                    <button type="button" onClick="{{ p.onClick }}" disabled="{{ p.disabled }}" style="{{ p.style }}">{{ p.label }}</button>
+                  </sc-for>
+                  <button type="button" onClick="{{ nextPage }}" disabled="{{ nextOff }}" style="{{ nextStyle }}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </main>
+    </div>
+
+    <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:28px;bottom:28px;z-index:80;width:340px;animation:ng-toast .22s ease-out">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--bg-elevated);border:1px solid var(--success-border);box-shadow:var(--shadow-modal)">
+          <span style="flex:none;color:var(--success-text);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+          <div style="flex:1;min-width:0">
+            <b style="display:block;font-size:14px;font-weight:600">{{ toastTitle }}</b>
+            <span style="font-size:13px;line-height:1.5;color:var(--text-secondary)">{{ toastText }}</span>
+          </div>
+          <button type="button" onClick="{{ closeToast }}" aria-label="Закрыть" style="flex:none;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:var(--text-secondary);cursor:pointer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ cancelOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="width:100%;max-width:470px;padding:28px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal)">
+          <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:28px;line-height:1.15">Отменить запись?</h2>
+          <p style="margin:10px 0 0;font-size:14.5px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ cancelSubject }} Время станет доступно другим клиентам.</p>
+          <label style="margin-top:18px;display:grid;gap:7px">
+            <span style="font-size:12.5px;font-weight:600">Причина отмены</span>
+            <select value="{{ cancelReason }}" onChange="{{ onCancelReason }}" style="width:100%;min-height:42px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.4 var(--font-ui)">
+              <option value="">Выберите причину</option>
+              <option value="client">Клиент попросил отменить</option>
+              <option value="master">Мастер не может принять</option>
+              <option value="noreach">Не дозвонились клиенту</option>
+              <option value="studio">Причина со стороны студии</option>
+            </select>
+            <sc-if value="{{ cancelReasonError }}" hint-placeholder-val="{{ false }}">
+              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                Укажите причину — она попадёт в журнал
+              </span>
+            </sc-if>
+          </label>
+          <label style="margin-top:14px;display:grid;gap:7px">
+            <span style="font-size:12.5px;font-weight:600">Комментарий <span style="font-weight:400;color:var(--text-secondary)">необязательно</span></span>
+            <textarea rows="2" value="{{ cancelComment }}" onChange="{{ onCancelComment }}" placeholder="Что сказать клиенту" style="width:100%;min-height:72px;padding:11px 13px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.5 var(--font-ui);resize:vertical"></textarea>
+          </label>
+          <div style="margin-top:22px;display:flex;gap:10px">
+            <button type="button" onClick="{{ confirmCancel }}" style="flex:1;min-height:48px;border-radius:var(--r-button);border:1px solid var(--error-border);background:var(--error-bg);color:var(--error-text);font-size:15px;font-weight:600;cursor:pointer">Отменить запись</button>
+            <button type="button" onClick="{{ closeCancel }}" style="flex:1;min-height:48px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Оставить</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ createOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:flex-start;justify-content:center;padding:32px 24px;overflow-y:auto">
+        <div style="width:100%;max-width:680px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal);overflow:hidden">
+          <div style="padding:20px 26px;border-bottom:1px solid var(--border-default);background:var(--bg-subtle);display:flex;align-items:center;justify-content:space-between;gap:16px">
+            <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:28px;line-height:1.15">Создать запись</h2>
+            <button type="button" onClick="{{ closeCreate }}" aria-label="Закрыть" style="flex:none;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-secondary);cursor:pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+            </button>
+          </div>
+
+          <div style="padding:24px 26px;display:grid;gap:20px">
+
+            <sc-if value="{{ showValidation }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border-radius:10px;background:var(--error-bg);border:1px solid var(--error-border)">
+                <span style="flex:none;color:var(--error-text);margin-top:1px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg></span>
+                <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--error-text)">Проверьте поля: {{ validationList }}</p>
+              </div>
+            </sc-if>
+
+            <div style="display:grid;gap:12px">
+              <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">клиент</span>
+              <div style="display:flex;gap:6px;padding:4px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:var(--bg-subtle);width:max-content">
+                <button type="button" onClick="{{ pickExisting }}" style="{{ existingTabStyle }}">Из базы</button>
+                <button type="button" onClick="{{ pickNew }}" style="{{ newTabStyle }}">Новый клиент</button>
+              </div>
+
+              <sc-if value="{{ isExistingClient }}" hint-placeholder-val="{{ true }}">
+                <div style="display:grid;gap:8px">
+                  <span style="position:relative;display:block">
+                    <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-secondary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></span>
+                    <input type="search" value="{{ clientQuery }}" onChange="{{ onClientQuery }}" placeholder="Начните вводить имя или телефон" style="{{ clientSearchStyle }}">
+                  </span>
+                  <sc-if value="{{ showSuggestions }}" hint-placeholder-val="{{ false }}">
+                    <div style="border:1px solid var(--border-default);border-radius:10px;background:var(--bg-surface);overflow:hidden">
+                      <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="3">
+                        <button type="button" onClick="{{ s.onClick }}" style="{{ s.style }}">
+                          <span style="flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">{{ s.initials }}</span>
+                          <span style="flex:1;min-width:0;display:grid;gap:2px;text-align:left">
+                            <b style="font-size:13.5px;font-weight:600">{{ s.name }}</b>
+                            <span style="font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ s.phone }} · визитов: {{ s.visits }}</span>
+                          </span>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ clientPicked }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:var(--r-pill);background:var(--slot-selected-bg);border:1px solid var(--accent-brand);color:var(--slot-selected-text);font-size:13px;font-weight:600;width:max-content">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+                      {{ clientPickedLabel }}
+                    </span>
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isNewClient }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+                  <label style="display:grid;gap:6px">
+                    <span style="font-size:12.5px;font-weight:600">Имя</span>
+                    <input type="text" value="{{ newName }}" onChange="{{ onNewName }}" placeholder="Мария" style="{{ newNameStyle }}">
+                  </label>
+                  <label style="display:grid;gap:6px">
+                    <span style="font-size:12.5px;font-weight:600">Телефон</span>
+                    <input type="tel" value="{{ newPhone }}" onChange="{{ onNewPhone }}" placeholder="+7 999 000-00-00" style="{{ newPhoneStyle }}">
+                    <sc-if value="{{ phoneError }}" hint-placeholder-val="{{ false }}">
+                      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                        Проверьте номер: не хватает цифр
+                      </span>
+                    </sc-if>
+                  </label>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="display:grid;gap:10px">
+              <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">услуги</span>
+              <div style="display:grid;gap:8px">
+                <sc-for list="{{ serviceOpts }}" as="s" hint-placeholder-count="6">
+                  <label style="{{ s.rowStyle }}">
+                    <input type="checkbox" checked="{{ s.on }}" onChange="{{ s.toggle }}" style="width:18px;height:18px;flex:none;accent-color:var(--action-primary)">
+                    <span style="flex:1;min-width:0;font-size:13.5px">{{ s.name }}</span>
+                    <span style="flex:none;font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ s.dur }}</span>
+                    <span style="flex:none;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">{{ s.price }}</span>
+                  </label>
+                </sc-for>
+              </div>
+              <div style="{{ totalsStyle }}">
+                <span style="font-size:13px;color:var(--text-secondary)">Итого по выбранным услугам</span>
+                <b style="font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ createTotals }}</b>
+              </div>
+              <sc-if value="{{ servicesError }}" hint-placeholder-val="{{ false }}">
+                <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                  Выберите хотя бы одну услугу
+                </span>
+              </sc-if>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">Мастер</span>
+                <select value="{{ createMaster }}" onChange="{{ onCreateMaster }}" style="{{ masterSelectStyle }}">
+                  <option value="">Выберите мастера</option>
+                  <option value="any">Любой свободный</option>
+                  <option value="anna">Анна Ковалёва</option>
+                  <option value="maria">Мария Лис</option>
+                  <option value="darya">Дарья Смирнова</option>
+                  <option value="irina">Ирина Гай</option>
+                </select>
+              </label>
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">Дата</span>
+                <input type="date" value="{{ createDate }}" onChange="{{ onCreateDate }}" style="{{ dateStyle }}">
+              </label>
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">Время</span>
+                <input type="time" value="{{ createTime }}" onChange="{{ onCreateTime }}" style="{{ timeStyle }}">
+                <sc-if value="{{ timeHint }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ timeHintText }}</span>
+                </sc-if>
+              </label>
+            </div>
+
+            <label style="display:grid;gap:6px">
+              <span style="font-size:12.5px;font-weight:600">Комментарий <span style="font-weight:400;color:var(--text-secondary)">необязательно</span></span>
+              <textarea rows="2" value="{{ createComment }}" onChange="{{ onCreateComment }}" placeholder="Например: клиент придёт с подругой, попросил тихую музыку" style="width:100%;min-height:72px;padding:11px 13px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.5 var(--font-ui);resize:vertical"></textarea>
+            </label>
+
+            <div style="{{ overlapRowStyle }}">
+              <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+                <input type="checkbox" checked="{{ allowOverlap }}" onChange="{{ toggleOverlap }}" style="width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--action-primary)">
+                <span style="display:grid;gap:3px">
+                  <b style="font-size:13.5px;font-weight:600">Разрешить наложение</b>
+                  <span style="font-size:12.5px;line-height:1.5;color:var(--text-secondary)">Запись встанет поверх занятого времени мастера</span>
+                </span>
+              </label>
+              <sc-if value="{{ allowOverlap }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--warning-bg);border:1px solid var(--warning-border)">
+                  <span style="flex:none;color:var(--warning-text);margin-top:1px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"></path><path d="M12 9v4M12 16.5h.01"></path></svg></span>
+                  <p style="margin:0;font-size:13px;line-height:1.5;color:var(--warning-text)">Мастер уже занят в это время. Клиенты могут ждать — предупредите оба визита вручную</p>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="padding:18px 26px;border-top:1px solid var(--border-default);background:var(--bg-subtle);display:flex;gap:10px;justify-content:flex-end">
+            <button type="button" onClick="{{ closeCreate }}" style="min-height:48px;padding:0 22px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Отмена</button>
+            <button type="button" onClick="{{ submitCreate }}" style="min-height:48px;padding:0 26px;border:0;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:15px;font-weight:600;cursor:pointer">Создать запись</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:1000},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;table&quot;,&quot;empty&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;create&quot;,&quot;createErrors&quot;,&quot;cancel&quot;,&quot;toast&quot;],&quot;default&quot;:&quot;table&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:16,height:16,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const MENU = [
+  { name:'Сегодня', icon:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'], href:'Админ - Сегодня.dc.html' },
+  { name:'Расписание', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'] },
+  { name:'Записи', icon:['M5 3.5h10l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z','M8 12h8M8 16h5'], on:true },
+  { name:'Услуги', icon:['M4 7h16M4 12h16M4 17h10'], href:'Админ - Услуги.dc.html' },
+  { name:'Мастера', icon:['M9 11.5a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z','M2.6 19.5a6.6 6.6 0 0 1 12.8 0','M16.5 5.2a3.4 3.4 0 0 1 0 6.6M19 19.2a5.8 5.8 0 0 0-2.2-4'], href:'Админ - Мастера.dc.html' },
+  { name:'Графики', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z','M8.5 14h3'], href:'Админ - Графики.dc.html' },
+  { name:'Клиенты', icon:['M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z','M4.8 20.2a7.4 7.4 0 0 1 14.4 0'], href:'Админ - Клиенты.dc.html' },
+  { name:'Роли', icon:['M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z','M9.5 12l1.8 1.8L15 10'], href:'Админ - Роли и доступы.dc.html' },
+  { name:'Настройки', icon:['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z','M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4'], href:'Админ - Настройки.dc.html' }
+];
+
+const SERVICES = [
+  { id:'man-cover', name:'Маникюр с покрытием', min:90, price:2500 },
+  { id:'man-classic', name:'Классический маникюр', min:60, price:1600 },
+  { id:'ped-cover', name:'Педикюр с покрытием', min:105, price:3200 },
+  { id:'remove', name:'Снятие покрытия', min:30, price:500 },
+  { id:'design', name:'Дизайн за ноготь', min:10, price:150 },
+  { id:'gel', name:'Укрепление гелем', min:40, price:900 }
+];
+
+const ROWS = [
+  { d:'18.09.2026', t:'11:30–13:00', client:'Елена Петрова', phone:'+7 999 123-45-67', master:'Анна Ковалёва', services:'Маникюр с покрытием', min:90, sum:2500, status:'upcoming', moves:1 },
+  { d:'18.09.2026', t:'12:00–13:00', client:'Ольга Кузьмина', phone:'+7 916 204-11-08', master:'Дарья Смирнова', services:'Классический маникюр', min:60, sum:1600, status:'confirmed', moves:0 },
+  { d:'18.09.2026', t:'15:00–15:40', client:'Вера Морозова', phone:'+7 903 771-62-30', master:'Мария Лис', services:'Укрепление гелем', min:40, sum:900, status:'pending', moves:2 },
+  { d:'18.09.2026', t:'17:30–19:40', client:'Ирина Лебедева', phone:'+7 925 640-19-77', master:'Анна Ковалёва', services:'Маникюр с покрытием · Снятие · Дизайн', min:130, sum:3150, status:'upcoming', moves:0 },
+  { d:'17.09.2026', t:'10:30–12:15', client:'Наталья Соколова', phone:'+7 910 335-80-12', master:'Дарья Смирнова', services:'Педикюр с покрытием', min:105, sum:3200, status:'done', moves:0 },
+  { d:'17.09.2026', t:'14:00–14:30', client:'Мария Гусева', phone:'+7 926 118-44-59', master:'Ирина Гай', services:'Снятие покрытия', min:30, sum:500, status:'noshow', moves:1 },
+  { d:'16.09.2026', t:'18:00–19:30', client:'Анна Дьякова', phone:'+7 985 442-77-01', master:'Мария Лис', services:'Маникюр с покрытием', min:90, sum:2500, status:'cancelled', moves:0 },
+  { d:'16.09.2026', t:'12:30–14:10', client:'Светлана Юрьева', phone:'+7 909 810-23-46', master:'Анна Ковалёва', services:'Маникюр с покрытием · Дизайн', min:100, sum:2950, status:'done', moves:3 }
+];
+
+const STATUS = {
+  upcoming:  { label:'Предстоит', tone:'upcoming' },
+  confirmed: { label:'Подтверждена', tone:'success' },
+  pending:   { label:'Ждёт подтверждения', tone:'warning' },
+  done:      { label:'Завершена', tone:'success' },
+  noshow:    { label:'Не пришёл', tone:'warning' },
+  cancelled: { label:'Отменена', tone:'error' }
+};
+
+const CLIENTS = [
+  { initials:'ЕП', name:'Елена Петрова', phone:'+7 999 123-45-67', visits:14 },
+  { initials:'ОК', name:'Ольга Кузьмина', phone:'+7 916 204-11-08', visits:6 },
+  { initials:'ВМ', name:'Вера Морозова', phone:'+7 903 771-62-30', visits:9 }
+];
+
+const rub = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+const dur = (m) => { const h = Math.floor(m/60), mm = m%60; return (h && mm) ? h + ' ч ' + mm + ' мин' : (h ? h + ' ч' : mm + ' мин'); };
+
+class Component extends DCLogic {
+  state = {
+    theme: null, st: null, query: '', period: 'Эта неделя', master: 'Все мастера', status: 'Все статусы', service: 'Все услуги',
+    sort: 'date', dir: 'desc', page: 1,
+    create: null, cancel: null, toast: null,
+    clientMode: 'existing', clientQuery: '', clientPicked: null, newName: '', newPhone: '',
+    sel: { 'man-cover': true }, createMaster: '', createDate: '2026-09-22', createTime: '', createComment: '', overlap: false, validated: false
+  };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'table'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const st = this.st();
+    const loading = st === 'loading';
+    const error = st === 'error';
+    const emptyFilter = st === 'empty';
+    const fromUrlCreate = this.state.create === null && new URLSearchParams(location.search).get('create') === '1';
+    const createOpen = this.state.create || fromUrlCreate || st === 'create' || st === 'createErrors';
+    const cancelOpen = !!this.state.cancel || st === 'cancel';
+    const toastState = st === 'toast';
+
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const tone = (t) => {
+      if (t === 'success') return 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)';
+      if (t === 'error') return 'background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text)';
+      if (t === 'warning') return 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)';
+      if (t === 'upcoming') return 'background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text)';
+      return 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)';
+    };
+
+    const iconBtn = (variant) => 'width:28px;height:28px;flex:none;display:grid;place-items:center;border-radius:7px;cursor:pointer;background:transparent;' +
+      (variant === 'danger' ? 'border:1px solid var(--error-border);color:var(--error-text)' : 'border:1px solid var(--border-default);color:var(--text-secondary)');
+
+    // сортировка
+    const dirMul = this.state.dir === 'asc' ? 1 : -1;
+    const sorted = ROWS.slice().sort((a, b) => {
+      const f = this.state.sort;
+      if (f === 'date') return dirMul * ((a.d + a.t) < (b.d + b.t) ? -1 : 1);
+      if (f === 'client') return dirMul * a.client.localeCompare(b.client);
+      if (f === 'master') return dirMul * a.master.localeCompare(b.master);
+      if (f === 'dur') return dirMul * (a.min - b.min);
+      if (f === 'sum') return dirMul * (a.sum - b.sum);
+      if (f === 'moves') return dirMul * (a.moves - b.moves);
+      if (f === 'status') return dirMul * STATUS[a.status].label.localeCompare(STATUS[b.status].label);
+      return 0;
+    });
+
+    const colDefs = [
+      ['date','Дата и время'], ['client','Клиент'], ['master','Мастер'], ['services','Услуги'],
+      ['dur','Длит.'], ['sum','Сумма'], ['status','Статус'], ['moves','Перен.'], [null,'Действия']
+    ];
+    const arrowUp = ICON(['m6 14 6-6 6 6'],{width:13,height:13,strokeWidth:2});
+    const arrowDown = ICON(['m6 10 6 6 6-6'],{width:13,height:13,strokeWidth:2});
+
+    const columns = colDefs.map(c => {
+      const active = c[0] && this.state.sort === c[0];
+      return {
+        label: c[1],
+        arrow: active ? (this.state.dir === 'asc' ? arrowUp : arrowDown) : arrowDown,
+        arrowOpacity: active ? '1' : (c[0] ? '.3' : '0'),
+        onClick: c[0] ? (() => this.setState(s => ({ sort: c[0], dir: s.sort === c[0] && s.dir === 'desc' ? 'asc' : 'desc', page: 1 }))) : (() => {}),
+        style: 'display:flex;align-items:center;gap:6px;padding:12px 14px;border:0;background:transparent;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;text-align:left;' +
+          (c[0] ? 'cursor:pointer;color:' + (active ? 'var(--text-primary)' : 'var(--text-secondary)') : 'cursor:default;color:var(--text-secondary)')
+      };
+    });
+
+    const rows = sorted.map((r, i) => {
+      const s = STATUS[r.status];
+      return {
+        date: r.d, time: r.t, client: r.client, phone: r.phone, phoneHref: r.phone.replace(/[^+\d]/g, ''),
+        master: r.master, services: r.services, dur: dur(r.min), sum: rub(r.sum),
+        status: s.label, moves: r.moves + ' / 3',
+        statusStyle: 'display:inline-flex;align-items:center;padding:5px 10px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;white-space:nowrap;' + tone(s.tone),
+        rowStyle: 'display:grid;grid-template-columns:104px 158px 112px minmax(0,1fr) 76px 88px 116px 64px 122px;align-items:stretch;border-bottom:1px solid var(--border-default);' +
+          (i % 2 === 1 ? 'background:var(--bg-page)' : ''),
+        actions: [
+          { title:'Открыть запись', icon: ICON(['M9 6l6 6-6 6']), style: iconBtn(), onClick: () => {} },
+          { title:'Отметить «Завершена»', icon: ICON(['m5 12.5 4.5 4.5L19 7.5']), style: iconBtn(), onClick: () => this.setState({ toast: 'done' }) },
+          { title:'Отметить «Не пришёл»', icon: ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 8v4.5M12 16h.01']), style: iconBtn(), onClick: () => this.setState({ toast: 'noshow' }) },
+          { title:'Перенести', icon: ICON(['M3.5 12a8.5 8.5 0 1 1 2.7 6.2','M3 19.5v-4h4']), style: iconBtn(), onClick: () => {} },
+          { title:'Отменить', icon: ICON(['m6 6 12 12M18 6 6 18']), style: iconBtn('danger'), onClick: () => this.setState({ cancel: r.client }) }
+        ]
+      };
+    });
+
+    const totalFound = emptyFilter ? 0 : 128;
+    const totalPages = 16;
+    const page = this.state.page;
+    const pageNums = [1, 2, 3, null, 15, 16];
+    const pages = pageNums.map((n, i) => n === null
+      ? { label:'…', disabled:true, onClick:()=>{}, style:'min-width:36px;height:36px;display:grid;place-items:center;border:0;background:transparent;color:var(--text-secondary);font-size:13px;cursor:default' }
+      : {
+        label: String(n), disabled: false,
+        onClick: () => this.setState({ page: n }),
+        style: 'min-width:36px;height:36px;display:grid;place-items:center;border-radius:8px;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;cursor:pointer;font-family:inherit;' +
+          (page === n ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+                      : 'border:1px solid var(--border-default);background:transparent;color:var(--text-primary)')
+      });
+
+    // создание записи
+    const selIds = Object.keys(this.state.sel).filter(k => this.state.sel[k]);
+    const chosen = SERVICES.filter(s => selIds.indexOf(s.id) >= 0);
+    const totalMin = chosen.reduce((a, s) => a + s.min, 0);
+    const totalSum = chosen.reduce((a, s) => a + s.price, 0);
+
+    const forceErrors = st === 'createErrors';
+    const showErrors = forceErrors || this.state.validated;
+    const newClient = this.state.clientMode === 'new' || forceErrors;
+    const phoneBad = showErrors && newClient && this.state.newPhone.replace(/\D/g, '').length < 11;
+    const nameBad = showErrors && newClient && this.state.newName.trim().length === 0;
+    const servicesBad = showErrors && chosen.length === 0;
+    const masterBad = showErrors && !this.state.createMaster;
+    const timeBad = showErrors && !this.state.createTime;
+
+    const inputBase = 'width:100%;min-height:42px;padding:10px 13px;border-radius:var(--r-input);color:var(--text-primary);font:400 14px/1.4 var(--font-ui);';
+    const normal = inputBase + 'border:1px solid var(--border-strong);background:var(--bg-surface)';
+    const bad = inputBase + 'border:1px solid var(--error);background:var(--error-bg)';
+
+    const errList = [];
+    if (nameBad) errList.push('имя клиента');
+    if (phoneBad) errList.push('телефон');
+    if (servicesBad) errList.push('услуги');
+    if (masterBad) errList.push('мастер');
+    if (timeBad) errList.push('время');
+
+    const suggestions = CLIENTS.filter(c => {
+      const q = this.state.clientQuery.trim().toLowerCase();
+      return q.length > 0 && (c.name.toLowerCase().indexOf(q) >= 0 || c.phone.replace(/\D/g,'').indexOf(q.replace(/\D/g,'')) >= 0);
+    }).map(c => ({
+      initials: c.initials, name: c.name, phone: c.phone, visits: String(c.visits),
+      onClick: () => this.setState({ clientPicked: c.name + ' · ' + c.phone, clientQuery: '' }),
+      style: 'width:100%;display:flex;gap:11px;align-items:center;padding:10px 13px;border:0;border-bottom:1px solid var(--border-default);background:transparent;cursor:pointer;color:var(--text-primary);font-family:inherit'
+    }));
+
+    const toastOn = (toastState && this.state.toast !== 'closed') || (this.state.toast && this.state.toast !== 'closed');
+    const toastKind = this.state.toast && this.state.toast !== 'closed' ? this.state.toast : 'created';
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      stateOpts: [['table','Таблица'],['empty','Пустой фильтр'],['loading','Загрузка'],['error','Ошибка'],['create','Создание записи'],['createErrors','Ошибки валидации'],['cancel','Отмена записи'],['toast','Тост']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], create: false, cancel: null, toast: null, validated: false, page: 1 }) })),
+
+      menu: MENU.map(m => ({
+        name: m.name, href: m.on ? 'Админ - Записи.dc.html' : (m.href || ('#' + m.name)),
+        icon: ICON(m.icon, { width: 17, height: 17 }),
+        iconColor: m.on ? 'var(--accent-brand)' : 'var(--text-secondary)',
+        style: 'display:flex;align-items:center;gap:11px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;' +
+          (m.on ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary);font-weight:600'
+                : 'border:1px solid transparent;color:var(--text-secondary)')
+      })),
+
+      selects: [
+        { label:'период', value:this.state.period, options:['Сегодня','Эта неделя','Этот месяц','3 месяца','За всё время'], onChange:(e)=>this.setState({period:e.target.value, page:1}) },
+        { label:'мастер', value:this.state.master, options:['Все мастера','Анна Ковалёва','Мария Лис','Дарья Смирнова','Ирина Гай'], onChange:(e)=>this.setState({master:e.target.value, page:1}) },
+        { label:'статус', value:this.state.status, options:['Все статусы','Предстоит','Подтверждена','Ждёт подтверждения','Завершена','Не пришёл','Отменена'], onChange:(e)=>this.setState({status:e.target.value, page:1}) },
+        { label:'услуга', value:this.state.service, options:['Все услуги','Маникюр с покрытием','Классический маникюр','Педикюр с покрытием','Снятие покрытия','Дизайн за ноготь','Укрепление гелем'], onChange:(e)=>this.setState({service:e.target.value, page:1}) }
+      ],
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      resetFilters: () => this.setState({ st: 'table', period:'За всё время', master:'Все мастера', status:'Все статусы', service:'Все услуги', query:'', page:1 }),
+      foundLine: emptyFilter ? 'Найдено 0 записей' : ('Найдено ' + totalFound + ' записей'),
+
+      isLoading: loading,
+      isError: error,
+      isEmpty: emptyFilter,
+      showTable: !loading && !error && !emptyFilter,
+      skelRows: [1,2,3,4,5,6,7,8],
+      retry: () => this.setState({ st: 'loading' }),
+
+      columns, rows,
+      pageInfo: 'Страница ' + page + ' из ' + totalPages + ' · показано 8 из ' + totalFound,
+      pages,
+      prevOff: page === 1,
+      nextOff: page === totalPages,
+      prevStyle: 'width:36px;height:36px;display:grid;place-items:center;border-radius:8px;background:transparent;font-family:inherit;' +
+        (page === 1 ? 'border:1px solid var(--border-default);color:var(--text-disabled);cursor:not-allowed' : 'border:1px solid var(--border-strong);color:var(--text-primary);cursor:pointer'),
+      nextStyle: 'width:36px;height:36px;display:grid;place-items:center;border-radius:8px;background:transparent;font-family:inherit;' +
+        (page === totalPages ? 'border:1px solid var(--border-default);color:var(--text-disabled);cursor:not-allowed' : 'border:1px solid var(--border-strong);color:var(--text-primary);cursor:pointer'),
+      prevPage: () => this.setState(s => ({ page: Math.max(1, s.page - 1) })),
+      nextPage: () => this.setState(s => ({ page: Math.min(totalPages, s.page + 1) })),
+
+      // тост
+      toastOn,
+      toastTitle: toastKind === 'done' ? 'Запись завершена' : (toastKind === 'noshow' ? 'Отмечено «Не пришёл»' : (toastKind === 'cancelled' ? 'Запись отменена' : 'Запись создана')),
+      toastText: toastKind === 'done' ? 'Визит закрыт, статус обновлён'
+        : (toastKind === 'noshow' ? 'Клиент получит уведомление в кабинет'
+        : (toastKind === 'cancelled' ? 'Время освободилось, причина записана в журнал' : '22 сентября, 14:30 — Анна Ковалёва')),
+      closeToast: () => this.setState({ toast: 'closed', st: st === 'toast' ? 'table' : st }),
+
+      // отмена
+      cancelOpen,
+      cancelSubject: this.state.cancel ? ('Запись «' + this.state.cancel + '» будет снята.') : 'Запись будет снята.',
+      cancelReason: this.state.cancelReason || '',
+      onCancelReason: (e) => this.setState({ cancelReason: e.target.value }),
+      cancelReasonError: !!this.state.cancelTried && !this.state.cancelReason,
+      cancelComment: this.state.cancelComment || '',
+      onCancelComment: (e) => this.setState({ cancelComment: e.target.value }),
+      confirmCancel: () => {
+        if (!this.state.cancelReason) { this.setState({ cancelTried: true }); return; }
+        this.setState({ cancel: null, st: 'table', cancelTried: false, cancelReason: '', toast: 'cancelled' });
+      },
+      closeCancel: () => this.setState({ cancel: null, st: st === 'cancel' ? 'table' : st, cancelTried: false }),
+
+      // создание
+      createOpen,
+      openCreate: () => this.setState({ create: true, validated: false }),
+      closeCreate: () => this.setState({ create: false, st: (st === 'create' || st === 'createErrors') ? 'table' : st, validated: false }),
+      showValidation: showErrors && errList.length > 0,
+      validationList: errList.join(', '),
+
+      isExistingClient: !newClient,
+      isNewClient: newClient,
+      pickExisting: () => this.setState({ clientMode: 'existing' }),
+      pickNew: () => this.setState({ clientMode: 'new' }),
+      existingTabStyle: 'min-height:38px;padding:0 16px;border-radius:var(--r-pill);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;' +
+        (!newClient ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary)' : 'background:transparent;border:0;color:var(--text-secondary)'),
+      newTabStyle: 'min-height:38px;padding:0 16px;border-radius:var(--r-pill);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;' +
+        (newClient ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary)' : 'background:transparent;border:0;color:var(--text-secondary)'),
+      clientQuery: this.state.clientQuery,
+      onClientQuery: (e) => this.setState({ clientQuery: e.target.value }),
+      clientSearchStyle: inputBase + 'padding-left:34px;border:1px solid var(--border-strong);background:var(--bg-surface)',
+      showSuggestions: suggestions.length > 0,
+      suggestions,
+      clientPicked: !!this.state.clientPicked,
+      clientPickedLabel: this.state.clientPicked || '',
+      newName: this.state.newName,
+      onNewName: (e) => this.setState({ newName: e.target.value }),
+      newNameStyle: nameBad ? bad : normal,
+      newPhone: this.state.newPhone,
+      onNewPhone: (e) => this.setState({ newPhone: e.target.value }),
+      newPhoneStyle: phoneBad ? bad : normal,
+      phoneError: phoneBad,
+
+      serviceOpts: SERVICES.map(s => ({
+        name: s.name, dur: dur(s.min), price: rub(s.price), on: !!this.state.sel[s.id],
+        toggle: () => this.setState(p => ({ sel: Object.assign({}, p.sel, { [s.id]: !p.sel[s.id] }) })),
+        rowStyle: 'display:flex;gap:12px;align-items:center;padding:10px 13px;border-radius:10px;cursor:pointer;' +
+          (this.state.sel[s.id] ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg)' : 'border:1px solid var(--border-default);background:var(--bg-surface)')
+      })),
+      totalsStyle: 'display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border-radius:10px;background:var(--bg-subtle);border:1px solid var(--border-hair)',
+      createTotals: chosen.length === 0 ? 'услуги не выбраны' : (dur(totalMin) + ' · ' + rub(totalSum)),
+      servicesError: servicesBad,
+
+      createMaster: this.state.createMaster,
+      onCreateMaster: (e) => this.setState({ createMaster: e.target.value }),
+      masterSelectStyle: masterBad ? bad : normal,
+      createDate: this.state.createDate,
+      onCreateDate: (e) => this.setState({ createDate: e.target.value }),
+      dateStyle: normal,
+      createTime: this.state.createTime,
+      onCreateTime: (e) => this.setState({ createTime: e.target.value }),
+      timeStyle: timeBad ? bad : normal,
+      timeHint: !!this.state.createTime && chosen.length > 0,
+      timeHintText: this.state.createTime ? ('Окончание примерно в ' + (() => {
+        const p = this.state.createTime.split(':');
+        const m = (+p[0]) * 60 + (+p[1]) + totalMin;
+        return String(Math.floor(m / 60) % 24).padStart(2,'0') + ':' + String(m % 60).padStart(2,'0');
+      })()) : '',
+      createComment: this.state.createComment,
+      onCreateComment: (e) => this.setState({ createComment: e.target.value }),
+
+      overlapRowStyle: 'display:grid;gap:12px;padding:14px 16px;border-radius:12px;border:1px solid var(--border-default);background:var(--bg-surface)',
+      allowOverlap: this.state.overlap,
+      toggleOverlap: (e) => this.setState({ overlap: e.target.checked }),
+      submitCreate: () => {
+        const ok = chosen.length > 0 && this.state.createMaster && this.state.createTime &&
+          (!newClient || (this.state.newName.trim() && this.state.newPhone.replace(/\D/g,'').length >= 11));
+        if (!ok) { this.setState({ validated: true }); return; }
+        this.setState({ create: false, st: 'table', validated: false, toast: 'created' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

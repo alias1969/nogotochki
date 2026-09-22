@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+@keyframes ng-toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="7">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-theme="{{ themeAttr }}" style="position:relative;width:100%;min-width:1280px;background:var(--bg-page);color:var(--text-primary);display:flex">
+
+    <aside data-screen-label="Меню админки" style="flex:none;width:236px;min-height:960px;border-right:1px solid var(--border-default);background:var(--bg-subtle);display:flex;flex-direction:column">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:10px">
+        <svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+          <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <circle cx="50" cy="52" r="34"></circle>
+            <path d="M40 70 C38 56 40 44 43 36"></path>
+            <path d="M50 71 C50 56 53 44 56 37"></path>
+            <path d="M59 71 C60 58 63 49 66 43"></path>
+            <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+            <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+          </g>
+        </svg>
+        <span style="display:grid">
+          <span style="font-family:var(--font-script);font-size:19px;line-height:1.1">Ноготочки</span>
+          <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">админ-панель</span>
+        </span>
+      </div>
+      <nav style="padding:12px 10px;display:grid;gap:2px">
+        <sc-for list="{{ menu }}" as="m" hint-placeholder-count="10">
+          <a href="{{ m.href }}" style="{{ m.style }}">
+            <span style="flex:none;display:inline-flex;color:{{ m.iconColor }}">{{ m.icon }}</span>
+            <span style="flex:1;min-width:0">{{ m.name }}</span>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto;padding:14px 16px;border-top:1px solid var(--border-default)">
+        <a href="Вход администратора.dc.html" style="display:flex;align-items:center;gap:9px;min-height:40px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+          Выйти
+        </a>
+      </div>
+    </aside>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <header data-screen-label="Верхняя строка" style="position:sticky;top:0;z-index:20;border-bottom:1px solid var(--border-default);background:var(--bg-page)">
+        <div style="padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+          <span style="display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:0 13px;border:1px solid var(--border-default);border-radius:8px;background:var(--bg-surface);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">
+            <span style="color:var(--accent-brand);display:inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg></span>
+            Пятница, 18 сентября 2026
+          </span>
+          <div style="display:flex;align-items:center;gap:10px;flex:none">
+            <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12.5px;font-weight:600;cursor:pointer">
+              <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+              {{ themeLabel }}
+            </button>
+            <span style="display:inline-flex;align-items:center;gap:9px;padding-left:6px;border-left:1px solid var(--border-default)">
+              <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12.5px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ОР</span>
+              <span style="display:grid">
+                <b style="font-size:13px;font-weight:600">Ольга Р.</b>
+                <span style="font-size:11px;color:var(--text-secondary)">администратор</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main data-screen-label="Услуги" style="flex:1;padding:28px;display:flex;gap:20px;align-items:flex-start">
+        <div style="flex:1;min-width:0;display:grid;gap:20px">
+
+          <div style="display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap">
+            <div style="min-width:0">
+              <h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:40px;line-height:1.08;letter-spacing:-.01em">Услуги</h1>
+              <p style="margin:8px 0 0;font-size:14px;color:var(--text-secondary)">{{ subline }}</p>
+            </div>
+            <div style="display:flex;gap:10px;flex:none">
+              <button type="button" onClick="{{ openCats }}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:1px solid var(--border-strong);border-radius:var(--r-button);background:transparent;color:var(--text-primary);font-size:14.5px;font-weight:600;cursor:pointer">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>
+                Категории
+              </button>
+              <button type="button" onClick="{{ openCreate }}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:14.5px;font-weight:600;cursor:pointer">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+                Добавить услугу
+              </button>
+            </div>
+          </div>
+
+          <div style="padding:16px 20px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle);display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+            <div style="display:grid;gap:8px;min-width:0">
+              <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">категория</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ catFilters }}" as="f" hint-placeholder-count="5">
+                  <button type="button" onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <label style="display:grid;gap:8px;flex:1;min-width:240px">
+              <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">поиск</span>
+              <span style="position:relative;display:block">
+                <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-secondary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></span>
+                <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Название услуги" style="width:100%;min-height:40px;padding:9px 12px 9px 34px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+              </span>
+            </label>
+          </div>
+
+          <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);padding:20px;display:grid;gap:10px">
+              <sc-for list="{{ skelRows }}" as="r" hint-placeholder-count="6">
+                <i style="height:46px;border-radius:10px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:52px 24px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);text-align:center">
+              <svg width="76" height="76" viewBox="0 0 100 100" fill="none" stroke="var(--accent-brand)" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 14px;display:block">
+                <rect x="18" y="22" width="64" height="60" rx="10"></rect>
+                <path d="M30 40h40M30 52h28M30 64h20" stroke-dasharray="3 6"></path>
+              </svg>
+              <p style="margin:0 0 8px;font-family:var(--font-display);font-weight:500;font-size:28px">{{ emptyTitle }}</p>
+              <p style="margin:0 auto 22px;max-width:44ch;font-size:14.5px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">{{ emptyText }}</p>
+              <button type="button" onClick="{{ emptyAction }}" style="min-height:44px;padding:0 22px;border-radius:var(--r-button);border:1px solid var(--accent-brand);background:transparent;color:var(--text-primary);font-size:14.5px;font-weight:600;cursor:pointer">{{ emptyActionLabel }}</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showTable }}" hint-placeholder-val="{{ true }}">
+            <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+              <div style="display:grid;grid-template-columns:52px minmax(0,1fr) 116px 92px 92px 176px 124px 148px;background:var(--bg-subtle);border-bottom:1px solid var(--border-default)">
+                <sc-for list="{{ columns }}" as="c" hint-placeholder-count="8">
+                  <span style="{{ c.style }}">{{ c.label }}</span>
+                </sc-for>
+              </div>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                <div style="{{ r.rowStyle }}">
+                  <span style="padding:10px 8px 10px 14px;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center">
+                    <button type="button" onClick="{{ r.moveUp }}" disabled="{{ r.upOff }}" aria-label="Выше в категории" style="{{ r.upStyle }}">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 6-6 6 6"></path></svg>
+                    </button>
+                    <button type="button" onClick="{{ r.moveDown }}" disabled="{{ r.downOff }}" aria-label="Ниже в категории" style="{{ r.downStyle }}">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 6 6 6-6"></path></svg>
+                    </button>
+                  </span>
+                  <span style="padding:12px 14px;display:grid;gap:3px;align-content:center;min-width:0">
+                    <button type="button" onClick="{{ r.edit }}" style="justify-self:start;padding:0;border:0;background:transparent;color:var(--text-link);font-size:14px;font-weight:600;text-align:left;cursor:pointer">{{ r.name }}</button>
+                    <span style="font-size:12px;line-height:1.45;color:var(--text-secondary);text-wrap:pretty">{{ r.desc }}</span>
+                  </span>
+                  <span style="padding:12px 14px;display:flex;align-items:center">
+                    <span style="padding:5px 11px;border-radius:var(--r-pill);border:1px solid var(--border-default);background:var(--bg-subtle);font-size:11.5px;font-weight:600;color:var(--text-secondary)">{{ r.cat }}</span>
+                  </span>
+                  <span style="padding:12px 14px;display:flex;align-items:center;font-size:13px;font-variant-numeric:tabular-nums">{{ r.dur }}</span>
+                  <span style="padding:12px 14px;display:flex;align-items:center;font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">{{ r.price }}</span>
+                  <span style="padding:12px 14px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+                    <sc-for list="{{ r.masters }}" as="m" hint-placeholder-count="2">
+                      <span style="padding:4px 9px;border-radius:var(--r-pill);border:1px solid var(--border-hair);background:var(--bg-subtle);font-size:11px;font-weight:600">{{ m }}</span>
+                    </sc-for>
+                  </span>
+                  <span style="padding:12px 14px;display:flex;align-items:center">
+                    <button type="button" onClick="{{ r.toggleVis }}" style="{{ r.visStyle }}">
+                      <span style="flex:none;display:inline-flex">{{ r.visIcon }}</span>
+                      {{ r.visLabel }}
+                    </button>
+                  </span>
+                  <span style="padding:10px 12px;display:flex;align-items:center;gap:5px">
+                    <button type="button" onClick="{{ r.edit }}" title="Редактировать" aria-label="Редактировать" style="{{ r.iconBtn }}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L20 8l-4-4L4 16v4Z"></path></svg>
+                    </button>
+                    <button type="button" onClick="{{ r.toggleVis }}" title="{{ r.hideTitle }}" aria-label="{{ r.hideTitle }}" style="{{ r.iconBtn }}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"></path><path d="M4 4l16 16"></path></svg>
+                    </button>
+                    <button type="button" onClick="{{ r.del }}" title="Удалить" aria-label="Удалить" style="{{ r.delBtn }}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg>
+                    </button>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+          <aside data-screen-label="Панель услуги" style="flex:none;width:396px;position:sticky;top:92px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-menu);overflow:hidden">
+            <div style="padding:18px 22px;border-bottom:1px solid var(--border-default);background:var(--bg-subtle);display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+              <div style="min-width:0">
+                <span style="font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">{{ panelKicker }}</span>
+                <h2 style="margin:6px 0 0;font-family:var(--font-display);font-weight:500;font-size:26px;line-height:1.15">{{ panelTitle }}</h2>
+              </div>
+              <button type="button" onClick="{{ closePanel }}" aria-label="Закрыть" style="flex:none;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-secondary);cursor:pointer">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+              </button>
+            </div>
+
+            <div style="padding:20px 22px;display:grid;gap:16px">
+              <sc-if value="{{ showErrors }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--error-bg);border:1px solid var(--error-border)">
+                  <span style="flex:none;color:var(--error-text);margin-top:1px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg></span>
+                  <p style="margin:0;font-size:13px;line-height:1.5;color:var(--error-text)">Проверьте поля: {{ errorList }}</p>
+                </div>
+              </sc-if>
+
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">Название</span>
+                <input type="text" value="{{ fName }}" onChange="{{ onName }}" placeholder="Маникюр с покрытием" style="{{ nameStyle }}">
+                <sc-if value="{{ nameError }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                    Название не может быть пустым
+                  </span>
+                </sc-if>
+              </label>
+
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">Категория</span>
+                <select value="{{ fCat }}" onChange="{{ onCat }}" style="width:100%;min-height:42px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.4 var(--font-ui)">
+                  <option value="Маникюр">Маникюр</option>
+                  <option value="Педикюр">Педикюр</option>
+                  <option value="Дизайн">Дизайн</option>
+                  <option value="Уход">Уход</option>
+                </select>
+              </label>
+
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">Описание <span style="font-weight:400;color:var(--text-secondary)">видно на сайте</span></span>
+                <textarea rows="2" value="{{ fDesc }}" onChange="{{ onDesc }}" placeholder="Снятие, форма, уход за кутикулой, гель-лак" style="width:100%;min-height:76px;padding:11px 13px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.5 var(--font-ui);resize:vertical"></textarea>
+              </label>
+
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+                <label style="display:grid;gap:6px">
+                  <span style="font-size:12.5px;font-weight:600">Длительность, мин</span>
+                  <input type="number" value="{{ fMin }}" onChange="{{ onMin }}" style="{{ minStyle }}">
+                  <sc-if value="{{ minError }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                      Не меньше 5 минут
+                    </span>
+                  </sc-if>
+                </label>
+                <label style="display:grid;gap:6px">
+                  <span style="font-size:12.5px;font-weight:600">Цена, ₽</span>
+                  <input type="number" value="{{ fPrice }}" onChange="{{ onPrice }}" style="{{ priceStyle }}">
+                  <sc-if value="{{ priceError }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                      Цена не может быть отрицательной
+                    </span>
+                  </sc-if>
+                </label>
+              </div>
+
+              <div style="display:grid;gap:8px">
+                <span style="font-size:12.5px;font-weight:600">Мастера, которые выполняют</span>
+                <div style="display:grid;gap:6px">
+                  <sc-for list="{{ masterOpts }}" as="m" hint-placeholder-count="4">
+                    <label style="{{ m.rowStyle }}">
+                      <input type="checkbox" checked="{{ m.on }}" onChange="{{ m.toggle }}" style="width:17px;height:17px;flex:none;accent-color:var(--action-primary)">
+                      <span style="flex:1;min-width:0;font-size:13.5px">{{ m.name }}</span>
+                      <span style="flex:none;font-size:11.5px;color:var(--text-secondary)">{{ m.spec }}</span>
+                    </label>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ mastersError }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                    Выберите хотя бы одного мастера
+                  </span>
+                </sc-if>
+              </div>
+
+              <label style="display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border-radius:12px;border:1px solid var(--border-default);background:var(--bg-surface);cursor:pointer">
+                <input type="checkbox" checked="{{ fVisible }}" onChange="{{ onVisible }}" style="width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--action-primary)">
+                <span style="display:grid;gap:3px">
+                  <b style="font-size:13.5px;font-weight:600">Показывать на сайте</b>
+                  <span style="font-size:12.5px;line-height:1.5;color:var(--text-secondary)">{{ visHint }}</span>
+                </span>
+              </label>
+            </div>
+
+            <div style="padding:16px 22px;border-top:1px solid var(--border-default);background:var(--bg-subtle);display:flex;gap:10px">
+              <button type="button" onClick="{{ save }}" style="flex:1;min-height:48px;border:0;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:15px;font-weight:600;cursor:pointer">{{ saveLabel }}</button>
+              <button type="button" onClick="{{ closePanel }}" style="flex:none;min-height:48px;padding:0 20px;border:1px solid var(--border-strong);border-radius:var(--r-button);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Отмена</button>
+            </div>
+          </aside>
+        </sc-if>
+      </main>
+    </div>
+
+    <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:28px;bottom:28px;z-index:80;width:340px;animation:ng-toast .22s ease-out">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--bg-elevated);border:1px solid var(--success-border);box-shadow:var(--shadow-modal)">
+          <span style="flex:none;color:var(--success-text);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+          <div style="flex:1;min-width:0">
+            <b style="display:block;font-size:14px;font-weight:600">{{ toastTitle }}</b>
+            <span style="font-size:13px;line-height:1.5;color:var(--text-secondary)">{{ toastText }}</span>
+          </div>
+          <button type="button" onClick="{{ closeToast }}" aria-label="Закрыть" style="flex:none;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:var(--text-secondary);cursor:pointer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ delOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="width:100%;max-width:470px;padding:28px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal)">
+          <span style="{{ delIconStyle }}">{{ delIcon }}</span>
+          <h2 style="margin:16px 0 0;font-family:var(--font-display);font-weight:500;font-size:28px;line-height:1.15">{{ delTitle }}</h2>
+          <p style="margin:12px 0 0;font-size:15px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">{{ delText }}</p>
+          <sc-if value="{{ delBlocked }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px;display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border-radius:10px;background:var(--warning-bg);border:1px solid var(--warning-border)">
+              <span style="flex:none;color:var(--warning-text);margin-top:1px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"></path><path d="M12 9v4M12 16.5h.01"></path></svg></span>
+              <p style="margin:0;font-size:13px;line-height:1.55;color:var(--warning-text)">Услуга есть в будущих записях, удалить нельзя — можно скрыть</p>
+            </div>
+          </sc-if>
+          <div style="margin-top:22px;display:flex;gap:10px">
+            <button type="button" onClick="{{ delPrimary }}" style="{{ delPrimaryStyle }}">{{ delPrimaryLabel }}</button>
+            <button type="button" onClick="{{ closeDel }}" style="flex:1;min-height:48px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Отмена</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ catsOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="width:100%;max-width:470px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal);overflow:hidden">
+          <div style="padding:20px 24px;border-bottom:1px solid var(--border-default);background:var(--bg-subtle);display:flex;align-items:center;justify-content:space-between;gap:14px">
+            <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:26px;line-height:1.15">Категории</h2>
+            <button type="button" onClick="{{ closeDel }}" aria-label="Закрыть" style="flex:none;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-secondary);cursor:pointer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+            </button>
+          </div>
+          <div style="padding:20px 24px;display:grid;gap:8px">
+            <sc-for list="{{ catRows }}" as="c" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border-default);border-radius:10px;background:var(--bg-surface)">
+                <span style="flex:1;min-width:0;font-size:14px;font-weight:600">{{ c.name }}</span>
+                <span style="flex:none;font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ c.count }}</span>
+                <span style="flex:none;display:flex;gap:5px">
+                  <button type="button" aria-label="Переименовать" style="{{ c.iconBtn }}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L20 8l-4-4L4 16v4Z"></path></svg>
+                  </button>
+                  <button type="button" aria-label="Выше" style="{{ c.iconBtn }}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 6-6 6 6"></path></svg>
+                  </button>
+                  <button type="button" aria-label="Ниже" style="{{ c.iconBtn }}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 6 6 6-6"></path></svg>
+                  </button>
+                </span>
+              </div>
+            </sc-for>
+            <button type="button" style="margin-top:6px;min-height:44px;border-radius:var(--r-button);border:1px dashed var(--border-strong);background:transparent;color:var(--text-primary);font-size:14px;font-weight:600;cursor:pointer">Добавить категорию</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:1000},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;panel&quot;,&quot;errors&quot;,&quot;delete&quot;,&quot;toast&quot;,&quot;empty&quot;,&quot;loading&quot;],&quot;default&quot;:&quot;list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:16,height:16,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const MENU = [
+  { name:'Сегодня', icon:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'], href:'Админ - Сегодня.dc.html' },
+  { name:'Расписание', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'] },
+  { name:'Записи', icon:['M5 3.5h10l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z','M8 12h8M8 16h5'], href:'Админ - Записи.dc.html' },
+  { name:'Услуги', icon:['M4 7h16M4 12h16M4 17h10'], on:true },
+  { name:'Мастера', icon:['M9 11.5a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z','M2.6 19.5a6.6 6.6 0 0 1 12.8 0','M16.5 5.2a3.4 3.4 0 0 1 0 6.6M19 19.2a5.8 5.8 0 0 0-2.2-4'], href:'Админ - Мастера.dc.html' },
+  { name:'Графики', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z','M8.5 14h3'], href:'Админ - Графики.dc.html' },
+  { name:'Клиенты', icon:['M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z','M4.8 20.2a7.4 7.4 0 0 1 14.4 0'], href:'Админ - Клиенты.dc.html' },
+  { name:'Роли', icon:['M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z','M9.5 12l1.8 1.8L15 10'], href:'Админ - Роли и доступы.dc.html' },
+  { name:'Настройки', icon:['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z','M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4'], href:'Админ - Настройки.dc.html' }
+];
+
+const MASTERS = [
+  { id:'anna', name:'Анна Ковалёва', spec:'маникюр, дизайн' },
+  { id:'maria', name:'Мария Лис', spec:'дизайн, наращивание' },
+  { id:'darya', name:'Дарья Смирнова', spec:'педикюр, уход' },
+  { id:'irina', name:'Ирина Гай', spec:'маникюр, уход' }
+];
+
+const SERVICES = [
+  { id:'man-cover', name:'Маникюр с покрытием', cat:'Маникюр', desc:'Снятие, форма, уход за кутикулой, гель-лак', min:90, price:2500, masters:['АК','МЛ','ИГ'], vis:true, booked:true },
+  { id:'man-classic', name:'Классический маникюр без покрытия', cat:'Маникюр', desc:'Форма, кутикула, полировка и питательное масло', min:60, price:1600, masters:['АК','ИГ'], vis:true, booked:true },
+  { id:'ped-cover', name:'Педикюр с покрытием', cat:'Педикюр', desc:'Обработка стоп, форма ногтей, гель-лак', min:105, price:3200, masters:['ДС'], vis:true, booked:true },
+  { id:'design', name:'Дизайн (за ноготь)', cat:'Дизайн', desc:'Роспись, втирка, стразы или тонкая линия', min:10, price:150, masters:['АК','МЛ'], vis:true, booked:false },
+  { id:'remove', name:'Снятие покрытия', cat:'Уход', desc:'Аккуратное снятие гель-лака без спила ногтя', min:30, price:500, masters:['АК','МЛ','ДС','ИГ'], vis:true, booked:true },
+  { id:'gel', name:'Укрепление гелем', cat:'Уход', desc:'Для тонких ногтей, держится до четырёх недель', min:40, price:900, masters:['АК','ИГ'], vis:false, booked:false }
+];
+
+const rub = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+const dur = (m) => { const h = Math.floor(m/60), mm = m%60; return (h && mm) ? h + ' ч ' + mm + ' мин' : (h ? h + ' ч' : mm + ' мин'); };
+
+class Component extends DCLogic {
+  state = {
+    theme: null, st: null, cat: 'Все', query: '', order: null, vis: {},
+    panel: null, del: null, cats: false, toast: null, validated: false,
+    fName: '', fCat: 'Маникюр', fDesc: '', fMin: '', fPrice: '', fMasters: {}, fVisible: true
+  };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'list'); }
+
+  openWith(svc) {
+    const sel = {};
+    if (svc) MASTERS.forEach(m => { if (svc.masters.indexOf(m.name.split(' ').map(w => w[0]).join('')) >= 0) sel[m.id] = true; });
+    this.setState({
+      panel: svc ? svc.id : 'new', validated: false,
+      fName: svc ? svc.name : '', fCat: svc ? svc.cat : 'Маникюр', fDesc: svc ? svc.desc : '',
+      fMin: svc ? String(svc.min) : '', fPrice: svc ? String(svc.price) : '',
+      fMasters: sel, fVisible: svc ? svc.vis : true, touched: true
+    });
+  }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const st = this.st();
+    const loading = st === 'loading';
+    const emptyAll = st === 'empty';
+    const forceErrors = st === 'errors';
+
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+    const filterChip = (on) => 'min-height:40px;padding:0 15px;border-radius:var(--r-pill);font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;font-family:inherit;' +
+      (on ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+          : 'border:1px solid var(--border-strong);background:transparent;color:var(--text-primary)');
+    const iconBtn = 'width:30px;height:30px;flex:none;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:7px;background:transparent;color:var(--text-secondary);cursor:pointer';
+    const delBtn = 'width:30px;height:30px;flex:none;display:grid;place-items:center;border:1px solid var(--error-border);border-radius:7px;background:transparent;color:var(--error-text);cursor:pointer';
+    const arrowBtn = (off) => 'width:22px;height:20px;display:grid;place-items:center;border:0;border-radius:5px;background:transparent;cursor:' + (off ? 'not-allowed' : 'pointer') +
+      ';color:' + (off ? 'var(--text-disabled)' : 'var(--text-secondary)') + ';opacity:' + (off ? '.5' : '1');
+
+    // порядок + видимость с учётом правок
+    const order = this.state.order || SERVICES.map(s => s.id);
+    const data = order.map(id => {
+      const s = SERVICES.filter(x => x.id === id)[0];
+      return Object.assign({}, s, { vis: this.state.vis[id] !== undefined ? this.state.vis[id] : s.vis });
+    });
+
+    const q = this.state.query.trim().toLowerCase();
+    const list = data
+      .filter(s => this.state.cat === 'Все' || s.cat === this.state.cat)
+      .filter(s => !q || s.name.toLowerCase().indexOf(q) >= 0);
+
+    const emptyFilter = !loading && !emptyAll && list.length === 0;
+
+    const columns = ['','название','категория','длит.','цена','мастера','на сайте','действия'].map((label, i) => ({
+      label,
+      style: 'padding:12px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);display:flex;align-items:center;' +
+        (i === 0 ? 'padding-left:14px' : '')
+    }));
+
+    const move = (id, dir) => () => {
+      const cur = order.slice();
+      const i = cur.indexOf(id);
+      const sameCat = cur.filter(x => (SERVICES.filter(s => s.id === x)[0] || {}).cat === (SERVICES.filter(s => s.id === id)[0] || {}).cat);
+      const pos = sameCat.indexOf(id);
+      const swapWith = sameCat[pos + dir];
+      if (!swapWith) return;
+      const j = cur.indexOf(swapWith);
+      cur[i] = swapWith; cur[j] = id;
+      this.setState({ order: cur });
+    };
+
+    const rows = list.map((s, idx) => {
+      const sameCat = list.filter(x => x.cat === s.cat);
+      const pos = sameCat.indexOf(s);
+      return {
+        name: s.name, desc: s.desc, cat: s.cat, dur: dur(s.min), price: rub(s.price),
+        masters: s.masters,
+        rowStyle: 'display:grid;grid-template-columns:52px minmax(0,1fr) 116px 92px 92px 176px 124px 148px;align-items:stretch;border-bottom:1px solid var(--border-default);' +
+          (idx % 2 === 1 ? 'background:var(--bg-page);' : '') + (s.vis ? '' : 'opacity:.72'),
+        upOff: pos === 0, downOff: pos === sameCat.length - 1,
+        upStyle: arrowBtn(pos === 0), downStyle: arrowBtn(pos === sameCat.length - 1),
+        moveUp: move(s.id, -1), moveDown: move(s.id, 1),
+        visLabel: s.vis ? 'Видна' : 'Скрыта',
+        visIcon: s.vis
+          ? ICON(['M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z','M12 14.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z'], { width:13, height:13 })
+          : ICON(['M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z','M4 4l16 16'], { width:13, height:13 }),
+        visStyle: 'display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 11px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;' +
+          (s.vis ? 'border:1px solid var(--success-border);background:var(--success-bg);color:var(--success-text)'
+                 : 'border:1px solid var(--border-strong);background:transparent;color:var(--text-secondary)'),
+        toggleVis: () => this.setState(p => ({ vis: Object.assign({}, p.vis, { [s.id]: !(p.vis[s.id] !== undefined ? p.vis[s.id] : s.vis) }), toast: 'vis' })),
+        hideTitle: s.vis ? 'Скрыть с сайта' : 'Показать на сайте',
+        iconBtn, delBtn,
+        edit: () => this.openWith(s),
+        del: () => this.setState({ del: s.id })
+      };
+    });
+
+    // панель
+    const panelId = this.state.panel || (forceErrors ? 'new' : null);
+    const editing = panelId && panelId !== 'new' ? SERVICES.filter(s => s.id === panelId)[0] : null;
+    const seeded = forceErrors && !this.state.touched;
+    const showErrorsNow = forceErrors || this.state.validated;
+    const fName = seeded ? '' : this.state.fName;
+    const fMin = seeded ? '0' : this.state.fMin;
+    const fPrice = seeded ? '-500' : this.state.fPrice;
+    const selMasters = Object.keys(this.state.fMasters).filter(k => this.state.fMasters[k]);
+
+    const nameError = showErrorsNow && fName.trim().length === 0;
+    const minError = showErrorsNow && !(Number(fMin) >= 5);
+    const priceError = showErrorsNow && (fPrice === '' || Number(fPrice) < 0);
+    const mastersError = showErrorsNow && selMasters.length === 0;
+
+    const inputBase = 'width:100%;min-height:42px;padding:10px 13px;border-radius:var(--r-input);color:var(--text-primary);font:400 14px/1.4 var(--font-ui);';
+    const ok = inputBase + 'border:1px solid var(--border-strong);background:var(--bg-surface)';
+    const bad = inputBase + 'border:1px solid var(--error);background:var(--error-bg)';
+
+    const errs = [];
+    if (nameError) errs.push('название');
+    if (minError) errs.push('длительность');
+    if (priceError) errs.push('цена');
+    if (mastersError) errs.push('мастера');
+
+    // удаление
+    const delSvc = this.state.del ? SERVICES.filter(s => s.id === this.state.del)[0] : (st === 'delete' ? SERVICES[0] : null);
+    const blocked = !!delSvc && delSvc.booked;
+
+    const toastKind = this.state.toast || (st === 'toast' ? 'saved' : null);
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      stateOpts: [['list','Список'],['panel','Панель редактирования'],['errors','Ошибки валидации'],['delete','Удаление'],['toast','Тост'],['empty','Пустой список'],['loading','Загрузка']]
+        .map(s => ({
+          label: s[1], style: chipPv(st === s[0]),
+          onClick: () => {
+            this.setState({ st: s[0], panel: null, del: null, cats: false, toast: null, validated: false, touched: false, query: '', cat: 'Все' });
+            if (s[0] === 'panel') this.openWith(SERVICES[0]);
+          }
+        })),
+
+      menu: MENU.map(m => ({
+        name: m.name, href: m.on ? 'Админ - Услуги.dc.html' : (m.href || ('#' + m.name)),
+        icon: ICON(m.icon, { width: 17, height: 17 }),
+        iconColor: m.on ? 'var(--accent-brand)' : 'var(--text-secondary)',
+        style: 'display:flex;align-items:center;gap:11px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;' +
+          (m.on ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary);font-weight:600'
+                : 'border:1px solid transparent;color:var(--text-secondary)')
+      })),
+
+      subline: emptyAll ? 'Прайс пока пустой' : (list.length + ' из ' + data.length + ' позиций · скрытых на сайте: ' + data.filter(s => !s.vis).length),
+
+      catFilters: ['Все','Маникюр','Педикюр','Дизайн','Уход'].map(c => ({
+        label: c, style: filterChip(this.state.cat === c), onClick: () => this.setState({ cat: c })
+      })),
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+
+      isLoading: loading,
+      isEmpty: emptyAll || emptyFilter,
+      showTable: !loading && !emptyAll && !emptyFilter,
+      skelRows: [1,2,3,4,5,6],
+      emptyTitle: emptyAll ? 'В прайсе пока нет услуг' : 'По этим условиям услуг нет',
+      emptyText: emptyAll
+        ? 'Добавьте первую услугу — она сразу появится на сайте и в первом шаге записи.'
+        : 'Попробуйте другую категорию или очистите поиск.',
+      emptyActionLabel: emptyAll ? 'Добавить услугу' : 'Сбросить фильтры',
+      emptyAction: () => emptyAll ? this.openWith(null) : this.setState({ cat: 'Все', query: '' }),
+
+      columns, rows,
+
+      panelOpen: !!panelId,
+      panelKicker: editing ? 'редактирование' : 'новая услуга',
+      panelTitle: editing ? editing.name : 'Добавить услугу',
+      closePanel: () => this.setState({ panel: null, st: (st === 'panel' || st === 'errors') ? 'list' : st, validated: false }),
+      showErrors: showErrorsNow && errs.length > 0,
+      errorList: errs.join(', '),
+
+      fName, onName: (e) => this.setState({ fName: e.target.value, touched: true, validated: false }),
+      nameStyle: nameError ? bad : ok, nameError,
+      fCat: this.state.fCat, onCat: (e) => this.setState({ fCat: e.target.value }),
+      fDesc: this.state.fDesc, onDesc: (e) => this.setState({ fDesc: e.target.value }),
+      fMin, onMin: (e) => this.setState({ fMin: e.target.value, touched: true, validated: false }),
+      minStyle: minError ? bad : ok, minError,
+      fPrice, onPrice: (e) => this.setState({ fPrice: e.target.value, touched: true, validated: false }),
+      priceStyle: priceError ? bad : ok, priceError,
+      masterOpts: MASTERS.map(m => ({
+        name: m.name, spec: m.spec, on: !!this.state.fMasters[m.id],
+        toggle: () => this.setState(p => ({ fMasters: Object.assign({}, p.fMasters, { [m.id]: !p.fMasters[m.id] }), touched: true, validated: false })),
+        rowStyle: 'display:flex;gap:11px;align-items:center;padding:9px 12px;border-radius:9px;cursor:pointer;' +
+          (this.state.fMasters[m.id] ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg)' : 'border:1px solid var(--border-default);background:var(--bg-surface)')
+      })),
+      mastersError,
+      fVisible: this.state.fVisible,
+      onVisible: (e) => this.setState({ fVisible: e.target.checked }),
+      visHint: this.state.fVisible ? 'Клиенты видят услугу на лендинге и могут её выбрать' : 'Услуга останется в прайсе, но клиенты её не увидят',
+      saveLabel: editing ? 'Сохранить' : 'Создать услугу',
+      save: () => {
+        const okAll = fName.trim() && Number(fMin) >= 5 && fPrice !== '' && Number(fPrice) >= 0 && selMasters.length > 0;
+        if (!okAll) { this.setState({ validated: true, st: st === 'errors' ? 'errors' : st }); return; }
+        this.setState({ panel: null, st: (st === 'panel' || st === 'errors') ? 'list' : st, validated: false, toast: 'saved' });
+      },
+
+      toastOn: !!toastKind,
+      toastTitle: toastKind === 'vis' ? 'Видимость изменена' : 'Услуга сохранена',
+      toastText: toastKind === 'vis' ? 'Изменения на сайте видны сразу' : 'Длительность и цена обновлены в прайсе и в записи',
+      closeToast: () => this.setState({ toast: null, st: st === 'toast' ? 'list' : st }),
+
+      delOpen: !!delSvc,
+      delBlocked: blocked,
+      delTitle: blocked ? 'Удалить не получится' : 'Удалить услугу?',
+      delText: delSvc
+        ? (blocked
+            ? ('«' + delSvc.name + '» уже выбрана в предстоящих записях. Скройте её с сайта — новые клиенты не смогут выбрать, а текущие записи останутся.')
+            : ('«' + delSvc.name + '» будет удалена из прайса. В будущих записях её нет, поэтому клиентов это не затронет.'))
+        : '',
+      delIcon: blocked
+        ? ICON(['M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z','M12 9v4M12 16.5h.01'], { width:26, height:26 })
+        : ICON(['M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13'], { width:26, height:26 }),
+      delIconStyle: 'display:inline-grid;place-items:center;width:56px;height:56px;border-radius:50%;' +
+        (blocked ? 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)'
+                 : 'background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text)'),
+      delPrimaryLabel: blocked ? 'Скрыть с сайта' : 'Удалить',
+      delPrimaryStyle: 'flex:1;min-height:48px;border-radius:var(--r-button);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;' +
+        (blocked ? 'border:1px solid var(--accent-brand);background:transparent;color:var(--text-primary)'
+                 : 'border:1px solid var(--error-border);background:var(--error-bg);color:var(--error-text)'),
+      delPrimary: () => {
+        const id = delSvc ? delSvc.id : null;
+        if (blocked && id) this.setState(p => ({ vis: Object.assign({}, p.vis, { [id]: false }), del: null, st: st === 'delete' ? 'list' : st, toast: 'vis' }));
+        else this.setState({ del: null, st: st === 'delete' ? 'list' : st, toast: 'saved' });
+      },
+      closeDel: () => this.setState({ del: null, cats: false, st: st === 'delete' ? 'list' : st }),
+
+      catsOpen: this.state.cats,
+      openCats: () => this.setState({ cats: true }),
+      catRows: ['Маникюр','Педикюр','Дизайн','Уход'].map(c => ({
+        name: c, count: data.filter(s => s.cat === c).length + ' услуг', iconBtn
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

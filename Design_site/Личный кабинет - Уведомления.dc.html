@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="3">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка кабинета" style="position:sticky;top:0;z-index:30;background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Главная - лендинг.dc.html" style="display:flex;align-items:center;gap:10px;flex:none">
+          <svg viewBox="0 0 100 100" width="34" height="34" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+            <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <circle cx="50" cy="52" r="34"></circle>
+              <path d="M40 70 C38 56 40 44 43 36"></path>
+              <path d="M50 71 C50 56 53 44 56 37"></path>
+              <path d="M59 71 C60 58 63 49 66 43"></path>
+              <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+              <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+            </g>
+          </svg>
+          <span style="{{ logoWordStyle }}">Ноготочки</span>
+        </a>
+        <nav style="{{ navStyle }}">
+          <a href="Личный кабинет - Предстоящие записи.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;color:var(--text-secondary)">Предстоящие</a>
+          <a href="Личный кабинет - История.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;color:var(--text-secondary)">История</a>
+          <a href="Личный кабинет - Профиль.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;color:var(--text-secondary)">Профиль</a>
+        </nav>
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          <span style="{{ userNameStyle }}">
+            <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ЕП</span>
+            <span style="font-size:14.5px;font-weight:600">Елена</span>
+          </span>
+          <span style="position:relative;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--accent-brand);border-radius:var(--r-button);background:var(--slot-selected-bg);color:var(--text-primary)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5"></path><path d="M10.5 19a2 2 0 0 0 3 0"></path></svg>
+            <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}">
+              <i style="position:absolute;top:5px;right:5px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--accent-brand);color:#2E2622;font-size:10.5px;font-weight:700;font-style:normal;display:grid;place-items:center;font-variant-numeric:tabular-nums">{{ unreadCount }}</i>
+            </sc-if>
+          </span>
+          <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer">
+            <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+            <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+          </button>
+          <a href="Запись. Шаг 1 - Услуги.dc.html" style="{{ headerCtaStyle }}">Записаться</a>
+        </div>
+      </div>
+    </header>
+
+    <main data-screen-label="Уведомления" style="{{ mainStyle }}">
+      <div style="{{ wrapStyle }}">
+        <div style="{{ titleRowStyle }}">
+          <div style="min-width:0">
+            <h1 style="{{ h1Style }}">Уведомления</h1>
+            <p style="margin:8px 0 0;font-size:14.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ subline }}</p>
+          </div>
+          <button type="button" onClick="{{ markAll }}" disabled="{{ markAllOff }}" style="{{ markAllStyle }}">Отметить все как прочитанные</button>
+        </div>
+
+        <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px;display:grid;gap:10px">
+            <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="4">
+              <div style="padding:18px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:flex;gap:14px;align-items:flex-start">
+                <i style="width:44px;height:44px;border-radius:50%;flex:none;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                <div style="flex:1;display:grid;gap:9px">
+                  <i style="height:15px;width:46%;border-radius:8px;background:var(--bg-subtle)"></i>
+                  <i style="height:13px;width:78%;border-radius:7px;background:var(--bg-subtle)"></i>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px;padding:48px 22px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);text-align:center">
+            <svg width="84" height="84" viewBox="0 0 100 100" fill="none" stroke="var(--accent-brand)" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 16px;display:block">
+              <path d="M72 44a22 22 0 1 0-44 0c0 16-7 22-7 22h58s-7-6-7-22"></path>
+              <path d="M42 74a8 8 0 0 0 16 0"></path>
+              <path d="M50 14 L51.6 20 L57.6 21.6 L51.6 23.2 L50 29.2 L48.4 23.2 L42.4 21.6 L48.4 20 Z" fill="var(--accent-brand)" stroke="none"></path>
+            </svg>
+            <p style="margin:0 0 8px;font-family:var(--font-display);font-weight:500;font-size:30px;line-height:1.15">Пока ничего нового</p>
+            <p style="margin:0 auto;max-width:38ch;font-size:15.5px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">Здесь появятся подтверждения записей и напоминания о визитах.</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:20px;display:grid;gap:10px">
+            <sc-for list="{{ items }}" as="n" hint-placeholder-count="5">
+              <div style="{{ n.cardStyle }}">
+                <span style="{{ n.iconWrapStyle }}">{{ n.icon }}</span>
+                <div style="flex:1;min-width:0;display:grid;gap:5px">
+                  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline">
+                    <b style="font-size:15.5px;font-weight:600">{{ n.title }}</b>
+                    <sc-if value="{{ n.unread }}" hint-placeholder-val="{{ false }}">
+                      <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--text-link)"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent-brand);box-shadow:var(--glow-soft)"></i>новое</span>
+                    </sc-if>
+                  </div>
+                  <p style="margin:0;font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ n.text }}</p>
+                  <span style="font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ n.date }}</span>
+                </div>
+                <a href="{{ n.href }}" style="{{ n.linkStyle }}">
+                  {{ n.linkLabel }}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+                </a>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <p style="{{ noteStyle }}">
+          <span style="color:var(--accent-brand);flex:none;display:inline-flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8.5h.01M11.4 12h1.2v4.2h-1.2z"></path></svg></span>
+          Уведомления приходят только в личный кабинет — писем и сообщений мы не отправляем
+        </p>
+      </div>
+    </main>
+
+    <nav style="{{ bottomNavStyle }}">
+      <a href="Личный кабинет - Предстоящие записи.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+        Предстоящие
+      </a>
+      <a href="Личный кабинет - История.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2M3 4.5v4h4"></path><path d="M12 8v4.5l3 1.8"></path></svg>
+        История
+      </a>
+      <span style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-primary);font-size:11px;font-weight:600">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-brand)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5"></path><path d="M10.5 19a2 2 0 0 0 3 0"></path></svg>
+        Уведомления
+      </span>
+      <a href="Личный кабинет - Профиль.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"></circle><path d="M4.8 20.5a7.4 7.4 0 0 1 14.4 0"></path></svg>
+        Профиль
+      </a>
+    </nav>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;empty&quot;,&quot;loading&quot;],&quot;default&quot;:&quot;list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:20,height:20,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.6,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const TYPES = {
+  confirmed: { tone:'success', icon: ICON(['m5 12.5 4.5 4.5L19 7.5']) },
+  reminder:  { tone:'accent',  icon: ICON(['M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5','M10.5 19a2 2 0 0 0 3 0']) },
+  moved:     { tone:'info',    icon: ICON(['M3.5 12a8.5 8.5 0 1 1 2.7 6.2M3 19.5v-4h4']) },
+  cancelled: { tone:'error',   icon: ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','m9 9 6 6M15 9l-6 6']) },
+  expired:   { tone:'warning', icon: ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2']) }
+};
+
+const ITEMS = [
+  { id:1, type:'reminder', title:'Напоминание о визите завтра', text:'19 сентября в 11:00 у Дарьи Смирновой — классический маникюр. Приходите за 5 минут до начала.', date:'Сегодня, 10:02', unread:true, href:'Личный кабинет - Предстоящие записи.dc.html', link:'К записи' },
+  { id:2, type:'confirmed', title:'Запись подтверждена', text:'22 сентября в 14:30 у Анны Ковалёвой — маникюр с покрытием, снятие, дизайн. 2 ч 10 мин, 3 150 ₽.', date:'Вчера, 19:41', unread:true, href:'Личный кабинет - Предстоящие записи.dc.html', link:'К записи' },
+  { id:3, type:'moved', title:'Запись перенесена', text:'Визит 19 августа перенесён на 2 октября, 17:30. Прежнее время освободилось.', date:'14 сентября, 12:15', unread:false, href:'Личный кабинет - Предстоящие записи.dc.html', link:'К записи' },
+  { id:4, type:'cancelled', title:'Запись отменена', text:'Визит 2 августа отменён салоном — мастер заболел. Мы вернём вас в удобное время.', date:'31 июля, 09:30', unread:false, href:'Личный кабинет - История.dc.html', link:'В историю' },
+  { id:5, type:'expired', title:'Резерв времени истёк', text:'Мы держали 11 июля, 17:00 десять минут. Запись не оформлена — время снова свободно.', date:'10 июля, 18:12', unread:false, href:'Запись. Шаг 1 - Услуги.dc.html', link:'Записаться' }
+];
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, st: null, read: {} };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'list'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const st = this.st();
+    const loading = st === 'loading';
+    const empty = st === 'empty';
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const toneStyle = (t) => {
+      if (t === 'success') return 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)';
+      if (t === 'error') return 'background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text)';
+      if (t === 'warning') return 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)';
+      if (t === 'accent') return 'background:var(--slot-selected-bg);border:1px solid var(--border-hair);color:var(--accent-brand)';
+      return 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)';
+    };
+
+    const items = ITEMS.map(it => {
+      const unread = it.unread && !this.state.read[it.id];
+      const t = TYPES[it.type];
+      return {
+        title: it.title, text: it.text, date: it.date, unread,
+        href: it.href, linkLabel: it.link, icon: t.icon,
+        iconWrapStyle: 'width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;' + toneStyle(t.tone),
+        cardStyle: 'display:flex;gap:14px;align-items:flex-start;border-radius:var(--r-card);box-shadow:var(--shadow-card);' +
+          (mob ? 'padding:16px;' : 'padding:18px 20px;') +
+          (unread ? 'border:1px solid var(--accent-brand);background:var(--bg-elevated)' : 'border:1px solid var(--border-default);background:var(--bg-surface)'),
+        linkStyle: 'flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-button);font-size:13.5px;font-weight:600;' + (mob ? 'align-self:flex-start' : '')
+      };
+    });
+
+    const unreadCount = items.filter(i => i.unread).length;
+    const plural = (n) => (n % 10 === 1 && n % 100 !== 11) ? 'непрочитанное' : 'непрочитанных';
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'],{width:18,height:18})
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8'],{width:18,height:18}),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      stateOpts: [['list','Список'],['empty','Пусто'],['loading','Загрузка']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], read: {} }) })),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: (mob
+        ? 'width:390px;max-width:100%;height:844px;overflow-y:auto;overflow-x:hidden;border:1px solid rgba(46,38,34,.16);border-radius:24px;box-shadow:0 18px 50px rgba(46,38,34,.16);'
+        : 'width:100%;min-width:1280px;') + 'position:relative;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 12px;gap:8px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;gap:20px;') + 'display:flex;align-items:center;justify-content:space-between',
+      logoWordStyle: 'font-family:var(--font-script);line-height:1;color:var(--text-primary);text-shadow:0 0 14px rgba(242,216,167,.55);' + (mob ? 'font-size:21px' : 'font-size:25px'),
+      navStyle: mob ? 'display:none' : 'display:flex;align-items:center;gap:22px;white-space:nowrap',
+      userNameStyle: (mob ? 'display:none;' : 'display:inline-flex;') + 'align-items:center;gap:9px',
+      headerCtaStyle: (mob ? 'display:none;' : 'display:inline-flex;padding:0 18px;font-size:14.5px;') + 'align-items:center;justify-content:center;min-height:44px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-weight:600;white-space:nowrap',
+      hasUnread: !empty && !loading && unreadCount > 0,
+      unreadCount: String(unreadCount),
+
+      mainStyle: 'background:var(--bg-page);color:var(--text-primary);' + (mob ? 'padding:24px 0 96px' : 'padding:40px 0 72px'),
+      wrapStyle: mob ? 'padding:0 16px' : 'max-width:900px;margin:0 auto;padding:0 40px',
+      titleRowStyle: 'display:flex;gap:16px;align-items:flex-end;justify-content:space-between;' + (mob ? 'flex-direction:column;align-items:stretch' : ''),
+      h1Style: 'margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:30px;line-height:34px' : 'font-size:46px;line-height:50px'),
+      subline: empty ? 'Новых сообщений нет' : (unreadCount > 0 ? (unreadCount + ' ' + plural(unreadCount)) : 'Всё прочитано'),
+      markAllOff: empty || loading || unreadCount === 0,
+      markAllStyle: 'flex:none;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:var(--r-button);font-size:14px;font-weight:600;font-family:inherit;' +
+        ((empty || loading || unreadCount === 0)
+          ? 'border:1px solid var(--border-default);background:transparent;color:var(--text-disabled);cursor:not-allowed;opacity:.65'
+          : 'border:1px solid var(--accent-brand);background:transparent;color:var(--text-primary);cursor:pointer'),
+      markAll: () => {
+        const read = {};
+        ITEMS.forEach(i => { read[i.id] = true; });
+        this.setState({ read });
+      },
+
+      isLoading: loading,
+      isEmpty: empty,
+      showList: !loading && !empty,
+      skeletons: [1,2,3,4],
+      items,
+
+      noteStyle: 'margin:22px 0 0;display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border:1px solid var(--border-hair);border-radius:14px;background:var(--bg-subtle);font-size:13.5px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty',
+      bottomNavStyle: (mob ? 'display:grid;' : 'display:none;') + 'position:sticky;bottom:0;z-index:40;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 8px 12px;background:var(--bg-elevated);border-top:1px solid var(--border-default);box-shadow:var(--shadow-menu);text-align:center'
+    };
+  }
+}
+</script>
+</body>
+</html>

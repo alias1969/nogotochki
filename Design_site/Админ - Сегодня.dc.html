@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="4">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-theme="{{ themeAttr }}" style="position:relative;width:100%;min-width:1280px;background:var(--bg-page);color:var(--text-primary);display:flex">
+
+    <aside data-screen-label="Меню админки" style="flex:none;width:236px;min-height:900px;border-right:1px solid var(--border-default);background:var(--bg-subtle);display:flex;flex-direction:column">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:10px">
+        <svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+          <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <circle cx="50" cy="52" r="34"></circle>
+            <path d="M40 70 C38 56 40 44 43 36"></path>
+            <path d="M50 71 C50 56 53 44 56 37"></path>
+            <path d="M59 71 C60 58 63 49 66 43"></path>
+            <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+            <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+          </g>
+        </svg>
+        <span style="display:grid">
+          <span style="font-family:var(--font-script);font-size:19px;line-height:1.1">Ноготочки</span>
+          <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">админ-панель</span>
+        </span>
+      </div>
+      <nav style="padding:12px 10px;display:grid;gap:2px">
+        <sc-for list="{{ menu }}" as="m" hint-placeholder-count="10">
+          <a href="{{ m.href }}" style="{{ m.style }}">
+            <span style="flex:none;display:inline-flex;color:{{ m.iconColor }}">{{ m.icon }}</span>
+            <span style="flex:1;min-width:0">{{ m.name }}</span>
+            <sc-if value="{{ m.badge }}" hint-placeholder-val="{{ false }}">
+              <span style="flex:none;min-width:20px;padding:2px 6px;border-radius:999px;background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text);font-size:11px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums">{{ m.badgeText }}</span>
+            </sc-if>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto;padding:14px 16px;border-top:1px solid var(--border-default)">
+        <a href="Вход администратора.dc.html" style="display:flex;align-items:center;gap:9px;min-height:40px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+          Выйти
+        </a>
+      </div>
+    </aside>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <header data-screen-label="Верхняя строка" style="position:sticky;top:0;z-index:20;border-bottom:1px solid var(--border-default);background:var(--bg-page)">
+        <div style="padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+          <div style="display:flex;align-items:center;gap:14px;min-width:0">
+            <span style="display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:0 13px;border:1px solid var(--border-default);border-radius:8px;background:var(--bg-surface);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">
+              <span style="color:var(--accent-brand);display:inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg></span>
+              Пятница, 18 сентября 2026
+            </span>
+            <span style="font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">Студия открыта до 21:00</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex:none">
+            <span style="position:relative;display:block;width:260px">
+              <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-secondary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></span>
+              <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Клиент, телефон, запись" style="width:100%;min-height:40px;padding:9px 12px 9px 34px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+            </span>
+            <button type="button" aria-label="Уведомления" style="position:relative;width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-primary);cursor:pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5"></path><path d="M10.5 19a2 2 0 0 0 3 0"></path></svg>
+              <sc-if value="{{ hasAlerts }}" hint-placeholder-val="{{ true }}">
+                <i style="position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--accent-brand);color:#2E2622;font-size:10px;font-weight:700;font-style:normal;display:grid;place-items:center;font-variant-numeric:tabular-nums">{{ alertCount }}</i>
+              </sc-if>
+            </button>
+            <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12.5px;font-weight:600;cursor:pointer">
+              <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+              {{ themeLabel }}
+            </button>
+            <span style="display:inline-flex;align-items:center;gap:9px;padding-left:6px;border-left:1px solid var(--border-default)">
+              <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12.5px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ОР</span>
+              <span style="display:grid">
+                <b style="font-size:13px;font-weight:600">Ольга Р.</b>
+                <span style="font-size:11px;color:var(--text-secondary)">администратор</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main data-screen-label="Сегодня" style="flex:1;padding:28px">
+        <div style="max-width:1180px;display:grid;gap:22px">
+
+          <div style="display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap">
+            <div style="min-width:0">
+              <p style="margin:0;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">сегодня</p>
+              <h1 style="margin:8px 0 0;font-family:var(--font-display);font-weight:500;font-size:40px;line-height:1.08;letter-spacing:-.01em">18 сентября, пятница</h1>
+              <p style="margin:8px 0 0;font-size:14.5px;color:var(--text-secondary)">{{ dayLine }}</p>
+            </div>
+            <div style="display:flex;gap:10px;flex:none">
+              <a href="#raspisanie" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:var(--r-button);border:1px solid var(--border-strong);color:var(--text-primary);font-size:14.5px;font-weight:600" style-hover="border-color:var(--accent-brand)">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+                Расписание дня
+              </a>
+              <a href="Админ - Записи.dc.html?create=1" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:14.5px;font-weight:600" style-hover="background:var(--action-primary-hover)">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+                Создать запись
+              </a>
+            </div>
+          </div>
+
+          <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:34px 24px;border:1px solid var(--error-border);border-radius:var(--r-card);background:var(--error-bg);text-align:center">
+              <span style="display:inline-flex;color:var(--error-text)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg></span>
+              <p style="margin:12px 0 4px;font-family:var(--font-display);font-weight:500;font-size:26px;color:var(--error-text)">Не удалось загрузить данные дня</p>
+              <p style="margin:0 0 18px;font-size:14px;color:var(--error-text)">Показатели и записи недоступны. Проверьте соединение</p>
+              <button type="button" onClick="{{ retry }}" style="min-height:44px;padding:0 22px;border-radius:var(--r-button);border:1px solid var(--error-border);background:var(--bg-surface);color:var(--error-text);font-size:14.5px;font-weight:600;cursor:pointer">Повторить</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;gap:22px">
+              <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
+                <sc-for list="{{ skelStats }}" as="s" hint-placeholder-count="5">
+                  <div style="padding:18px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:grid;gap:10px">
+                    <i style="height:11px;width:60%;border-radius:6px;background:var(--bg-subtle)"></i>
+                    <i style="height:30px;width:45%;border-radius:8px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px">
+                <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:grid;gap:12px">
+                  <sc-for list="{{ skelRows }}" as="r" hint-placeholder-count="5">
+                    <i style="height:54px;border-radius:12px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                  </sc-for>
+                </div>
+                <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:grid;gap:12px">
+                  <sc-for list="{{ skelRows2 }}" as="r" hint-placeholder-count="3">
+                    <i style="height:84px;border-radius:12px;background:var(--bg-subtle)"></i>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showBody }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;gap:22px">
+
+              <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
+                <sc-for list="{{ stats }}" as="s" hint-placeholder-count="5">
+                  <div style="{{ s.cardStyle }}">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                      <span style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">{{ s.label }}</span>
+                      <span style="{{ s.iconStyle }}">{{ s.icon }}</span>
+                    </div>
+                    <b style="display:block;margin-top:12px;font-family:var(--font-display);font-weight:500;font-size:38px;line-height:1;font-variant-numeric:tabular-nums">{{ s.value }}</b>
+                    <span style="display:block;margin-top:8px;font-size:12.5px;color:var(--text-secondary)">{{ s.hint }}</span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start">
+
+                <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                  <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;justify-content:space-between;gap:12px">
+                    <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Ближайшие записи</h2>
+                    <a href="#raspisanie" style="display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:13px;font-weight:600">
+                      Всё расписание
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+                    </a>
+                  </div>
+
+                  <sc-if value="{{ hasAppointments }}" hint-placeholder-val="{{ true }}">
+                    <div>
+                      <sc-for list="{{ appointments }}" as="a" hint-placeholder-count="5">
+                        <div style="display:flex;gap:16px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border-default)">
+                          <span style="flex:none;width:58px;display:grid;gap:2px">
+                            <b style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">{{ a.time }}</b>
+                            <span style="font-size:11.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ a.dur }}</span>
+                          </span>
+                          <span style="flex:none;width:1px;height:38px;background:var(--border-default)"></span>
+                          <span style="flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">{{ a.initials }}</span>
+                          <span style="flex:1;min-width:0;display:grid;gap:3px">
+                            <b style="font-size:14.5px;font-weight:600">{{ a.client }}</b>
+                            <span style="font-size:12.5px;color:var(--text-secondary);text-wrap:pretty">{{ a.services }}</span>
+                            <span style="font-size:12px;color:var(--text-secondary)">Мастер: {{ a.master }}</span>
+                          </span>
+                          <span style="flex:none;display:grid;gap:6px;justify-items:end">
+                            <span style="{{ a.statusStyle }}">{{ a.status }}</span>
+                            <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">{{ a.sum }}</span>
+                          </span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ noAppointments }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:36px 22px;text-align:center">
+                      <svg width="66" height="66" viewBox="0 0 100 100" fill="none" stroke="var(--accent-brand)" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 12px;display:block">
+                        <rect x="18" y="26" width="64" height="56" rx="10"></rect>
+                        <path d="M18 42h64M34 20v10M66 20v10"></path>
+                        <path d="M38 62h24" stroke-dasharray="3 6"></path>
+                      </svg>
+                      <p style="margin:0 0 6px;font-family:var(--font-display);font-weight:500;font-size:22px">На сегодня записей больше нет</p>
+                      <p style="margin:0;font-size:13.5px;color:var(--text-secondary)">Свободные окна открыты до 21:00 — можно принять клиента по звонку</p>
+                    </div>
+                  </sc-if>
+                </div>
+
+                <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                  <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;justify-content:space-between;gap:12px">
+                    <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Требует внимания</h2>
+                    <span style="{{ attentionBadgeStyle }}">{{ attentionCount }}</span>
+                  </div>
+
+                  <sc-if value="{{ hasAttention }}" hint-placeholder-val="{{ true }}">
+                    <div>
+                      <sc-for list="{{ attention }}" as="t" hint-placeholder-count="3">
+                        <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:grid;gap:10px">
+                          <div style="display:flex;gap:11px;align-items:flex-start">
+                            <span style="{{ t.iconStyle }}">{{ t.icon }}</span>
+                            <div style="flex:1;min-width:0;display:grid;gap:4px">
+                              <b style="font-size:14.5px;font-weight:600">{{ t.title }}</b>
+                              <span style="font-size:13px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ t.text }}</span>
+                              <span style="font-size:11.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ t.meta }}</span>
+                            </div>
+                          </div>
+                          <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <sc-if value="{{ t.resolved }}" hint-placeholder-val="{{ false }}">
+                              <span style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r-pill);background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);font-size:12.5px;font-weight:600">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+                                {{ t.resolvedText }}
+                              </span>
+                            </sc-if>
+                            <sc-if value="{{ t.actionable }}" hint-placeholder-val="{{ true }}">
+                              <span style="display:flex;gap:8px;flex-wrap:wrap">
+                                <button type="button" onClick="{{ t.approve }}" style="min-height:40px;padding:0 16px;border-radius:var(--r-button);border:1px solid var(--accent-brand);background:transparent;color:var(--text-primary);font-size:13.5px;font-weight:600;cursor:pointer">{{ t.primaryLabel }}</button>
+                                <button type="button" onClick="{{ t.reject }}" style="min-height:40px;padding:0 16px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-secondary);font-size:13.5px;font-weight:600;cursor:pointer">{{ t.secondaryLabel }}</button>
+                              </span>
+                            </sc-if>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ noAttention }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:36px 22px;text-align:center">
+                      <span style="display:inline-grid;place-items:center;width:58px;height:58px;border-radius:50%;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+                      </span>
+                      <p style="margin:14px 0 6px;font-family:var(--font-display);font-weight:500;font-size:22px">Спокойный день</p>
+                      <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--text-secondary)">Заявок от мастеров нет, поздних отмен нет, все вчерашние записи закрыты</p>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </main>
+    </div>
+
+    <sc-if value="{{ rejectOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="width:100%;max-width:460px;padding:28px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal)">
+          <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:28px;line-height:1.15">Отклонить заявку</h2>
+          <p style="margin:10px 0 0;font-size:14.5px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ rejectSubject }}</p>
+          <label style="margin-top:18px;display:grid;gap:7px">
+            <span style="font-size:12.5px;font-weight:600">Комментарий мастеру</span>
+            <textarea rows="3" value="{{ rejectComment }}" onChange="{{ onRejectComment }}" placeholder="Например: в этот день уже записаны клиенты, давайте перенесём выходной" style="width:100%;min-height:92px;padding:11px 13px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.5 var(--font-ui);resize:vertical"></textarea>
+            <span style="font-size:12px;color:var(--text-secondary)">Комментарий придёт мастеру в кабинет</span>
+          </label>
+          <div style="margin-top:22px;display:flex;gap:10px">
+            <button type="button" onClick="{{ confirmReject }}" disabled="{{ rejectOff }}" style="{{ rejectBtnStyle }}">Отклонить</button>
+            <button type="button" onClick="{{ closeReject }}" style="flex:1;min-height:48px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Назад</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:960},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;calm&quot;,&quot;loading&quot;,&quot;error&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:17,height:17,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.6,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const MENU = [
+  { name:'Сегодня', icon:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'], on:true },
+  { name:'Расписание', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'] },
+  { name:'Записи', icon:['M5 3.5h10l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z','M8 12h8M8 16h5'], href:'Админ - Записи.dc.html' },
+  { name:'Услуги', icon:['M4 7h16M4 12h16M4 17h10'], href:'Админ - Услуги.dc.html' },
+  { name:'Мастера', icon:['M9 11.5a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z','M2.6 19.5a6.6 6.6 0 0 1 12.8 0','M16.5 5.2a3.4 3.4 0 0 1 0 6.6M19 19.2a5.8 5.8 0 0 0-2.2-4'], href:'Админ - Мастера.dc.html' },
+  { name:'Графики', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z','M8.5 14h3'], href:'Админ - Графики.dc.html' },
+  { name:'Клиенты', icon:['M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z','M4.8 20.2a7.4 7.4 0 0 1 14.4 0'], href:'Админ - Клиенты.dc.html' },
+  { name:'Роли', icon:['M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z','M9.5 12l1.8 1.8L15 10'], href:'Админ - Роли и доступы.dc.html' },
+  { name:'Настройки', icon:['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z','M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4'], href:'Админ - Настройки.dc.html' }
+];
+
+const APPTS = [
+  { time:'11:30', dur:'1 ч 30 мин', initials:'ЕП', client:'Елена Петрова', services:'Маникюр с покрытием', master:'Анна Ковалёва', status:'Предстоит', tone:'upcoming', sum:'2 500 ₽' },
+  { time:'12:00', dur:'1 ч', initials:'ОК', client:'Ольга Кузьмина', services:'Классический маникюр', master:'Дарья Смирнова', status:'Подтверждена', tone:'success', sum:'1 600 ₽' },
+  { time:'13:30', dur:'1 ч 45 мин', initials:'НС', client:'Наталья Соколова', services:'Педикюр с покрытием', master:'Дарья Смирнова', status:'Предстоит', tone:'upcoming', sum:'3 200 ₽' },
+  { time:'15:00', dur:'40 мин', initials:'ВМ', client:'Вера Морозова', services:'Укрепление гелем', master:'Мария Лис', status:'Ждёт подтверждения', tone:'warning', sum:'900 ₽' },
+  { time:'17:30', dur:'2 ч 10 мин', initials:'ИЛ', client:'Ирина Лебедева', services:'Маникюр с покрытием · Снятие · Дизайн', master:'Анна Ковалёва', status:'Предстоит', tone:'upcoming', sum:'3 150 ₽' }
+];
+
+class Component extends DCLogic {
+  state = { theme: null, st: null, query: '', done: {}, reject: null, comment: '' };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'normal'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const st = this.st();
+    const loading = st === 'loading';
+    const error = st === 'error';
+    const calm = st === 'calm';
+
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const tone = (t) => {
+      if (t === 'success') return 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)';
+      if (t === 'error') return 'background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text)';
+      if (t === 'warning') return 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)';
+      if (t === 'upcoming') return 'background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text)';
+      return 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)';
+    };
+
+    const statsData = calm
+      ? [['записей сегодня','6','все подтверждены','neutral'],['отмен','0','ни одной','success'],['неявок','0','ни одной','success'],['свободных окон','9','до 21:00','neutral'],['ожидаемая выручка','14 300 ₽','по текущим записям','neutral']]
+      : [['записей сегодня','12','из них 3 ждут подтверждения','neutral'],['отмен','2','одна поздняя','warning'],['неявок','1','вчера, Вера М.','error'],['свободных окон','5','ближайшее в 16:10','neutral'],['ожидаемая выручка','28 450 ₽','оплата на месте','neutral']];
+
+    const statIcons = [
+      ICON(['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'],{width:16,height:16}),
+      ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','m9 9 6 6M15 9l-6 6'],{width:16,height:16}),
+      ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 8v4.5M12 16h.01'],{width:16,height:16}),
+      ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'],{width:16,height:16}),
+      ICON(['M2.5 6h19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-19a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z','M2.5 10.5h19'],{width:16,height:16})
+    ];
+
+    const stats = statsData.map((s, i) => ({
+      label: s[0], value: s[1], hint: s[2], icon: statIcons[i],
+      cardStyle: 'padding:18px;border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);border:1px solid ' +
+        (s[3] === 'warning' ? 'var(--warning-border)' : (s[3] === 'error' ? 'var(--error-border)' : 'var(--border-default)')),
+      iconStyle: 'flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;' +
+        (s[3] === 'warning' ? tone('warning') : (s[3] === 'error' ? tone('error') : (s[3] === 'success' ? tone('success') : 'background:var(--bg-subtle);border:1px solid var(--border-default);color:var(--accent-brand)')))
+    }));
+
+    const raw = calm ? [] : [
+      { id:'t1', kind:'request', title:'Заявка на изменение графика', text:'Мария Лис просит сделать 24 сентября выходным — семейные обстоятельства. На этот день записей нет.', meta:'Подана сегодня, 09:14', primary:'Согласовать', secondary:'Отклонить' },
+      { id:'t2', kind:'request', title:'Заявка на изменение графика', text:'Анна Ковалёва просит сдвинуть смену 26 сентября на 12:00–21:00. Две записи попадают на утро.', meta:'Подана вчера, 20:02', primary:'Согласовать', secondary:'Отклонить' },
+      { id:'t3', kind:'late', title:'Поздняя отмена', text:'Ольга Кузьмина отменила визит 18 сентября в 12:00 за 3 часа до начала. Окно освободилось.', meta:'Сегодня, 09:02', primary:'Предложить другим', secondary:'Закрыть окно' },
+      { id:'t4', kind:'unclosed', title:'Записи без статуса за вчера', text:'Две записи 17 сентября остались без отметки о визите — нужно закрыть «пришёл» или «не пришёл».', meta:'17 сентября', primary:'Проставить статусы', secondary:'Позже' }
+    ];
+
+    const kindIcon = {
+      request: ICON(['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'],{width:16,height:16}),
+      late: ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','m9 9 6 6M15 9l-6 6'],{width:16,height:16}),
+      unclosed: ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 8v4.5M12 16h.01'],{width:16,height:16})
+    };
+    const kindTone = { request: 'info', late: 'error', unclosed: 'warning' };
+
+    const attention = raw.map(t => {
+      const state = this.state.done[t.id];
+      return {
+        title: t.title, text: t.text, meta: t.meta,
+        icon: kindIcon[t.kind],
+        iconStyle: 'flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;' + tone(kindTone[t.kind]),
+        primaryLabel: t.primary, secondaryLabel: t.secondary,
+        actionable: !state,
+        resolved: !!state,
+        resolvedText: state === 'approved' ? 'Согласовано' : 'Отклонено, комментарий отправлен',
+        approve: () => this.setState(s => ({ done: Object.assign({}, s.done, { [t.id]: 'approved' }) })),
+        reject: () => this.setState({ reject: t.id, comment: '' })
+      };
+    });
+
+    const pending = attention.filter(a => a.actionable).length;
+    const rejectItem = raw.filter(t => t.id === this.state.reject)[0];
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'],{width:16,height:16})
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8'],{width:16,height:16}),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      stateOpts: [['normal','Обычный день'],['calm','Спокойный день'],['loading','Загрузка'],['error','Ошибка загрузки']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], done: {}, reject: null }) })),
+
+      menu: MENU.map(m => ({
+        name: m.name, href: m.on ? 'Админ - Сегодня.dc.html' : (m.href || ('#' + m.name)),
+        icon: ICON(m.icon, { width: 17, height: 17 }),
+        iconColor: m.on ? 'var(--accent-brand)' : 'var(--text-secondary)',
+        badge: m.name === 'Графики' && !calm && !loading && !error,
+        badgeText: '2',
+        style: 'display:flex;align-items:center;gap:11px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;' +
+          (m.on ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary);font-weight:600'
+                : 'border:1px solid transparent;color:var(--text-secondary)')
+      })),
+
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      hasAlerts: !loading && !error && pending > 0,
+      alertCount: String(pending),
+
+      dayLine: error ? 'Данные дня не загрузились' : (calm ? '6 записей, отмен и неявок нет' : '12 записей · 5 свободных окон · 4 задачи требуют решения'),
+      isLoading: loading,
+      isError: error,
+      showBody: !loading && !error,
+      skelStats: [1,2,3,4,5],
+      skelRows: [1,2,3,4,5],
+      skelRows2: [1,2,3],
+      retry: () => this.setState({ st: 'loading' }),
+
+      stats,
+      appointments: (calm ? APPTS.slice(0, 3) : APPTS).map(a => ({
+        time: a.time, dur: a.dur, initials: a.initials, client: a.client, services: a.services, master: a.master,
+        status: a.status, sum: a.sum,
+        statusStyle: 'display:inline-flex;align-items:center;padding:5px 11px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;white-space:nowrap;' + tone(a.tone)
+      })),
+      hasAppointments: true,
+      noAppointments: false,
+
+      attention,
+      hasAttention: attention.length > 0,
+      noAttention: attention.length === 0,
+      attentionCount: attention.length === 0 ? 'всё закрыто' : (pending + ' в работе'),
+      attentionBadgeStyle: 'flex:none;padding:5px 12px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;' +
+        (attention.length === 0 ? tone('success') : (pending > 0 ? tone('warning') : tone('info'))),
+
+      rejectOpen: !!rejectItem,
+      rejectSubject: rejectItem ? rejectItem.text : '',
+      rejectComment: this.state.comment,
+      onRejectComment: (e) => this.setState({ comment: e.target.value }),
+      rejectOff: this.state.comment.trim().length === 0,
+      rejectBtnStyle: 'flex:1;min-height:48px;border-radius:var(--r-button);font-size:15px;font-weight:600;font-family:inherit;' +
+        (this.state.comment.trim().length === 0
+          ? 'border:1px solid var(--border-default);background:transparent;color:var(--text-disabled);cursor:not-allowed;opacity:.7'
+          : 'border:1px solid var(--error-border);background:var(--error-bg);color:var(--error-text);cursor:pointer'),
+      confirmReject: () => {
+        if (this.state.comment.trim().length === 0) return;
+        const id = this.state.reject;
+        this.setState(s => ({ done: Object.assign({}, s.done, { [id]: 'rejected' }), reject: null, comment: '' }));
+      },
+      closeReject: () => this.setState({ reject: null, comment: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

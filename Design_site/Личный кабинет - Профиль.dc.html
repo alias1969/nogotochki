@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="5">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка кабинета" style="position:sticky;top:0;z-index:30;background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Главная - лендинг.dc.html" style="display:flex;align-items:center;gap:10px;flex:none">
+          <svg viewBox="0 0 100 100" width="34" height="34" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+            <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <circle cx="50" cy="52" r="34"></circle>
+              <path d="M40 70 C38 56 40 44 43 36"></path>
+              <path d="M50 71 C50 56 53 44 56 37"></path>
+              <path d="M59 71 C60 58 63 49 66 43"></path>
+              <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+              <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+            </g>
+          </svg>
+          <span style="{{ logoWordStyle }}">Ноготочки</span>
+        </a>
+        <nav style="{{ navStyle }}">
+          <a href="Личный кабинет - Предстоящие записи.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;color:var(--text-secondary)">Предстоящие</a>
+          <a href="Личный кабинет - История.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;color:var(--text-secondary)">История</a>
+          <span style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;font-weight:600;border-bottom:1.5px solid var(--accent-brand)">Профиль</span>
+        </nav>
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          <span style="{{ userNameStyle }}">
+            <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ЕП</span>
+            <span style="font-size:14.5px;font-weight:600">Елена</span>
+          </span>
+          <a href="Личный кабинет - Уведомления.dc.html" aria-label="Уведомления" style="position:relative;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:var(--r-button);color:var(--text-primary)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5"></path><path d="M10.5 19a2 2 0 0 0 3 0"></path></svg>
+            <i style="position:absolute;top:5px;right:5px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--accent-brand);color:#2E2622;font-size:10.5px;font-weight:700;font-style:normal;display:grid;place-items:center;font-variant-numeric:tabular-nums">2</i>
+          </a>
+          <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer">
+            <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+            <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+          </button>
+          <a href="Запись. Шаг 1 - Услуги.dc.html" style="{{ headerCtaStyle }}">Записаться</a>
+        </div>
+      </div>
+    </header>
+
+    <main data-screen-label="Профиль" style="{{ mainStyle }}">
+      <div style="{{ wrapStyle }}">
+        <h1 style="{{ h1Style }}">Профиль</h1>
+        <p style="margin:10px 0 0;font-size:16px;color:var(--text-secondary)">Контакты нужны, чтобы мастер мог связаться с вами в день визита</p>
+
+        <sc-if value="{{ showSuccess }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:22px;display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:14px;background:var(--success-bg);border:1px solid var(--success-border)">
+            <span style="flex:none;color:var(--success-text);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+            <p style="margin:0;font-size:14.5px;font-weight:600;color:var(--success-text)">Изменения сохранены</p>
+          </div>
+        </sc-if>
+
+        <div style="{{ sectionStyle }}">
+          <h2 style="{{ h2Style }}">Личные данные</h2>
+          <div style="margin-top:18px;display:grid;gap:18px">
+            <label style="display:grid;gap:6px">
+              <span style="font-size:13px;font-weight:600">Имя</span>
+              <input type="text" defaultValue="Елена Петрова" disabled="{{ fieldsOff }}" style="{{ inputStyle }}">
+            </label>
+            <label style="display:grid;gap:6px">
+              <span style="font-size:13px;font-weight:600">E-mail</span>
+              <input type="email" defaultValue="{{ emailValue }}" disabled="{{ fieldsOff }}" style="{{ emailInputStyle }}">
+              <sc-if value="{{ showEmailTaken }}" hint-placeholder-val="{{ false }}">
+                <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                  Такой e-mail уже занят
+                </span>
+              </sc-if>
+            </label>
+            <label style="display:grid;gap:6px">
+              <span style="font-size:13px;font-weight:600">Телефон</span>
+              <input type="tel" defaultValue="+7 999 123-45-67" disabled="{{ fieldsOff }}" style="{{ inputStyle }}">
+            </label>
+            <div style="{{ actionsStyle }}">
+              <button type="button" onClick="{{ save }}" disabled="{{ saveOff }}" style="{{ saveStyle }}">
+                <sc-if value="{{ isSaving }}" hint-placeholder-val="{{ false }}">
+                  <i style="width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;display:inline-block;animation:ng-spin .8s linear infinite;margin-right:10px"></i>
+                </sc-if>
+                {{ saveLabel }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style="{{ sectionStyle }}">
+          <h2 style="{{ h2Style }}">Смена пароля</h2>
+          <div style="margin-top:18px;display:grid;gap:18px">
+            <label style="display:grid;gap:6px">
+              <span style="font-size:13px;font-weight:600">Текущий пароль</span>
+              <span style="position:relative;display:block">
+                <input type="{{ passType }}" defaultValue="nogotochki2026" disabled="{{ fieldsOff }}" style="{{ curPassStyle }}">
+                <button type="button" onClick="{{ togglePass }}" aria-label="Показать пароль" style="position:absolute;right:5px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:var(--r-input);background:transparent;color:var(--text-secondary);cursor:pointer">{{ eyeIcon }}</button>
+              </span>
+              <sc-if value="{{ showWrongPass }}" hint-placeholder-val="{{ false }}">
+                <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                  Неверный текущий пароль
+                </span>
+              </sc-if>
+            </label>
+            <label style="display:grid;gap:6px">
+              <span style="font-size:13px;font-weight:600">Новый пароль</span>
+              <span style="position:relative;display:block">
+                <input type="{{ passType }}" value="{{ newPass }}" onChange="{{ onNewPass }}" disabled="{{ fieldsOff }}" style="{{ newPassStyle }}">
+                <button type="button" onClick="{{ togglePass }}" aria-label="Показать пароль" style="position:absolute;right:5px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:var(--r-input);background:transparent;color:var(--text-secondary);cursor:pointer">{{ eyeIcon }}</button>
+              </span>
+              <div style="margin-top:4px;display:grid;gap:7px">
+                <sc-for list="{{ rules }}" as="rule" hint-placeholder-count="3">
+                  <span style="{{ rule.style }}">
+                    <i style="{{ rule.markStyle }}">{{ rule.mark }}</i>
+                    {{ rule.text }}
+                  </span>
+                </sc-for>
+              </div>
+            </label>
+            <div style="{{ actionsStyle }}">
+              <button type="button" onClick="{{ savePass }}" disabled="{{ saveOff }}" style="{{ passBtnStyle }}">Обновить пароль</button>
+              <a href="Восстановление пароля - запрос.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 6px;font-size:14px;font-weight:600">Забыли текущий пароль?</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="{{ sectionStyle }}">
+          <h2 style="{{ h2Style }}">Оформление</h2>
+          <p style="margin:8px 0 0;font-size:14px;color:var(--text-secondary)">Дневная — светлая, вечерняя — тёмная с мягким свечением</p>
+          <div style="margin-top:16px;display:grid;gap:10px">
+            <sc-for list="{{ themeOpts }}" as="t" hint-placeholder-count="3">
+              <label style="{{ t.rowStyle }}">
+                <input type="radio" name="appearance" checked="{{ t.on }}" onChange="{{ t.onChange }}" style="width:20px;height:20px;flex:none;accent-color:var(--action-primary)">
+                <span style="flex:1;min-width:0">
+                  <b style="display:block;font-size:15.5px;font-weight:600">{{ t.title }}</b>
+                  <span style="font-size:13.5px;color:var(--text-secondary)">{{ t.hint }}</span>
+                </span>
+                <span style="{{ t.swatchStyle }}"></span>
+              </label>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="{{ logoutRowStyle }}">
+          <div style="min-width:0">
+            <b style="display:block;font-size:15.5px;font-weight:600">Выйти из аккаунта</b>
+            <span style="font-size:13.5px;color:var(--text-secondary)">Записи останутся — войдите снова, чтобы их увидеть</span>
+          </div>
+          <a href="Вход.dc.html" style="flex:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:var(--r-button);border:1px solid var(--border-strong);color:var(--text-primary);font-size:15px;font-weight:600" style-hover="border-color:var(--accent-brand)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+            Выйти
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <nav style="{{ bottomNavStyle }}">
+      <a href="Личный кабинет - Предстоящие записи.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+        Предстоящие
+      </a>
+      <a href="Личный кабинет - История.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2M3 4.5v4h4"></path><path d="M12 8v4.5l3 1.8"></path></svg>
+        История
+      </a>
+      <a href="Личный кабинет - Уведомления.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5"></path><path d="M10.5 19a2 2 0 0 0 3 0"></path></svg>
+        Уведомления
+      </a>
+      <span style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-primary);font-size:11px;font-weight:600">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-brand)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"></circle><path d="M4.8 20.5a7.4 7.4 0 0 1 14.4 0"></path></svg>
+        Профиль
+      </span>
+    </nav>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:960},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;saving&quot;,&quot;success&quot;,&quot;wrongPass&quot;,&quot;emailTaken&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+const EYE_ON = ICON(['M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z','M12 9.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Z'],{width:20,height:20});
+const EYE_OFF = ICON(['M3 3l18 18','M10.6 6.3A8.8 8.8 0 0 1 12 6c6 0 9.5 6 9.5 6a16 16 0 0 1-2.6 3.3M6.3 7.9A16.4 16.4 0 0 0 2.5 12S6 18 12 18c1.2 0 2.3-.2 3.3-.6','M9.6 9.9a2.8 2.8 0 0 0 3.9 3.9'],{width:20,height:20});
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, st: null, showPass: false, newPass: null, appearance: 'system' };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'normal'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const st = this.st();
+    const saving = st === 'saving';
+    const success = st === 'success';
+    const wrongPass = st === 'wrongPass';
+    const emailTaken = st === 'emailTaken';
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const inputBase = 'width:100%;min-height:44px;padding:11px 14px;border-radius:var(--r-input);color:var(--text-primary);font:400 15px/1.4 var(--font-ui);';
+    const passBase = 'width:100%;min-height:44px;padding:11px 46px 11px 14px;border-radius:var(--r-input);color:var(--text-primary);font:400 15px/1.4 var(--font-ui);';
+    const normal = (b) => b + 'border:1px solid var(--border-strong);background:var(--bg-page)';
+    const error = (b) => b + 'border:1px solid var(--error);background:var(--error-bg)';
+
+    const pass = this.state.newPass ?? '';
+    const rules = [
+      { text: 'Не короче восьми символов', ok: pass.length >= 8 },
+      { text: 'Есть заглавная и строчная буквы', ok: /[a-zа-яё]/.test(pass) && /[A-ZА-ЯЁ]/.test(pass) },
+      { text: 'Есть хотя бы одна цифра', ok: /\d/.test(pass) }
+    ].map(r => ({
+      text: r.text, mark: r.ok ? '✓' : '·',
+      style: 'display:flex;align-items:center;gap:8px;font-size:12.5px;line-height:1.4;color:' + (r.ok ? 'var(--success-text)' : 'var(--text-secondary)'),
+      markStyle: 'flex:none;width:18px;height:18px;border-radius:50%;display:inline-grid;place-items:center;font-style:normal;font-size:11px;font-weight:600;' +
+        (r.ok ? 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)'
+              : 'border:1px solid var(--border-default);color:var(--text-disabled)')
+    }));
+
+    const themeOpts = [
+      { id:'system', title:'Как в системе', hint:'Следовать настройкам устройства', sw:'linear-gradient(90deg,#F7F2EC 50%,#1A1613 50%)' },
+      { id:'light', title:'Дневная', hint:'Светлый фон, тёплые бежевые тона', sw:'#F7F2EC' },
+      { id:'dark', title:'Вечерняя', hint:'Тёмный фон и мягкое свечение', sw:'#1A1613' }
+    ].map(t => ({
+      title: t.title, hint: t.hint, on: this.state.appearance === t.id,
+      onChange: () => this.setState({ appearance: t.id, theme: t.id === 'dark' ? 'dark' : (t.id === 'light' ? 'light' : dark ? 'dark' : 'light') }),
+      rowStyle: 'display:flex;gap:14px;align-items:center;padding:16px;border-radius:var(--r-card);cursor:pointer;' +
+        (this.state.appearance === t.id
+          ? 'border:1.5px solid var(--accent-brand);background:var(--slot-selected-bg)'
+          : 'border:1px solid var(--border-default);background:var(--bg-surface)'),
+      swatchStyle: 'flex:none;width:44px;height:30px;border-radius:8px;border:1px solid var(--border-strong);background:' + t.sw
+    }));
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark', appearance: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      stateOpts: [['normal','Обычное'],['saving','Сохранение'],['success','Сохранено'],['wrongPass','Неверный пароль'],['emailTaken','E-mail занят']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], newPass: null }) })),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: (mob
+        ? 'width:390px;max-width:100%;height:844px;overflow-y:auto;overflow-x:hidden;border:1px solid rgba(46,38,34,.16);border-radius:24px;box-shadow:0 18px 50px rgba(46,38,34,.16);'
+        : 'width:100%;min-width:1280px;') + 'position:relative;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 12px;gap:8px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;gap:20px;') + 'display:flex;align-items:center;justify-content:space-between',
+      logoWordStyle: 'font-family:var(--font-script);line-height:1;color:var(--text-primary);text-shadow:0 0 14px rgba(242,216,167,.55);' + (mob ? 'font-size:21px' : 'font-size:25px'),
+      navStyle: mob ? 'display:none' : 'display:flex;align-items:center;gap:22px;white-space:nowrap',
+      userNameStyle: (mob ? 'display:none;' : 'display:inline-flex;') + 'align-items:center;gap:9px',
+      headerCtaStyle: (mob ? 'display:none;' : 'display:inline-flex;padding:0 18px;font-size:14.5px;') + 'align-items:center;justify-content:center;min-height:44px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-weight:600;white-space:nowrap',
+
+      mainStyle: 'background:var(--bg-page);color:var(--text-primary);' + (mob ? 'padding:24px 0 96px' : 'padding:40px 0 72px'),
+      wrapStyle: mob ? 'padding:0 16px' : 'max-width:760px;margin:0 auto;padding:0 40px',
+      h1Style: 'margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:30px;line-height:34px' : 'font-size:46px;line-height:50px'),
+      sectionStyle: 'margin-top:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);' + (mob ? 'padding:20px 16px' : 'padding:28px'),
+      h2Style: 'margin:0;font-family:var(--font-display);font-weight:500;' + (mob ? 'font-size:24px;line-height:28px' : 'font-size:30px;line-height:34px'),
+      actionsStyle: 'display:flex;gap:14px;align-items:center;flex-wrap:wrap;' + (mob ? 'flex-direction:column;align-items:stretch' : ''),
+
+      showSuccess: success,
+      showEmailTaken: emailTaken,
+      showWrongPass: wrongPass,
+      fieldsOff: saving,
+      emailValue: emailTaken ? 'elena@mail.ru' : 'elena.petrova@mail.ru',
+      inputStyle: normal(inputBase),
+      emailInputStyle: emailTaken ? error(inputBase) : normal(inputBase),
+      curPassStyle: wrongPass ? error(passBase) : normal(passBase),
+      newPassStyle: normal(passBase),
+      newPass: pass,
+      onNewPass: (e) => this.setState({ newPass: e.target.value }),
+      passType: this.state.showPass ? 'text' : 'password',
+      togglePass: () => this.setState(s => ({ showPass: !s.showPass })),
+      eyeIcon: this.state.showPass ? EYE_ON : EYE_OFF,
+      rules,
+
+      isSaving: saving,
+      saveOff: saving,
+      saveLabel: saving ? 'Сохраняем' : 'Сохранить',
+      saveStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border:0;border-radius:var(--r-button);font-size:15.5px;font-weight:600;font-family:inherit;background:var(--action-primary);color:var(--action-on-primary);cursor:' + (saving ? 'progress' : 'pointer'),
+      save: () => { if (!saving) this.setState({ st: 'saving' }); },
+      passBtnStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;border-radius:var(--r-button);font-size:15.5px;font-weight:600;font-family:inherit;border:1px solid var(--accent-brand);background:transparent;color:var(--text-primary);cursor:' + (saving ? 'progress' : 'pointer'),
+      savePass: () => { if (!saving) this.setState({ st: 'saving' }); },
+
+      themeOpts,
+      logoutRowStyle: 'margin-top:20px;display:flex;gap:16px;align-items:center;justify-content:space-between;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle);' +
+        (mob ? 'padding:18px 16px;flex-direction:column;align-items:stretch' : 'padding:22px 24px'),
+      bottomNavStyle: (mob ? 'display:grid;' : 'display:none;') + 'position:sticky;bottom:0;z-index:40;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 8px 12px;background:var(--bg-elevated);border-top:1px solid var(--border-default);box-shadow:var(--shadow-menu);text-align:center'
+    };
+  }
+}
+</script>
+</body>
+</html>

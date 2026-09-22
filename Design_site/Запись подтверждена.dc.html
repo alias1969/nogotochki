@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+  --glow-strong:0 0 0 1px rgba(176,141,87,.5), 0 0 28px rgba(242,216,167,1);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+  --glow-strong:0 0 0 1px rgba(201,164,106,.6), 0 0 40px rgba(240,201,138,.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setNew }}" style="{{ pvNewStyle }}">Вы записаны</button>
+      <button type="button" onClick="{{ setMove }}" style="{{ pvMoveStyle }}">Запись перенесена</button>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка результата" style="background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Главная - лендинг.dc.html" style="display:flex;align-items:center;gap:10px;flex:none">
+          <svg viewBox="0 0 100 100" width="32" height="32" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <circle cx="50" cy="52" r="34"></circle>
+              <path d="M40 70 C38 56 40 44 43 36"></path>
+              <path d="M50 71 C50 56 53 44 56 37"></path>
+              <path d="M59 71 C60 58 63 49 66 43"></path>
+              <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+              <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+            </g>
+          </svg>
+          <span style="{{ logoWordStyle }}">Ноготочки</span>
+        </a>
+        <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;flex:none">
+          <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+          <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+        </button>
+      </div>
+    </header>
+
+    <main data-screen-label="Результат записи" style="{{ mainStyle }}">
+      <div style="{{ wrapStyle }}">
+
+        <div style="display:flex;flex-direction:column;align-items:center;text-align:center">
+          <span style="{{ markStyle }}">
+            <svg viewBox="0 0 100 100" width="58" height="58" aria-hidden="true" style="color:var(--accent-brand)">
+              <circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 7" opacity=".7"></circle>
+              <path d="M34 51 L45 62 L67 39" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M50 8 L52.6 17.4 L62 20 L52.6 22.6 L50 32 L47.4 22.6 L38 20 L47.4 17.4 Z" fill="currentColor"></path>
+            </svg>
+          </span>
+          <h1 style="{{ h1Style }}">{{ title }}</h1>
+          <p style="margin:14px 0 0;font-size:17px;line-height:1.55;color:var(--text-secondary)">{{ subtitle }}</p>
+          <sc-if value="{{ isMove }}" hint-placeholder-val="{{ false }}">
+            <span style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:var(--r-pill);background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);font-size:13.5px;font-weight:600">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+              Прежнее время освободилось
+            </span>
+          </sc-if>
+        </div>
+
+        <div style="{{ cardStyle }}">
+          <div style="{{ cardHeadStyle }}">
+            <span style="width:56px;height:56px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:18px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">АК</span>
+            <div style="min-width:0;flex:1">
+              <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">мастер</span>
+              <b style="display:block;margin-top:4px;font-size:17px;font-weight:600">Анна Ковалёва</b>
+              <span style="font-size:13.5px;color:var(--text-secondary)">Маникюр, укрепление, дизайн</span>
+            </div>
+            <span style="flex:none;padding:7px 14px;border-radius:var(--r-pill);background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text);font-size:12.5px;font-weight:600">Предстоит</span>
+          </div>
+
+          <div style="{{ rowStyle }}">
+            <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">услуги</span>
+            <div style="margin-top:12px;display:grid;gap:10px">
+              <sc-for list="{{ services }}" as="s" hint-placeholder-count="3">
+                <div style="display:flex;justify-content:space-between;gap:14px;align-items:baseline">
+                  <span style="font-size:15.5px">{{ s.name }}</span>
+                  <span style="flex:none;display:flex;gap:16px;align-items:baseline">
+                    <span style="font-size:13.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ s.dur }}</span>
+                    <span style="font-size:15.5px;font-weight:600;font-variant-numeric:tabular-nums">{{ s.price }}</span>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="{{ rowStyle }}">
+            <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">когда</span>
+            <b style="display:block;margin-top:10px;font-size:19px;font-weight:600;font-variant-numeric:tabular-nums">22 сентября, вторник</b>
+            <span style="display:block;margin-top:4px;font-size:16px;color:var(--text-secondary);font-variant-numeric:tabular-nums">14:30 – 16:40 · 2 ч 10 мин</span>
+            <sc-if value="{{ isMove }}" hint-placeholder-val="{{ false }}">
+              <span style="display:block;margin-top:10px;font-size:14px;color:var(--text-secondary);font-variant-numeric:tabular-nums">Было: 19 сентября, 12:00 — время свободно для других клиентов</span>
+            </sc-if>
+          </div>
+
+          <div style="{{ rowStyle }}">
+            <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">где</span>
+            <p style="margin:10px 0 0;font-size:15.5px;line-height:1.6">Москва, Большая Никитская, 12<br><span style="color:var(--text-secondary);font-size:14px">второй этаж, вход со двора</span></p>
+            <a href="tel:+74951234567" style="margin-top:10px;display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h3l1.6 4-2 1.4a11 11 0 0 0 5.5 5.5l1.4-2 4 1.6v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3 5.7 2 2 0 0 1 5 3.5Z"></path></svg>
+              +7 495 123-45-67
+            </a>
+          </div>
+
+          <div style="{{ totalRowStyle }}">
+            <b style="font-size:18px;font-weight:600;font-variant-numeric:tabular-nums">К оплате в студии: 3 150 ₽</b>
+            <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-secondary)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg>
+              Наличными или картой
+            </span>
+          </div>
+        </div>
+
+        <div style="{{ notesGridStyle }}">
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:18px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle)">
+            <span style="color:var(--accent-brand);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg></span>
+            <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">Приходите за 5 минут до начала</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:18px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle)">
+            <span style="color:var(--accent-brand);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg></span>
+            <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">Оплата на месте</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:18px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle)">
+            <span style="color:var(--accent-brand);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2"></path><path d="M3 4.5v4h4"></path></svg></span>
+            <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">Отменить или перенести можно в личном кабинете не позднее чем за сутки</p>
+          </div>
+        </div>
+
+        <div style="{{ actionsStyle }}">
+          <a href="Личный кабинет - Предстоящие записи.dc.html" style="{{ primaryStyle }}">Мои записи</a>
+          <a href="Главная - лендинг.dc.html" style="{{ secondaryStyle }}">На главную</a>
+        </div>
+
+        <p style="margin:18px 0 0;text-align:center;font-size:13px;line-height:1.6;color:var(--text-secondary)">{{ footNote }}</p>
+      </div>
+    </main>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:960},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;new&quot;,&quot;move&quot;],&quot;default&quot;:&quot;new&quot;,&quot;tsType&quot;:&quot;'new' | 'move'&quot;,&quot;section&quot;:&quot;Вариант экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const SERVICES = [
+  { name:'Маникюр с покрытием', dur:'1 ч 30 мин', price:'2 500 ₽' },
+  { name:'Снятие покрытия', dur:'30 мин', price:'500 ₽' },
+  { name:'Дизайн за ноготь', dur:'10 мин', price:'150 ₽' }
+];
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, mode: null };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  mode() { return this.state.mode ?? (new URLSearchParams(location.search).get('mode') === 'move' ? 'move' : (this.props.mode ?? 'new')); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const move = this.mode() === 'move';
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+
+    const secondary = 'display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 22px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15.5px;font-weight:600;font-family:inherit;cursor:pointer;' +
+      (mob ? 'width:100%' : '');
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      setNew: () => this.setState({ mode: 'new' }),
+      setMove: () => this.setState({ mode: 'move' }),
+      pvNewStyle: pv(!move),
+      pvMoveStyle: pv(move),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: (mob
+        ? 'width:390px;max-width:100%;height:844px;overflow-y:auto;overflow-x:hidden;border:1px solid rgba(46,38,34,.16);border-radius:24px;box-shadow:0 18px 50px rgba(46,38,34,.16);'
+        : 'width:100%;min-width:1280px;') + 'position:relative;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 16px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;') + 'display:flex;align-items:center;justify-content:space-between;gap:16px',
+      logoWordStyle: 'font-family:var(--font-script);line-height:1;color:var(--text-primary);text-shadow:0 0 14px rgba(242,216,167,.55);' + (mob ? 'font-size:22px' : 'font-size:24px'),
+
+      mainStyle: 'background:var(--bg-page);color:var(--text-primary);' + (mob ? 'padding:32px 0 48px' : 'padding:64px 0 88px'),
+      wrapStyle: mob ? 'padding:0 16px' : 'max-width:820px;margin:0 auto;padding:0 40px',
+
+      markStyle: 'width:' + (mob ? '96px' : '112px') + ';height:' + (mob ? '96px' : '112px') +
+        ';border-radius:50%;display:grid;place-items:center;background:var(--bg-surface);border:1px solid var(--border-hair);box-shadow:' + (dark ? 'var(--glow-strong)' : 'var(--glow-soft)'),
+      h1Style: 'margin:26px 0 0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:34px;line-height:38px' : 'font-size:56px;line-height:60px'),
+      title: move ? 'Запись перенесена' : 'Вы записаны',
+      subtitle: move ? 'Ждём вас в новое время' : 'Ждём вас в студии',
+      isMove: move,
+
+      cardStyle: 'margin-top:' + (mob ? '28px' : '40px') + ';border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden',
+      cardHeadStyle: 'display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--border-default);' + (mob ? 'padding:18px 16px;flex-wrap:wrap' : 'padding:22px 24px'),
+      rowStyle: 'border-bottom:1px solid var(--border-default);' + (mob ? 'padding:18px 16px' : 'padding:22px 24px'),
+      totalRowStyle: 'display:flex;gap:14px;justify-content:space-between;background:var(--bg-subtle);' +
+        (mob ? 'padding:18px 16px;flex-direction:column' : 'padding:22px 24px;align-items:center'),
+      services: SERVICES,
+
+      notesGridStyle: 'margin-top:20px;display:grid;gap:12px;' + (mob ? '' : 'grid-template-columns:repeat(3,minmax(0,1fr))'),
+      actionsStyle: 'margin-top:' + (mob ? '24px' : '32px') + ';display:flex;gap:12px;' + (mob ? 'flex-direction:column' : 'flex-wrap:wrap;align-items:center'),
+      primaryStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 30px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:17px;font-weight:600;' + (mob ? 'width:100%' : ''),
+      secondaryStyle: secondary,
+      footNote: move
+        ? 'Уведомление о переносе уже в личном кабинете. Перенести запись можно ещё один раз.'
+        : 'Уведомление о записи уже в личном кабинете. Напомним о визите накануне.'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="5">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка переноса" style="position:sticky;top:0;z-index:30;background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Личный кабинет - Предстоящие записи.dc.html" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-button);color:var(--text-primary);font-size:14.5px;font-weight:600;flex:none" style-hover="background:var(--bg-subtle)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+          В кабинет
+        </a>
+        <span style="{{ headerTitleStyle }}">Перенос</span>
+        <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;flex:none">
+          <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+          <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+        </button>
+      </div>
+    </header>
+
+    <main data-screen-label="Перенос записи" style="{{ mainStyle }}">
+      <div style="{{ wrapStyle }}">
+        <h1 style="{{ h1Style }}">Перенос записи</h1>
+
+        <div style="{{ cardStyle }}">
+          <div style="{{ cardTopStyle }}">
+            <div style="display:flex;gap:14px;align-items:center;min-width:0">
+              <span style="width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:17px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">АК</span>
+              <div style="min-width:0">
+                <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">мастер</span>
+                <b style="display:block;margin-top:3px;font-size:16.5px;font-weight:600">Анна Ковалёва</b>
+              </div>
+            </div>
+            <span style="{{ limitBadgeStyle }}">{{ limitBadge }}</span>
+          </div>
+          <div style="{{ cardBodyStyle }}">
+            <div style="min-width:0;flex:1">
+              <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">услуги</span>
+              <p style="margin:8px 0 0;font-size:14.5px;line-height:1.5;text-wrap:pretty">Маникюр с покрытием · Снятие покрытия · Дизайн за ноготь</p>
+              <span style="display:block;margin-top:8px;font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums">2 ч 10 мин · 3 150 ₽</span>
+            </div>
+            <div style="min-width:0;flex:1">
+              <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">текущее время</span>
+              <b style="display:block;margin-top:8px;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">22 сентября, вторник · 14:30</b>
+              <span style="font-size:13.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">Окончание примерно в 16:40</span>
+            </div>
+          </div>
+        </div>
+
+        <sc-if value="{{ showLastWarning }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:18px;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--warning-bg);border:1px solid var(--warning-border)">
+            <span style="color:var(--warning-text);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"></path><path d="M12 9v4M12 16.5h.01"></path></svg></span>
+            <p style="margin:0;font-size:14.5px;line-height:1.5;color:var(--warning-text)"><b style="font-weight:600">Это последний доступный перенос.</b> Дальше изменить время можно только через салон</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showLimitBlock }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:18px;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:14px;background:var(--info-bg);border:1px solid var(--info-border)">
+            <span style="color:var(--info-text);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg></span>
+            <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--info-text)"><b style="font-weight:600">Лимит переносов исчерпан.</b> Запись переносили три раза — выбрать новое время онлайн больше нельзя. Позвоните в салон: <a href="tel:+79000000000" style="color:var(--info-text);font-weight:600;text-decoration:underline;text-underline-offset:3px;font-variant-numeric:tabular-nums">+7 900 000-00-00</a></p>
+          </div>
+        </sc-if>
+
+        <div style="{{ segWrapStyle }}">
+          <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">кто проведёт визит</span>
+          <div style="margin-top:10px;display:flex;gap:6px;padding:4px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:var(--bg-subtle)">
+            <button type="button" onClick="{{ pickSame }}" disabled="{{ controlsOff }}" style="{{ sameStyle }}">Тот же мастер</button>
+            <button type="button" onClick="{{ pickAny }}" disabled="{{ controlsOff }}" style="{{ anyStyle }}">Любой мастер</button>
+          </div>
+          <p style="margin:10px 0 0;font-size:13px;color:var(--text-secondary)">{{ segHint }}</p>
+        </div>
+
+        <div style="{{ layoutStyle }}">
+          <div style="{{ calCardStyle }}">
+            <sc-if value="{{ showMonthGrid }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                  <button type="button" onClick="{{ prevMonth }}" disabled="{{ prevDisabled }}" aria-label="Предыдущий месяц" style="{{ prevStyle }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+                  </button>
+                  <b style="font-size:17px;font-weight:600">{{ monthTitle }}</b>
+                  <button type="button" onClick="{{ nextMonth }}" disabled="{{ nextMonthDisabled }}" aria-label="Следующий месяц" style="{{ nextMonthStyle }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+                  </button>
+                </div>
+                <div style="margin-top:18px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+                  <sc-for list="{{ weekdays }}" as="wd" hint-placeholder-count="7">
+                    <span style="text-align:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);font-weight:600;padding-bottom:4px">{{ wd }}</span>
+                  </sc-for>
+                  <sc-for list="{{ days }}" as="d" hint-placeholder-count="35">
+                    <button type="button" onClick="{{ d.onClick }}" disabled="{{ d.disabled }}" style="{{ d.style }}">{{ d.label }}</button>
+                  </sc-for>
+                </div>
+                <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border-default);display:flex;flex-wrap:wrap;gap:12px 18px">
+                  <span style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-secondary)"><i style="width:14px;height:14px;border-radius:5px;border:1px solid var(--border-strong);background:var(--bg-surface)"></i>есть время</span>
+                  <span style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-secondary)"><i style="width:14px;height:14px;border-radius:5px;border:1px solid var(--border-default);background:var(--bg-subtle)"></i>всё занято</span>
+                  <span style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-secondary)"><i style="width:14px;height:14px;border-radius:5px;border:1.5px solid var(--accent-brand)"></i>текущая запись</span>
+                </div>
+                <p style="margin:14px 0 0;font-size:12.5px;color:var(--text-secondary)">Перенести можно на 3 месяца вперёд</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showDateStrip }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                  <b style="font-size:15.5px;font-weight:600">{{ monthTitle }}</b>
+                  <button type="button" onClick="{{ openSheet }}" disabled="{{ controlsOff }}" style="{{ sheetBtnStyle }}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path><rect x="3" y="4.5" width="18" height="17" rx="3"></rect></svg>
+                    Календарь
+                  </button>
+                </div>
+                <div style="margin:14px -16px 0;padding:0 16px;display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory">
+                  <sc-for list="{{ strip }}" as="d" hint-placeholder-count="10">
+                    <button type="button" onClick="{{ d.onClick }}" disabled="{{ d.disabled }}" style="{{ d.style }}">
+                      <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.75">{{ d.wd }}</span>
+                      <b style="font-size:19px;font-weight:600;font-variant-numeric:tabular-nums">{{ d.num }}</b>
+                      <span style="font-size:10.5px;opacity:.75">{{ d.hint }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <p style="margin:14px 0 0;font-size:12.5px;color:var(--text-secondary)">Перенести можно на 3 месяца вперёд</p>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="{{ slotsCardStyle }}">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <b style="font-size:17px;font-weight:600">{{ dayTitle }}</b>
+              <span style="font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ slotsCount }}</span>
+            </div>
+
+            <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;display:grid;gap:20px">
+                <sc-for list="{{ skeletonGroups }}" as="g" hint-placeholder-count="3">
+                  <div style="display:grid;gap:10px">
+                    <i style="height:12px;width:90px;border-radius:6px;background:var(--bg-subtle)"></i>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                      <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="5">
+                        <i style="height:44px;width:84px;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isDayFull }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;padding:34px 20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-subtle);text-align:center">
+                <span style="display:inline-flex;color:var(--accent-brand)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg></span>
+                <p style="margin:12px 0 6px;font-family:var(--font-display);font-weight:500;font-size:24px">На эту дату всё занято</p>
+                <p style="margin:0 0 20px;font-size:14.5px;color:var(--text-secondary)">Выберите другой день или посмотрите ближайшее окно</p>
+                <button type="button" onClick="{{ jumpNearest }}" style="min-height:48px;padding:0 24px;border-radius:var(--r-button);border:1px solid var(--accent-brand);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Ближайшее свободное время</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showSlots }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:20px;display:grid;gap:22px">
+                <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+                  <div style="display:grid;gap:10px">
+                    <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">{{ g.name }}</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                      <sc-for list="{{ g.slots }}" as="s" hint-placeholder-count="5">
+                        <button type="button" onClick="{{ s.onClick }}" disabled="{{ s.disabled }}" style="{{ s.style }}">{{ s.time }}</button>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ g.empty }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:13px;color:var(--text-secondary)">{{ g.emptyText }}</span>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <p style="margin:22px 0 0;padding-top:16px;border-top:1px solid var(--border-default);font-size:14px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ endHint }}</p>
+            </sc-if>
+          </div>
+        </div>
+
+        <p style="{{ noteStyle }}">
+          <span style="color:var(--accent-brand);flex:none;display:inline-flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8.5h.01M11.4 12h1.2v4.2h-1.2z"></path></svg></span>
+          Прежнее время освободится только после подтверждения переноса
+        </p>
+      </div>
+    </main>
+
+    <div data-screen-label="Панель итога" style="{{ barOuterStyle }}">
+      <div style="{{ barInnerStyle }}">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <b style="{{ barSumStyle }}">{{ barSummary }}</b>
+          <span style="font-size:13px;color:var(--text-secondary)">{{ barSub }}</span>
+        </div>
+        <div style="{{ barActionStyle }}">
+          <sc-if value="{{ showNextHint }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:12.5px;color:var(--text-secondary)">{{ nextHint }}</span>
+          </sc-if>
+          <a href="Личный кабинет - Предстоящие записи.dc.html" style="{{ cancelStyle }}">Отмена</a>
+          <button type="button" onClick="{{ goNext }}" disabled="{{ nextDisabled }}" style="{{ nextStyle }}">Далее</button>
+        </div>
+      </div>
+    </div>
+
+    <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:60;background:rgba(31,28,26,.4);display:flex;align-items:flex-end">
+        <div style="width:100%;padding:20px 16px 24px;background:var(--bg-elevated);border-top-left-radius:24px;border-top-right-radius:24px;box-shadow:var(--shadow-modal)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <button type="button" onClick="{{ prevMonth }}" disabled="{{ prevDisabled }}" aria-label="Предыдущий месяц" style="{{ prevStyle }}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+            </button>
+            <b style="font-size:16px;font-weight:600">{{ monthTitle }}</b>
+            <button type="button" onClick="{{ nextMonth }}" disabled="{{ nextMonthDisabled }}" aria-label="Следующий месяц" style="{{ nextMonthStyle }}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+            </button>
+          </div>
+          <div style="margin-top:16px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+            <sc-for list="{{ weekdays }}" as="wd" hint-placeholder-count="7">
+              <span style="text-align:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);font-weight:600;padding-bottom:4px">{{ wd }}</span>
+            </sc-for>
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="35">
+              <button type="button" onClick="{{ d.onClick }}" disabled="{{ d.disabled }}" style="{{ d.style }}">{{ d.label }}</button>
+            </sc-for>
+          </div>
+          <button type="button" onClick="{{ closeSheet }}" style="margin-top:18px;width:100%;min-height:48px;border-radius:var(--r-button);border:1px solid var(--border-default);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Закрыть</button>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:960},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;selected&quot;,&quot;loading&quot;,&quot;dayFull&quot;,&quot;last&quot;,&quot;limit&quot;],&quot;default&quot;:&quot;selected&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const TOTAL_MIN = 130;
+const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MONTHS_N = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const WD = ['пн','вт','ср','чт','пт','сб','вс'];
+const TODAY = new Date(2026, 8, 18);
+const CURRENT = new Date(2026, 8, 22);
+
+const key = (d) => d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const hhmm = (m) => String(Math.floor(m / 60)).padStart(2,'0') + ':' + String(m % 60).padStart(2,'0');
+const hash = (d, salt) => { const s = key(d) + (salt||''); let h = 0; for (let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) % 9973; return h; };
+
+const studioHours = (d) => {
+  const wd = d.getDay();
+  if (wd === 0) return [11*60, 18*60];
+  if (wd === 6) return [10*60, 20*60];
+  return [10*60, 21*60];
+};
+
+const slotsFor = (d, anyMaster) => {
+  const h = hash(d, anyMaster ? 'any' : 'same');
+  if (h % 7 === 3) return [];
+  const [open, close] = studioHours(d);
+  const out = [];
+  const step = anyMaster ? 30 : 30;
+  for (let t = open; t + TOTAL_MIN <= close; t += step) {
+    if (!anyMaster && (h + t / 30) % 3 === 0) continue;
+    if (anyMaster && (h + t / 30) % 5 === 0) continue;
+    out.push(t);
+  }
+  return out;
+};
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, st: null, monthOff: 0, day: null, slot: undefined, any: false, sheet: false };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'selected'); }
+
+  activeDay() {
+    if (this.state.day) return this.state.day;
+    const any = this.state.any;
+    if (this.st() === 'dayFull') {
+      for (let i = 1; i < 90; i++) { const d = addDays(TODAY, i); if (slotsFor(d, any).length === 0) return d; }
+    }
+    for (let i = 1; i < 90; i++) { const d = addDays(TODAY, i); if (slotsFor(d, any).length) return d; }
+    return TODAY;
+  }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const st = this.st();
+    const loading = st === 'loading';
+    const limitOut = st === 'limit';
+    const last = st === 'last';
+    const any = this.state.any;
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const day = this.activeDay();
+    const daySlots = slotsFor(day, any);
+    const dayFull = daySlots.length === 0;
+    const slot = this.state.slot !== undefined ? this.state.slot : (st === 'selected' ? daySlots[1] : null);
+
+    const monthBase = new Date(TODAY.getFullYear(), TODAY.getMonth() + this.state.monthOff, 1);
+    const limitDate = addDays(TODAY, 92);
+    const firstWd = (monthBase.getDay() + 6) % 7;
+    const daysInMonth = new Date(monthBase.getFullYear(), monthBase.getMonth() + 1, 0).getDate();
+
+    const cellStyle = (kind) => {
+      const base = 'min-height:44px;border-radius:10px;font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;display:grid;place-items:center;font-family:inherit;';
+      if (kind === 'blank') return base + 'border:0;background:transparent;pointer-events:none';
+      if (kind === 'picked') return base + 'border:1.5px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text);box-shadow:var(--glow-soft);cursor:pointer';
+      if (kind === 'current') return base + 'border:1.5px solid var(--accent-brand);background:var(--bg-surface);color:var(--text-primary);cursor:pointer';
+      if (kind === 'free') return base + 'border:1px solid var(--border-strong);background:var(--bg-surface);color:var(--text-primary);cursor:pointer';
+      if (kind === 'full') return base + 'border:1px solid var(--border-default);background:var(--bg-subtle);color:var(--text-disabled);cursor:not-allowed';
+      return base + 'border:1px solid var(--border-default);background:transparent;color:var(--text-disabled);cursor:not-allowed;opacity:.5';
+    };
+
+    const cells = [];
+    for (let i = 0; i < firstWd; i++) cells.push({ label: '', style: cellStyle('blank'), disabled: true, onClick: () => {} });
+    for (let n = 1; n <= daysInMonth; n++) {
+      const d = new Date(monthBase.getFullYear(), monthBase.getMonth(), n);
+      const past = d <= TODAY;
+      const beyond = d > limitDate;
+      const free = slotsFor(d, any).length > 0;
+      let kind;
+      if (past || beyond || limitOut) kind = 'out';
+      else if (!free) kind = 'full';
+      else if (key(d) === key(day)) kind = 'picked';
+      else if (key(d) === key(CURRENT)) kind = 'current';
+      else kind = 'free';
+      const disabled = kind === 'out' || kind === 'full';
+      cells.push({
+        label: String(n), style: cellStyle(kind), disabled,
+        onClick: disabled ? (() => {}) : (() => this.setState({ day: d, slot: null, sheet: false }))
+      });
+    }
+
+    const strip = [];
+    for (let i = 1; i <= 14; i++) {
+      const d = addDays(TODAY, i);
+      const free = slotsFor(d, any).length > 0;
+      const on = key(d) === key(day);
+      const off = !free || limitOut;
+      strip.push({
+        wd: WD[(d.getDay() + 6) % 7], num: String(d.getDate()),
+        hint: free ? (slotsFor(d, any).length + ' окон') : 'занято',
+        disabled: off,
+        onClick: off ? (() => {}) : (() => this.setState({ day: d, slot: null })),
+        style: 'flex:none;width:76px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border-radius:14px;font-family:inherit;' +
+          (on && !off ? 'border:1.5px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text);box-shadow:var(--glow-soft);cursor:pointer'
+              : (off ? 'border:1px solid var(--border-default);background:var(--bg-subtle);color:var(--text-disabled);cursor:not-allowed'
+                     : 'border:1px solid var(--border-strong);background:var(--bg-surface);color:var(--text-primary);cursor:pointer'))
+      });
+    }
+
+    const slotStyle = (on, off) => 'min-height:44px;min-width:84px;padding:0 18px;border-radius:var(--r-pill);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;font-family:inherit;' +
+      (off ? 'border:1px solid var(--border-default);background:transparent;color:var(--text-disabled);cursor:not-allowed;opacity:.6'
+           : (on ? 'border:1.5px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text);box-shadow:var(--glow-soft);cursor:pointer'
+                 : 'border:1px solid var(--border-strong);background:var(--bg-surface);color:var(--text-primary);cursor:pointer'));
+
+    const mk = (name, from, to, emptyText) => {
+      const list = daySlots.filter(t => t >= from && t < to);
+      return {
+        name, empty: list.length === 0, emptyText,
+        slots: list.map(t => ({
+          time: hhmm(t), disabled: limitOut, style: slotStyle(slot === t, limitOut),
+          onClick: limitOut ? (() => {}) : (() => this.setState({ slot: t }))
+        }))
+      };
+    };
+    const groups = [mk('Утро', 0, 12*60, 'Утром всё занято'), mk('День', 12*60, 17*60, 'Днём всё занято'), mk('Вечер', 17*60, 24*60, 'Вечером всё занято')];
+
+    const nextDisabled = loading || limitOut || dayFull || slot == null;
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false, sheet: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      stateOpts: [['selected','Слот выбран'],['loading','Загрузка'],['dayFull','День занят'],['last','Последний перенос'],['limit','Лимит исчерпан']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], day: null, slot: undefined, monthOff: 0, sheet: false }) })),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: (mob
+        ? 'width:390px;max-width:100%;height:844px;overflow-y:auto;overflow-x:hidden;border:1px solid rgba(46,38,34,.16);border-radius:24px;box-shadow:0 18px 50px rgba(46,38,34,.16);'
+        : 'width:100%;min-width:1280px;') + 'position:relative;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 12px;gap:10px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;gap:20px;') + 'display:flex;align-items:center;justify-content:space-between',
+      headerTitleStyle: 'font-family:var(--font-script);color:var(--text-primary);line-height:1;' + (mob ? 'font-size:22px' : 'font-size:26px'),
+
+      mainStyle: 'background:var(--bg-page);color:var(--text-primary);' + (mob ? 'padding:24px 0 32px' : 'padding:40px 0 56px'),
+      wrapStyle: mob ? 'padding:0 16px' : 'max-width:1240px;margin:0 auto;padding:0 40px',
+      h1Style: 'margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:30px;line-height:34px' : 'font-size:46px;line-height:50px'),
+
+      cardStyle: 'margin-top:20px;border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden;border:1px solid ' + (limitOut ? 'var(--info-border)' : (last ? 'var(--warning-border)' : 'var(--border-default)')),
+      cardTopStyle: 'display:flex;gap:16px;align-items:center;justify-content:space-between;' + (mob ? 'padding:16px;flex-direction:column;align-items:stretch' : 'padding:20px 24px'),
+      cardBodyStyle: 'display:flex;gap:24px;align-items:flex-start;border-top:1px solid var(--border-default);' + (mob ? 'padding:16px;flex-direction:column;gap:16px' : 'padding:18px 24px'),
+      limitBadge: limitOut ? 'Перенос 3 из 3, лимит исчерпан' : (last ? 'Перенос 2 из 3, остался 1' : 'Перенос 1 из 3, осталось 2'),
+      limitBadgeStyle: 'flex:none;padding:7px 14px;border-radius:var(--r-pill);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;' +
+        (limitOut ? 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)'
+                  : (last ? 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)'
+                          : 'background:var(--bg-subtle);border:1px solid var(--border-hair);color:var(--text-secondary)')) +
+        (mob ? ';align-self:start' : ''),
+      showLastWarning: last,
+      showLimitBlock: limitOut,
+
+      segWrapStyle: 'margin-top:20px;' + (limitOut ? 'opacity:.55;pointer-events:none' : ''),
+      controlsOff: limitOut,
+      sameStyle: 'flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:var(--r-pill);font-size:14.5px;font-weight:600;font-family:inherit;cursor:pointer;' +
+        (!any ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary)' : 'background:transparent;border:0;color:var(--text-secondary)'),
+      anyStyle: 'flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:var(--r-pill);font-size:14.5px;font-weight:600;font-family:inherit;cursor:pointer;' +
+        (any ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary)' : 'background:transparent;border:0;color:var(--text-secondary)'),
+      pickSame: () => this.setState({ any: false, day: null, slot: null }),
+      pickAny: () => this.setState({ any: true, day: null, slot: null }),
+      segHint: any ? 'Покажем окна всех мастеров, которые делают эти услуги' : 'Окна Анны Ковалёвой под ваши услуги',
+
+      layoutStyle: mob ? 'margin-top:20px;display:grid;gap:16px' : 'margin-top:24px;display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:24px;align-items:start',
+      calCardStyle: 'border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);' + (mob ? 'padding:18px 16px' : 'padding:24px') + (limitOut ? ';opacity:.55;pointer-events:none' : ''),
+      slotsCardStyle: 'border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);' + (mob ? 'padding:18px 16px' : 'padding:24px') + (limitOut ? ';opacity:.55' : ''),
+      showMonthGrid: !mob,
+      showDateStrip: mob,
+      weekdays: WD,
+      days: cells,
+      strip,
+      monthTitle: MONTHS_N[monthBase.getMonth()] + ' ' + monthBase.getFullYear(),
+      prevDisabled: this.state.monthOff === 0,
+      nextMonthDisabled: this.state.monthOff >= 2,
+      prevStyle: 'width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-button);background:transparent;font-family:inherit;' +
+        (this.state.monthOff === 0 ? 'border:1px solid var(--border-default);color:var(--text-disabled);cursor:not-allowed' : 'border:1px solid var(--border-strong);color:var(--text-primary);cursor:pointer'),
+      nextMonthStyle: 'width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-button);background:transparent;font-family:inherit;' +
+        (this.state.monthOff >= 2 ? 'border:1px solid var(--border-default);color:var(--text-disabled);cursor:not-allowed' : 'border:1px solid var(--border-strong);color:var(--text-primary);cursor:pointer'),
+      prevMonth: () => this.setState(s => ({ monthOff: Math.max(0, s.monthOff - 1) })),
+      nextMonth: () => this.setState(s => ({ monthOff: Math.min(2, s.monthOff + 1) })),
+      sheetBtnStyle: 'display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-button);background:transparent;color:var(--text-primary);font-size:13.5px;font-weight:600;cursor:pointer',
+      sheetOpen: mob && this.state.sheet,
+      openSheet: () => this.setState({ sheet: true }),
+      closeSheet: () => this.setState({ sheet: false }),
+
+      dayTitle: day.getDate() + ' ' + MONTHS[day.getMonth()] + ', ' + ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'][day.getDay()],
+      slotsCount: loading ? '' : (dayFull ? 'нет окон' : (daySlots.length + ' окон')),
+      isLoading: loading,
+      isDayFull: !loading && dayFull,
+      showSlots: !loading && !dayFull,
+      skeletonGroups: [{ items:[1,2,3,4,5] }, { items:[1,2,3,4] }, { items:[1,2,3] }],
+      groups,
+      endHint: slot != null
+        ? ('Услуги займут 2 ч 10 мин, окончание примерно в ' + hhmm(slot + TOTAL_MIN))
+        : 'Услуги займут 2 ч 10 мин — выберите начало, и покажем окончание',
+      jumpNearest: () => {
+        for (let i = 1; i < 90; i++) { const d = addDays(TODAY, i); if (slotsFor(d, any).length) { this.setState({ day: d, slot: null, st: 'selected' }); return; } }
+      },
+
+      noteStyle: 'margin:20px 0 0;display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border:1px solid var(--border-hair);border-radius:14px;background:var(--bg-subtle);font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty',
+
+      barSummary: slot != null && !limitOut
+        ? ('Новое время: ' + day.getDate() + ' ' + MONTHS[day.getMonth()] + ', ' + hhmm(slot) + '–' + hhmm(slot + TOTAL_MIN))
+        : 'Новое время не выбрано',
+      barSub: 'Было: 22 сентября, 14:30–16:40 · 3 150 ₽',
+      barOuterStyle: 'position:sticky;bottom:0;z-index:20;background:var(--bg-elevated);border-top:1px solid var(--border-default);box-shadow:var(--shadow-menu)',
+      barInnerStyle: (mob ? 'padding:14px 16px 16px;flex-direction:column;align-items:stretch;gap:12px;' : 'max-width:1240px;margin:0 auto;padding:18px 40px;align-items:center;gap:24px;') + 'display:flex;justify-content:space-between',
+      barSumStyle: 'font-weight:600;font-variant-numeric:tabular-nums;' + (mob ? 'font-size:15px' : 'font-size:17px'),
+      barActionStyle: 'display:flex;align-items:center;gap:12px;' + (mob ? 'flex-direction:column-reverse;align-items:stretch' : ''),
+      cancelStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:var(--r-button);border:1px solid var(--border-strong);color:var(--text-primary);font-size:15.5px;font-weight:600',
+      showNextHint: nextDisabled && !loading,
+      nextHint: limitOut ? 'Перенос онлайн недоступен' : 'Выберите новое время',
+      nextDisabled,
+      goNext: () => { if (!nextDisabled) location.href = 'Запись. Шаг 5 - Подтверждение.dc.html?mode=move'; },
+      nextStyle: 'display:flex;align-items:center;justify-content:center;min-height:52px;padding:0 32px;border:0;border-radius:var(--r-button);font-size:16px;font-weight:600;font-family:inherit;' +
+        (nextDisabled
+          ? 'background:var(--action-primary-disabled);color:var(--action-on-primary-disabled);cursor:not-allowed'
+          : 'background:var(--action-primary);color:var(--action-on-primary);cursor:pointer')
+    };
+  }
+}
+</script>
+</body>
+</html>

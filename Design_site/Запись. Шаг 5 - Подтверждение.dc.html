@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setNew }}" style="{{ pvNewStyle }}">Новая запись</button>
+      <button type="button" onClick="{{ setMove }}" style="{{ pvMoveStyle }}">Перенос</button>
+    </div>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="6">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка записи" style="position:sticky;top:0;z-index:30;background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Запись. Шаг 3 - Дата и время.dc.html" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-button);color:var(--text-primary);font-size:14.5px;font-weight:600;flex:none" style-hover="background:var(--bg-subtle)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+          Назад
+        </a>
+        <span style="{{ headerTitleStyle }}">{{ headerTitle }}</span>
+        <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;flex:none">
+          <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+          <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+        </button>
+      </div>
+
+      <div style="{{ progressWrapStyle }}">
+        <sc-if value="{{ showStepsRow }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:12px">
+            <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--text-link)">
+              <i style="width:26px;height:26px;border-radius:50%;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);display:grid;place-items:center;font-style:normal">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+              </i>Услуги
+            </a>
+            <i style="flex:1;min-width:24px;height:1px;background:var(--border-default)"></i>
+            <a href="Запись. Шаг 2 - Мастер.dc.html" style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--text-link)">
+              <i style="width:26px;height:26px;border-radius:50%;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);display:grid;place-items:center;font-style:normal">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+              </i>Мастер
+            </a>
+            <i style="flex:1;min-width:24px;height:1px;background:var(--border-default)"></i>
+            <a href="Запись. Шаг 3 - Дата и время.dc.html" style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--text-link)">
+              <i style="width:26px;height:26px;border-radius:50%;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);display:grid;place-items:center;font-style:normal">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+              </i>Время
+            </a>
+            <i style="flex:1;min-width:24px;height:1px;background:var(--border-default)"></i>
+            <span style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600"><i style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--accent-brand);color:var(--text-primary);display:grid;place-items:center;font-size:12px;font-weight:600;font-style:normal;box-shadow:var(--glow-soft)">4</i>Подтверждение</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showStepsCompact }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <b style="font-size:15px">Подтверждение</b>
+              <span style="font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">Шаг 4 из 4</span>
+            </div>
+            <div style="margin-top:10px;height:4px;border-radius:2px;background:var(--bg-subtle);overflow:hidden"><i style="display:block;width:100%;height:100%;background:var(--accent-brand)"></i></div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="{{ reserveBarStyle }}">
+        <span style="display:flex;align-items:center;gap:9px;min-width:0">
+          <span style="{{ reserveIconStyle }}">{{ reserveIcon }}</span>
+          <span style="font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;{{ reserveTextColor }}">{{ reserveText }}</span>
+        </span>
+        <sc-if value="{{ showRecheck }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ recheck }}" style="flex:none;min-height:36px;padding:0 14px;border:1px solid var(--border-strong);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer">Проверить, свободно ли ещё</button>
+        </sc-if>
+      </div>
+    </header>
+
+    <main data-screen-label="Шаг 4 · подтверждение" style="{{ mainStyle }}">
+      <div style="{{ wrapStyle }}">
+
+        <sc-if value="{{ isExpired }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:40px 22px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);text-align:center">
+            <span style="display:inline-grid;place-items:center;width:72px;height:72px;border-radius:50%;background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>
+            </span>
+            <p style="margin:16px 0 8px;font-family:var(--font-display);font-weight:500;font-size:32px;line-height:1.15">Время больше не закреплено</p>
+            <p style="margin:0 auto 24px;max-width:44ch;font-size:15.5px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">Мы держали 22 сентября, 14:30 десять минут. Проверьте, свободно ли это окно, или выберите другое.</p>
+            <div style="{{ expiredActionsStyle }}">
+              <button type="button" onClick="{{ recheck }}" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 26px;border:0;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:16px;font-weight:600;cursor:pointer">Проверить, свободно ли ещё</button>
+              <a href="Запись. Шаг 3 - Дата и время.dc.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:var(--r-button);border:1px solid var(--accent-brand);color:var(--text-primary);font-size:16px;font-weight:600" style-hover="background:rgba(176,141,87,.1)">Выбрать другое время</a>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <h1 style="{{ h1Style }}">{{ pageTitle }}</h1>
+            <p style="margin:10px 0 0;font-size:16px;color:var(--text-secondary)">{{ pageSub }}</p>
+
+            <sc-if value="{{ showTakenBlock }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:24px;padding:20px;border:1px solid var(--warning-border);border-radius:var(--r-card);background:var(--warning-bg)">
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <span style="color:var(--warning-text);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg></span>
+                  <div>
+                    <b style="display:block;font-size:15.5px;font-weight:600;color:var(--warning-text)">Это время только что заняли</b>
+                    <span style="font-size:14px;line-height:1.5;color:var(--warning-text)">Выберите одно из ближайших свободных окон у Анны Ковалёвой</span>
+                  </div>
+                </div>
+                <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px">
+                  <sc-for list="{{ nearSlots }}" as="s" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ s.onClick }}" style="{{ s.style }}">
+                      <span style="font-size:11.5px;opacity:.8">{{ s.day }}</span>
+                      <b style="font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ s.time }}</b>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showSendError }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:24px;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:14px;background:var(--error-bg);border:1px solid var(--error-border)">
+                <span style="color:var(--error-text);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg></span>
+                <div style="flex:1;min-width:0">
+                  <b style="display:block;font-size:15px;font-weight:600;color:var(--error-text)">Не удалось подтвердить запись, попробуйте ещё раз</b>
+                  <span style="font-size:14px;line-height:1.5;color:var(--error-text)">Время остаётся закреплённым за вами — ничего не потеряно</span>
+                </div>
+              </div>
+            </sc-if>
+
+            <div style="{{ cardStyle }}">
+              <div style="{{ rowStyle }}">
+                <div style="min-width:0;display:flex;gap:14px;align-items:center">
+                  <span style="width:56px;height:56px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:18px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">АК</span>
+                  <div style="min-width:0">
+                    <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">мастер</span>
+                    <b style="display:block;margin-top:4px;font-size:17px;font-weight:600">Анна Ковалёва</b>
+                    <span style="font-size:13.5px;color:var(--text-secondary)">Маникюр, укрепление, дизайн · стаж 8 лет</span>
+                  </div>
+                </div>
+                <a href="Запись. Шаг 2 - Мастер.dc.html" style="{{ editLinkStyle }}">Изменить</a>
+              </div>
+
+              <div style="{{ rowStyle }}">
+                <div style="min-width:0;flex:1">
+                  <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">услуги</span>
+                  <div style="margin-top:12px;display:grid;gap:10px">
+                    <sc-for list="{{ services }}" as="s" hint-placeholder-count="3">
+                      <div style="display:flex;justify-content:space-between;gap:14px;align-items:baseline">
+                        <span style="font-size:15.5px">{{ s.name }}</span>
+                        <span style="flex:none;display:flex;gap:16px;align-items:baseline">
+                          <span style="font-size:13.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ s.dur }}</span>
+                          <span style="font-size:15.5px;font-weight:600;font-variant-numeric:tabular-nums">{{ s.price }}</span>
+                        </span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <a href="Запись. Шаг 1 - Услуги.dc.html" style="{{ editLinkStyle }}">Изменить</a>
+              </div>
+
+              <div style="{{ rowStyle }}">
+                <div style="min-width:0;flex:1">
+                  <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">{{ timeLabel }}</span>
+                  <sc-if value="{{ isMove }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:12px;display:grid;gap:10px">
+                      <div style="display:flex;gap:10px;align-items:center">
+                        <span style="flex:none;padding:4px 10px;border-radius:var(--r-pill);border:1px solid var(--border-default);background:var(--bg-subtle);font-size:11.5px;font-weight:600;color:var(--text-secondary)">было</span>
+                        <span style="font-size:16px;color:var(--text-secondary);text-decoration:line-through;font-variant-numeric:tabular-nums">19 сентября, сб · 12:00–14:10</span>
+                      </div>
+                      <div style="display:flex;gap:10px;align-items:center">
+                        <span style="flex:none;padding:4px 10px;border-radius:var(--r-pill);border:1px solid var(--accent-brand);background:var(--slot-selected-bg);font-size:11.5px;font-weight:600;color:var(--slot-selected-text)">станет</span>
+                        <b style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">22 сентября, вт · 14:30–16:40</b>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ isNew }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:10px">
+                      <b style="display:block;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">22 сентября, вторник · 14:30</b>
+                      <span style="font-size:13.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">Окончание примерно в 16:40</span>
+                    </div>
+                  </sc-if>
+                </div>
+                <a href="Запись. Шаг 3 - Дата и время.dc.html" style="{{ editLinkStyle }}">Изменить</a>
+              </div>
+
+              <div style="{{ totalRowStyle }}">
+                <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                  <b style="font-size:18px;font-weight:600;font-variant-numeric:tabular-nums">Итог: 2 ч 10 мин · 3 150 ₽</b>
+                  <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-secondary)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg>
+                    Оплата на месте: наличными или картой
+                  </span>
+                </div>
+                <sc-if value="{{ isMove }}" hint-placeholder-val="{{ false }}">
+                  <span style="flex:none;padding:7px 14px;border-radius:var(--r-pill);border:1px solid var(--border-hair);background:var(--bg-surface);font-size:13px;font-weight:600;color:var(--text-secondary);font-variant-numeric:tabular-nums">Перенос 2 из 3</span>
+                </sc-if>
+              </div>
+            </div>
+
+            <label style="margin-top:20px;display:grid;gap:8px">
+              <span style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <span style="font-size:13px;font-weight:600">Комментарий мастеру</span>
+                <span style="font-size:12px;color:var(--text-secondary)">необязательно</span>
+              </span>
+              <textarea rows="3" value="{{ comment }}" onChange="{{ onComment }}" placeholder="Например: ногти тонкие, нужен уход поаккуратнее" style="width:100%;min-height:96px;padding:12px 14px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 15px/1.5 var(--font-ui);resize:vertical"></textarea>
+            </label>
+
+            <div style="{{ actionsStyle }}">
+              <button type="button" onClick="{{ confirm }}" disabled="{{ confirmDisabled }}" style="{{ confirmStyle }}">
+                <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+                  <i style="width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;display:inline-block;animation:ng-spin .8s linear infinite;margin-right:10px"></i>
+                </sc-if>
+                {{ confirmLabel }}
+              </button>
+              <a href="Запись. Шаг 3 - Дата и время.dc.html" style="{{ backStyle }}">Назад</a>
+            </div>
+
+            <p style="margin:16px 0 0;font-size:13px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">{{ footNote }}</p>
+          </div>
+        </sc-if>
+      </div>
+    </main>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:960},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;new&quot;,&quot;move&quot;],&quot;default&quot;:&quot;new&quot;,&quot;tsType&quot;:&quot;'new' | 'move'&quot;,&quot;section&quot;:&quot;Вариант экрана&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;expiring&quot;,&quot;loading&quot;,&quot;taken&quot;,&quot;expired&quot;,&quot;error&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+const CLOCK = ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'],{width:18,height:18});
+const WARN = ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 8v4.5M12 16h.01'],{width:18,height:18});
+
+const SERVICES = [
+  { name:'Маникюр с покрытием', dur:'1 ч 30 мин', price:'2 500 ₽' },
+  { name:'Снятие покрытия', dur:'30 мин', price:'500 ₽' },
+  { name:'Дизайн за ноготь', dur:'10 мин', price:'150 ₽' }
+];
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, st: null, mode: null, comment: '', left: null, near: null };
+
+  componentDidMount() {
+    this._t = setInterval(() => {
+      const s = this.st();
+      if (s === 'expired' || s === 'taken') return;
+      this.setState(p => ({ left: Math.max(0, (p.left ?? this.baseLeft()) - 1) }));
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'normal'); }
+  mode() { return this.state.mode ?? (new URLSearchParams(location.search).get('mode') === 'move' ? 'move' : (this.props.mode ?? 'new')); }
+  baseLeft() { return this.st() === 'expiring' ? 120 : 465; }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const st = this.st();
+    const move = this.mode() === 'move';
+    const loading = st === 'loading';
+    const taken = st === 'taken';
+    const expired = st === 'expired';
+    const sendError = st === 'error';
+    const expiring = st === 'expiring';
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const left = this.state.left ?? this.baseLeft();
+    const mmss = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+
+    let reserveText, reserveTone;
+    if (expired) { reserveText = 'Время больше не закреплено за вами'; reserveTone = 'warn'; }
+    else if (taken) { reserveText = 'Это время заняли — резерв снят'; reserveTone = 'warn'; }
+    else if (expiring) { reserveText = 'Резерв истекает через 2 минуты · ' + mmss; reserveTone = 'warn'; }
+    else { reserveText = 'Время закреплено за вами: ' + mmss; reserveTone = 'calm'; }
+
+    const rowStyle = 'display:flex;gap:16px;align-items:flex-start;justify-content:space-between;padding:' +
+      (mob ? '18px 16px;' : '22px 24px;') + 'border-bottom:1px solid var(--border-default)';
+
+    const near = [
+      { day: '22 сентября', time: '17:00' },
+      { day: '23 сентября', time: '11:30' },
+      { day: '23 сентября', time: '15:00' },
+      { day: '24 сентября', time: '10:30' }
+    ].map((s, i) => ({
+      day: s.day, time: s.time,
+      onClick: () => this.setState({ near: i, st: 'normal', left: 600 }),
+      style: 'display:flex;flex-direction:column;align-items:center;gap:2px;min-height:52px;padding:8px 16px;border-radius:var(--r-button);cursor:pointer;font-family:inherit;' +
+        (this.state.near === i
+          ? 'border:1.5px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+          : 'border:1px solid var(--border-strong);background:var(--bg-surface);color:var(--text-primary)')
+    }));
+
+    const confirmDisabled = loading || taken;
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      setNew: () => this.setState({ mode: 'new' }),
+      setMove: () => this.setState({ mode: 'move' }),
+      pvNewStyle: pv(!move),
+      pvMoveStyle: pv(move),
+      stateOpts: [['normal','Обычное'],['expiring','Резерв истекает'],['loading','Подтверждение'],['taken','Время заняли'],['expired','Резерв снят'],['error','Ошибка отправки']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], left: null, near: null }) })),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: (mob
+        ? 'width:390px;max-width:100%;height:844px;overflow-y:auto;overflow-x:hidden;border:1px solid rgba(46,38,34,.16);border-radius:24px;box-shadow:0 18px 50px rgba(46,38,34,.16);'
+        : 'width:100%;min-width:1280px;') + 'position:relative;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 12px;gap:10px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;gap:20px;') + 'display:flex;align-items:center;justify-content:space-between',
+      headerTitle: move ? 'Перенос' : 'Запись',
+      headerTitleStyle: 'font-family:var(--font-script);color:var(--text-primary);line-height:1;' + (mob ? 'font-size:22px' : 'font-size:26px'),
+      progressWrapStyle: (mob ? 'padding:4px 16px 14px;' : 'max-width:1240px;margin:0 auto;padding:6px 40px 18px;') + 'border-top:1px solid var(--border-default)',
+      showStepsRow: !mob,
+      showStepsCompact: mob,
+
+      reserveBarStyle: 'display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--border-default);' +
+        (mob ? 'padding:10px 16px;' : 'max-width:1240px;margin:0 auto;padding:12px 40px;') +
+        (reserveTone === 'warn' ? 'background:var(--warning-bg)' : 'background:var(--bg-subtle)'),
+      reserveIcon: reserveTone === 'warn' ? WARN : CLOCK,
+      reserveIconStyle: 'display:inline-flex;flex:none;color:' + (reserveTone === 'warn' ? 'var(--warning-text)' : 'var(--accent-brand)'),
+      reserveText,
+      reserveTextColor: reserveTone === 'warn' ? 'color:var(--warning-text);font-weight:600' : 'color:var(--text-secondary)',
+      showRecheck: !mob && (expired || taken),
+      recheck: () => this.setState({ st: 'normal', left: 600, near: null }),
+
+      mainStyle: 'background:var(--bg-page);color:var(--text-primary);' + (mob ? 'padding:24px 0 40px' : 'padding:40px 0 72px'),
+      wrapStyle: mob ? 'padding:0 16px' : 'max-width:820px;margin:0 auto;padding:0 40px',
+      isExpired: expired,
+      showMain: !expired,
+      expiredActionsStyle: 'display:flex;gap:12px;justify-content:center;' + (mob ? 'flex-direction:column' : 'flex-wrap:wrap'),
+
+      pageTitle: move ? 'Проверьте перенос' : 'Проверьте запись',
+      pageSub: move ? 'Старое время освободится сразу после подтверждения' : 'Если всё верно, подтвердите — запись появится в личном кабинете',
+      h1Style: 'margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:28px;line-height:32px' : 'font-size:44px;line-height:48px'),
+
+      showTakenBlock: taken,
+      nearSlots: near,
+      showSendError: sendError,
+
+      cardStyle: 'margin-top:24px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden',
+      rowStyle,
+      totalRowStyle: 'display:flex;gap:16px;align-items:center;justify-content:space-between;background:var(--bg-subtle);' + (mob ? 'padding:18px 16px' : 'padding:22px 24px'),
+      editLinkStyle: 'flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-button);font-size:13.5px;font-weight:600',
+      services: SERVICES,
+      isMove: move,
+      isNew: !move,
+      timeLabel: move ? 'перенос' : 'дата и время',
+
+      comment: this.state.comment,
+      onComment: (e) => this.setState({ comment: e.target.value }),
+
+      actionsStyle: 'margin-top:24px;display:flex;gap:12px;' + (mob ? 'flex-direction:column-reverse' : 'align-items:center'),
+      confirmDisabled,
+      confirmLabel: loading ? (move ? 'Переносим' : 'Подтверждаем') : (move ? 'Подтвердить перенос' : 'Подтвердить запись'),
+      confirmStyle: 'flex:1;display:flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border:0;border-radius:var(--r-button);font-size:17px;font-weight:600;font-family:inherit;' +
+        (confirmDisabled
+          ? 'background:var(--action-primary-disabled);color:var(--action-on-primary-disabled);cursor:' + (loading ? 'progress' : 'not-allowed')
+          : 'background:var(--action-primary);color:var(--action-on-primary);cursor:pointer'),
+      confirm: () => { if (confirmDisabled) return; this.setState({ st: 'loading' }); setTimeout(() => { location.href = 'Запись подтверждена.dc.html' + (move ? '?mode=move' : ''); }, 900); },
+      backStyle: 'flex:none;display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 26px;border-radius:var(--r-button);border:1px solid var(--border-strong);color:var(--text-primary);font-size:16px;font-weight:600',
+      isLoading: loading,
+      footNote: move
+        ? 'Уведомление о переносе придёт в личный кабинет. Перенести запись можно не больше трёх раз.'
+        : 'Уведомление о записи придёт в личный кабинет. Отменить или перенести визит можно там же, без звонка.'
+    };
+  }
+}
+</script>
+</body>
+</html>

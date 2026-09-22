@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+@keyframes ng-toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ng-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="6">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-theme="{{ themeAttr }}" style="position:relative;width:100%;min-width:1280px;background:var(--bg-page);color:var(--text-primary);display:flex">
+
+    <aside data-screen-label="Меню админки" style="flex:none;width:236px;min-height:1020px;border-right:1px solid var(--border-default);background:var(--bg-subtle);display:flex;flex-direction:column">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:10px">
+        <svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+          <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <circle cx="50" cy="52" r="34"></circle>
+            <path d="M40 70 C38 56 40 44 43 36"></path>
+            <path d="M50 71 C50 56 53 44 56 37"></path>
+            <path d="M59 71 C60 58 63 49 66 43"></path>
+            <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+            <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+          </g>
+        </svg>
+        <span style="display:grid">
+          <span style="font-family:var(--font-script);font-size:19px;line-height:1.1">Ноготочки</span>
+          <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">админ-панель</span>
+        </span>
+      </div>
+      <nav style="padding:12px 10px;display:grid;gap:2px">
+        <sc-for list="{{ menu }}" as="m" hint-placeholder-count="10">
+          <a href="{{ m.href }}" style="{{ m.style }}">
+            <span style="flex:none;display:inline-flex;color:{{ m.iconColor }}">{{ m.icon }}</span>
+            <span style="flex:1;min-width:0">{{ m.name }}</span>
+            <sc-if value="{{ m.badge }}" hint-placeholder-val="{{ false }}">
+              <span style="flex:none;min-width:20px;padding:2px 6px;border-radius:999px;background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text);font-size:11px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums">{{ m.badgeText }}</span>
+            </sc-if>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto;padding:14px 16px;border-top:1px solid var(--border-default)">
+        <a href="Вход администратора.dc.html" style="display:flex;align-items:center;gap:9px;min-height:40px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+          Выйти
+        </a>
+      </div>
+    </aside>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <header data-screen-label="Верхняя строка" style="position:sticky;top:0;z-index:20;border-bottom:1px solid var(--border-default);background:var(--bg-page)">
+        <div style="padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+          <span style="display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:0 13px;border:1px solid var(--border-default);border-radius:8px;background:var(--bg-surface);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">
+            <span style="color:var(--accent-brand);display:inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg></span>
+            Пятница, 18 сентября 2026
+          </span>
+          <div style="display:flex;align-items:center;gap:10px;flex:none">
+            <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12.5px;font-weight:600;cursor:pointer">
+              <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+              {{ themeLabel }}
+            </button>
+            <span style="display:inline-flex;align-items:center;gap:9px;padding-left:6px;border-left:1px solid var(--border-default)">
+              <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12.5px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ОР</span>
+              <span style="display:grid">
+                <b style="font-size:13px;font-weight:600">Ольга Р.</b>
+                <span style="font-size:11px;color:var(--text-secondary)">администратор</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main data-screen-label="Графики мастеров" style="flex:1;padding:28px">
+        <div style="display:grid;gap:20px">
+
+          <div style="display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap">
+            <div style="min-width:0">
+              <h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:40px;line-height:1.08;letter-spacing:-.01em">Графики мастеров</h1>
+              <p style="margin:8px 0 0;font-size:14px;color:var(--text-secondary)">{{ subline }}</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex:none">
+              <sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}">
+                <span style="display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:var(--r-pill);background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text);font-size:12.5px;font-weight:600">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                  Есть несохранённые изменения
+                </span>
+              </sc-if>
+              <button type="button" onClick="{{ save }}" disabled="{{ saveDisabled }}" style="{{ saveStyle }}">
+                <sc-if value="{{ isSaving }}" hint-placeholder-val="{{ false }}">
+                  <i style="width:15px;height:15px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;display:inline-block;animation:ng-spin .8s linear infinite;margin-right:9px"></i>
+                </sc-if>
+                {{ saveLabel }}
+              </button>
+            </div>
+          </div>
+
+          <div style="padding:16px 20px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle);display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+            <div style="display:grid;gap:8px;min-width:0">
+              <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">мастер</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ masterTabs }}" as="m" hint-placeholder-count="4">
+                  <button type="button" onClick="{{ m.onClick }}" style="{{ m.style }}">
+                    <span style="width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:10.5px;font-weight:700;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">{{ m.initials }}</span>
+                    {{ m.name }}
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+            <span style="flex:1"></span>
+            <span style="font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ weekTotal }}</span>
+          </div>
+
+          <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;gap:18px">
+              <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:grid;gap:10px">
+                <sc-for list="{{ skelRows }}" as="r" hint-placeholder-count="7">
+                  <i style="height:52px;border-radius:10px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                </sc-for>
+              </div>
+              <div style="display:grid;gap:18px">
+                <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:grid;gap:10px">
+                  <sc-for list="{{ skelSide }}" as="r" hint-placeholder-count="3">
+                    <i style="height:64px;border-radius:10px;background:var(--bg-subtle)"></i>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showBody }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;gap:18px">
+
+              <div style="display:grid;gap:18px">
+                <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                  <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;justify-content:space-between;gap:12px">
+                    <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Недельный шаблон</h2>
+                    <span style="font-size:12.5px;color:var(--text-secondary)">Действует, пока не задано исключение</span>
+                  </div>
+
+                  <div style="display:grid;grid-template-columns:168px 216px minmax(280px,1fr) 176px;background:var(--bg-subtle);border-bottom:1px solid var(--border-default)">
+                    <span style="padding:11px 16px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">день</span>
+                    <span style="padding:11px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">рабочие часы</span>
+                    <span style="padding:11px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">перерыв</span>
+                    <span style="padding:11px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">действия</span>
+                  </div>
+
+                  <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+                    <div style="{{ d.rowStyle }}">
+                      <span style="padding:12px 16px;display:flex;align-items:center;gap:11px;min-width:0">
+                        <input type="checkbox" checked="{{ d.working }}" onChange="{{ d.toggleWork }}" aria-label="Рабочий день" style="width:17px;height:17px;flex:none;accent-color:var(--action-primary)">
+                        <span style="display:grid;gap:2px;min-width:0">
+                          <b style="font-size:14px;font-weight:600">{{ d.name }}</b>
+                          <span style="font-size:11.5px;color:var(--text-secondary)">{{ d.hint }}</span>
+                        </span>
+                      </span>
+                      <span style="padding:10px 14px;display:flex;align-items:center;gap:6px">
+                        <sc-if value="{{ d.working }}" hint-placeholder-val="{{ true }}">
+                          <span style="display:flex;align-items:center;gap:6px">
+                            <input type="time" value="{{ d.from }}" onChange="{{ d.setFrom }}" style="{{ d.timeStyle }}">
+                            <span style="color:var(--text-secondary)">–</span>
+                            <input type="time" value="{{ d.to }}" onChange="{{ d.setTo }}" style="{{ d.timeStyle }}">
+                          </span>
+                        </sc-if>
+                        <sc-if value="{{ d.dayOff }}" hint-placeholder-val="{{ false }}">
+                          <span style="padding:5px 12px;border-radius:var(--r-pill);border:1px solid var(--border-default);background:var(--bg-subtle);font-size:12px;font-weight:600;color:var(--text-secondary)">Выходной</span>
+                        </sc-if>
+                      </span>
+                      <span style="padding:10px 14px;display:flex;align-items:center;gap:6px;min-width:0">
+                        <sc-if value="{{ d.working }}" hint-placeholder-val="{{ true }}">
+                          <span style="display:flex;align-items:center;gap:6px">
+                            <input type="time" value="{{ d.breakFrom }}" onChange="{{ d.setBreakFrom }}" style="{{ d.timeStyle }}">
+                            <span style="color:var(--text-secondary)">–</span>
+                            <input type="time" value="{{ d.breakTo }}" onChange="{{ d.setBreakTo }}" style="{{ d.timeStyle }}">
+                            <span style="font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ d.netHours }}</span>
+                          </span>
+                        </sc-if>
+                      </span>
+                      <span style="padding:10px 14px;display:flex;align-items:center;gap:6px">
+                        <sc-if value="{{ d.working }}" hint-placeholder-val="{{ true }}">
+                          <button type="button" onClick="{{ d.copyWeek }}" style="display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 12px;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-secondary);font-size:12.5px;font-weight:600;cursor:pointer">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 5.5H6a2 2 0 0 0-2 2V16"></path></svg>
+                            На всю неделю
+                          </button>
+                        </sc-if>
+                      </span>
+                    </div>
+                  </sc-for>
+                </div>
+
+                <sc-if value="{{ conflictOn }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:1px solid var(--error-border);border-radius:var(--r-card);background:var(--bg-surface);overflow:hidden">
+                    <div style="padding:16px 20px;background:var(--error-bg);border-bottom:1px solid var(--error-border);display:flex;gap:12px;align-items:flex-start">
+                      <span style="flex:none;color:var(--error-text);margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"></path><path d="M12 9v4M12 16.5h.01"></path></svg></span>
+                      <div style="flex:1;min-width:0">
+                        <b style="display:block;font-size:15px;font-weight:600;color:var(--error-text)">В это время уже есть 3 записи</b>
+                        <span style="font-size:13.5px;line-height:1.5;color:var(--error-text)">{{ conflictText }}</span>
+                      </div>
+                      <a href="Админ - Записи.dc.html" style="flex:none;display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 16px;border:1px solid var(--error-border);border-radius:var(--r-button);background:var(--bg-surface);color:var(--error-text);font-size:13.5px;font-weight:600">
+                        Показать записи
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+                      </a>
+                    </div>
+                    <sc-for list="{{ conflicts }}" as="c" hint-placeholder-count="3">
+                      <div style="padding:13px 20px;border-bottom:1px solid var(--border-default);display:flex;gap:16px;align-items:center">
+                        <b style="flex:none;width:112px;font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">{{ c.when }}</b>
+                        <span style="flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">{{ c.initials }}</span>
+                        <span style="flex:1;min-width:0;display:grid;gap:2px">
+                          <b style="font-size:13.5px;font-weight:600">{{ c.client }}</b>
+                          <span style="font-size:12px;color:var(--text-secondary)">{{ c.services }}</span>
+                        </span>
+                        <span style="flex:none;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">{{ c.sum }}</span>
+                      </div>
+                    </sc-for>
+                    <div style="padding:14px 20px;display:flex;gap:10px;background:var(--bg-subtle)">
+                      <button type="button" onClick="{{ keepConflict }}" style="min-height:44px;padding:0 18px;border:1px solid var(--border-strong);border-radius:var(--r-button);background:transparent;color:var(--text-primary);font-size:14px;font-weight:600;cursor:pointer">Оставить как было</button>
+                      <button type="button" onClick="{{ forceConflict }}" style="min-height:44px;padding:0 18px;border:1px solid var(--error-border);border-radius:var(--r-button);background:var(--error-bg);color:var(--error-text);font-size:14px;font-weight:600;cursor:pointer">Сохранить и перенести записи</button>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start">
+
+                <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                  <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;justify-content:space-between;gap:12px">
+                    <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Исключения</h2>
+                    <button type="button" onClick="{{ openVacation }}" style="display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 13px;border:1px solid var(--accent-brand);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12.5px;font-weight:600;cursor:pointer">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+                      Отпуск
+                    </button>
+                  </div>
+
+                  <sc-if value="{{ vacFormOpen }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);background:var(--bg-subtle);display:grid;gap:12px">
+                      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+                        <label style="display:grid;gap:5px">
+                          <span style="font-size:12px;font-weight:600">С даты</span>
+                          <input type="date" value="{{ vacFrom }}" onChange="{{ onVacFrom }}" style="width:100%;min-height:40px;padding:9px 11px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+                        </label>
+                        <label style="display:grid;gap:5px">
+                          <span style="font-size:12px;font-weight:600">По дату</span>
+                          <input type="date" value="{{ vacTo }}" onChange="{{ onVacTo }}" style="width:100%;min-height:40px;padding:9px 11px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+                        </label>
+                      </div>
+                      <label style="display:grid;gap:5px">
+                        <span style="font-size:12px;font-weight:600">Тип</span>
+                        <select value="{{ vacKind }}" onChange="{{ onVacKind }}" style="width:100%;min-height:40px;padding:9px 11px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+                          <option value="Отпуск">Отпуск</option>
+                          <option value="Больничный">Больничный</option>
+                          <option value="Разовое изменение">Разовое изменение</option>
+                        </select>
+                      </label>
+                      <div style="display:flex;gap:9px">
+                        <button type="button" onClick="{{ addVacation }}" disabled="{{ vacDisabled }}" style="{{ vacAddStyle }}">Добавить</button>
+                        <button type="button" onClick="{{ closeVacation }}" style="flex:none;min-height:44px;padding:0 16px;border:1px solid var(--border-strong);border-radius:var(--r-button);background:transparent;color:var(--text-primary);font-size:14px;font-weight:600;cursor:pointer">Отмена</button>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-for list="{{ exceptions }}" as="e" hint-placeholder-count="3">
+                    <div style="padding:14px 20px;border-bottom:1px solid var(--border-default);display:flex;gap:12px;align-items:flex-start">
+                      <span style="{{ e.iconStyle }}">{{ e.icon }}</span>
+                      <div style="flex:1;min-width:0;display:grid;gap:3px">
+                        <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+                          <b style="font-size:14px;font-weight:600">{{ e.kind }}</b>
+                          <span style="font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ e.dates }}</span>
+                        </div>
+                        <span style="font-size:12.5px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ e.note }}</span>
+                      </div>
+                      <button type="button" onClick="{{ e.remove }}" title="Удалить исключение" aria-label="Удалить исключение" style="flex:none;width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--error-border);border-radius:7px;background:transparent;color:var(--error-text);cursor:pointer">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg>
+                      </button>
+                    </div>
+                  </sc-for>
+
+                  <sc-if value="{{ noExceptions }}" hint-placeholder-val="{{ false }}">
+                    <p style="margin:0;padding:26px 20px;text-align:center;font-size:13.5px;line-height:1.6;color:var(--text-secondary)">Исключений нет — мастер работает по недельному шаблону</p>
+                  </sc-if>
+                </div>
+
+                <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                  <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;justify-content:space-between;gap:12px">
+                    <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Заявки мастеров</h2>
+                    <span style="{{ requestsBadgeStyle }}">{{ requestsBadge }}</span>
+                  </div>
+
+                  <sc-for list="{{ requests }}" as="r" hint-placeholder-count="2">
+                    <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:grid;gap:11px">
+                      <div style="display:flex;gap:11px;align-items:flex-start">
+                        <span style="flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">{{ r.initials }}</span>
+                        <div style="flex:1;min-width:0;display:grid;gap:4px">
+                          <b style="font-size:14px;font-weight:600">{{ r.title }}</b>
+                          <span style="font-size:13px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ r.text }}</span>
+                          <span style="font-size:11.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ r.meta }}</span>
+                        </div>
+                      </div>
+                      <sc-if value="{{ r.pending }}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                          <button type="button" onClick="{{ r.approve }}" style="min-height:40px;padding:0 16px;border:1px solid var(--accent-brand);border-radius:var(--r-button);background:transparent;color:var(--text-primary);font-size:13.5px;font-weight:600;cursor:pointer">Согласовать</button>
+                          <button type="button" onClick="{{ r.reject }}" style="min-height:40px;padding:0 16px;border:1px solid var(--border-strong);border-radius:var(--r-button);background:transparent;color:var(--text-secondary);font-size:13.5px;font-weight:600;cursor:pointer">Отклонить</button>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ r.done }}" hint-placeholder-val="{{ false }}">
+                        <span style="{{ r.doneStyle }}">
+                          <span style="flex:none;display:inline-flex">{{ r.doneIcon }}</span>
+                          {{ r.doneText }}
+                        </span>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+
+                  <sc-if value="{{ noRequests }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:30px 20px;text-align:center">
+                      <span style="display:inline-grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+                      </span>
+                      <p style="margin:12px 0 4px;font-family:var(--font-display);font-weight:500;font-size:21px">Заявок нет</p>
+                      <p style="margin:0;font-size:13px;line-height:1.55;color:var(--text-secondary)">Мастера не просили изменить график</p>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </main>
+    </div>
+
+    <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:28px;bottom:28px;z-index:80;width:340px;animation:ng-toast .22s ease-out">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--bg-elevated);border:1px solid var(--success-border);box-shadow:var(--shadow-modal)">
+          <span style="flex:none;color:var(--success-text);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+          <div style="flex:1;min-width:0">
+            <b style="display:block;font-size:14px;font-weight:600">{{ toastTitle }}</b>
+            <span style="font-size:13px;line-height:1.5;color:var(--text-secondary)">{{ toastText }}</span>
+          </div>
+          <button type="button" onClick="{{ closeToast }}" aria-label="Закрыть" style="flex:none;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:var(--text-secondary);cursor:pointer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ rejectOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="width:100%;max-width:460px;padding:28px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal)">
+          <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:28px;line-height:1.15">Отклонить заявку</h2>
+          <p style="margin:10px 0 0;font-size:14.5px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ rejectSubject }}</p>
+          <label style="margin-top:18px;display:grid;gap:7px">
+            <span style="font-size:12.5px;font-weight:600">Комментарий мастеру</span>
+            <textarea rows="3" value="{{ rejectComment }}" onChange="{{ onRejectComment }}" placeholder="Например: в этот день уже записаны клиенты, давайте перенесём выходной" style="width:100%;min-height:92px;padding:11px 13px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.5 var(--font-ui);resize:vertical"></textarea>
+            <span style="font-size:12px;color:var(--text-secondary)">Комментарий придёт мастеру в кабинет</span>
+          </label>
+          <div style="margin-top:22px;display:flex;gap:10px">
+            <button type="button" onClick="{{ confirmReject }}" disabled="{{ rejectDisabled }}" style="{{ rejectBtnStyle }}">Отклонить</button>
+            <button type="button" onClick="{{ closeReject }}" style="flex:1;min-height:48px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Назад</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:1020},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;conflict&quot;,&quot;saving&quot;,&quot;toast&quot;,&quot;noRequests&quot;,&quot;loading&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:16,height:16,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const MENU = [
+  { name:'Сегодня', icon:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'], href:'Админ - Сегодня.dc.html' },
+  { name:'Расписание', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'] },
+  { name:'Записи', icon:['M5 3.5h10l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z','M8 12h8M8 16h5'], href:'Админ - Записи.dc.html' },
+  { name:'Услуги', icon:['M4 7h16M4 12h16M4 17h10'], href:'Админ - Услуги.dc.html' },
+  { name:'Мастера', icon:['M9 11.5a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z','M2.6 19.5a6.6 6.6 0 0 1 12.8 0','M16.5 5.2a3.4 3.4 0 0 1 0 6.6M19 19.2a5.8 5.8 0 0 0-2.2-4'], href:'Админ - Мастера.dc.html' },
+  { name:'Графики', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z','M8.5 14h3'], on:true },
+  { name:'Клиенты', icon:['M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z','M4.8 20.2a7.4 7.4 0 0 1 14.4 0'], href:'Админ - Клиенты.dc.html' },
+  { name:'Роли', icon:['M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z','M9.5 12l1.8 1.8L15 10'], href:'Админ - Роли и доступы.dc.html' },
+  { name:'Настройки', icon:['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z','M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4'], href:'Админ - Настройки.dc.html' }
+];
+
+const MASTERS = [
+  { id:'anna', initials:'АК', name:'Анна Ковалёва' },
+  { id:'maria', initials:'МЛ', name:'Мария Лис' },
+  { id:'darya', initials:'ДС', name:'Дарья Смирнова' },
+  { id:'irina', initials:'ИГ', name:'Ирина Гай' }
+];
+
+const DAYS = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
+
+const BASE = {
+  anna: [
+    { on:true, from:'10:00', to:'21:00', bf:'14:00', bt:'14:45' },
+    { on:true, from:'10:00', to:'21:00', bf:'14:00', bt:'14:45' },
+    { on:true, from:'12:00', to:'21:00', bf:'16:00', bt:'16:30' },
+    { on:true, from:'10:00', to:'21:00', bf:'14:00', bt:'14:45' },
+    { on:true, from:'10:00', to:'21:00', bf:'14:00', bt:'14:45' },
+    { on:true, from:'10:00', to:'18:00', bf:'13:30', bt:'14:00' },
+    { on:false, from:'11:00', to:'18:00', bf:'14:00', bt:'14:30' }
+  ],
+  maria: [
+    { on:true, from:'12:00', to:'21:00', bf:'16:00', bt:'16:30' },
+    { on:false, from:'12:00', to:'21:00', bf:'16:00', bt:'16:30' },
+    { on:true, from:'12:00', to:'21:00', bf:'16:00', bt:'16:30' },
+    { on:true, from:'12:00', to:'21:00', bf:'16:00', bt:'16:30' },
+    { on:true, from:'12:00', to:'21:00', bf:'16:00', bt:'16:30' },
+    { on:true, from:'11:00', to:'20:00', bf:'15:00', bt:'15:30' },
+    { on:false, from:'11:00', to:'18:00', bf:'14:00', bt:'14:30' }
+  ],
+  darya: [
+    { on:true, from:'10:00', to:'19:00', bf:'13:00', bt:'13:45' },
+    { on:true, from:'10:00', to:'19:00', bf:'13:00', bt:'13:45' },
+    { on:false, from:'10:00', to:'19:00', bf:'13:00', bt:'13:45' },
+    { on:true, from:'10:00', to:'19:00', bf:'13:00', bt:'13:45' },
+    { on:true, from:'10:00', to:'19:00', bf:'13:00', bt:'13:45' },
+    { on:true, from:'10:00', to:'16:00', bf:'13:00', bt:'13:30' },
+    { on:false, from:'11:00', to:'18:00', bf:'14:00', bt:'14:30' }
+  ],
+  irina: [
+    { on:true, from:'11:00', to:'20:00', bf:'15:00', bt:'15:30' },
+    { on:true, from:'11:00', to:'20:00', bf:'15:00', bt:'15:30' },
+    { on:true, from:'11:00', to:'20:00', bf:'15:00', bt:'15:30' },
+    { on:false, from:'11:00', to:'20:00', bf:'15:00', bt:'15:30' },
+    { on:true, from:'11:00', to:'20:00', bf:'15:00', bt:'15:30' },
+    { on:false, from:'10:00', to:'18:00', bf:'13:30', bt:'14:00' },
+    { on:true, from:'11:00', to:'18:00', bf:'14:00', bt:'14:30' }
+  ]
+};
+
+const BASE_EXC = {
+  anna: [
+    { id:'a1', kind:'Отпуск', dates:'5 – 12 октября', note:'Заявление согласовано, записи на эти даты не открываются' },
+    { id:'a2', kind:'Разовое изменение', dates:'24 сентября', note:'Работает с 14:00 до 21:00 вместо 10:00 — приём у врача' }
+  ],
+  maria: [
+    { id:'m1', kind:'Больничный', dates:'17 – 19 сентября', note:'Записи на эти даты перенесены администратором' }
+  ],
+  darya: [
+    { id:'d1', kind:'Отпуск', dates:'14 – 28 сентября', note:'Возвращается в студию 29 сентября' }
+  ],
+  irina: []
+};
+
+const BASE_REQ = {
+  anna: [
+    { id:'r1', initials:'АК', title:'Сдвинуть смену 26 сентября', text:'Просит работать с 12:00 до 21:00 вместо 10:00 — две записи попадают на утро.', meta:'Подана вчера, 20:02' },
+    { id:'r2', initials:'АК', title:'Выходной 3 октября', text:'Семейные обстоятельства. На этот день записей пока нет.', meta:'Подана сегодня, 09:14' }
+  ],
+  maria: [
+    { id:'r3', initials:'МЛ', title:'Добавить смену в воскресенье', text:'Готова работать по воскресеньям с 12:00 до 18:00 в течение октября.', meta:'Подана 16 сентября' }
+  ],
+  darya: [],
+  irina: []
+};
+
+const mins = (t) => { const p = (t || '0:0').split(':'); return (+p[0]) * 60 + (+p[1]); };
+const hoursText = (m) => { const h = Math.floor(m / 60), mm = m % 60; return (h && mm) ? h + ' ч ' + mm + ' мин' : (h ? h + ' ч' : mm + ' мин'); };
+
+class Component extends DCLogic {
+  state = {
+    theme: null, st: null, master: 'anna', week: null, removed: {}, reqs: {},
+    vacOpen: false, vacFrom: '2026-10-05', vacTo: '2026-10-12', vacKind: 'Отпуск', vacAdded: [],
+    conflict: null, saving: false, toast: null, dirty: false, reject: null, comment: ''
+  };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'normal'); }
+
+  week() {
+    if (this.state.week) return this.state.week;
+    return BASE[this.state.master].map(d => Object.assign({}, d));
+  }
+
+  setWeek(next, conflictDay) {
+    this.setState({ week: next, dirty: true, conflict: conflictDay === undefined ? this.state.conflict : conflictDay });
+  }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const st = this.st();
+    const loading = st === 'loading';
+    const master = this.state.master;
+    const noReqState = st === 'noRequests';
+    const week = this.week();
+
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+    const mTab = (on) => 'display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 15px 0 8px;border-radius:var(--r-pill);font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;' +
+      (on ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+          : 'border:1px solid var(--border-strong);background:transparent;color:var(--text-primary)');
+    const timeStyle = 'min-height:38px;padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:600 13px/1.2 var(--font-ui);font-variant-numeric:tabular-nums';
+
+    const conflictDay = this.state.conflict !== null && this.state.conflict !== undefined
+      ? this.state.conflict
+      : (st === 'conflict' ? 2 : null);
+
+    const days = week.map((d, i) => {
+      const net = Math.max(0, mins(d.to) - mins(d.from) - Math.max(0, mins(d.bt) - mins(d.bf)));
+      return {
+        name: DAYS[i],
+        hint: d.on ? (net > 0 ? hoursText(net) + ' приёма' : 'проверьте часы') : 'не работает',
+        working: d.on, dayOff: !d.on,
+        from: d.from, to: d.to, breakFrom: d.bf, breakTo: d.bt,
+        netHours: 'чистых ' + hoursText(net),
+        timeStyle,
+        rowStyle: 'display:grid;grid-template-columns:168px 216px minmax(280px,1fr) 176px;align-items:stretch;border-bottom:1px solid var(--border-default);' +
+          (conflictDay === i ? 'background:var(--error-bg);' : (i % 2 === 1 ? 'background:var(--bg-page);' : '')) +
+          (d.on ? '' : 'color:var(--text-secondary)'),
+        toggleWork: () => { const n = week.map(x => Object.assign({}, x)); n[i].on = !n[i].on; this.setWeek(n); },
+        setFrom: (e) => { const n = week.map(x => Object.assign({}, x)); n[i].from = e.target.value; this.setWeek(n, i); },
+        setTo: (e) => { const n = week.map(x => Object.assign({}, x)); n[i].to = e.target.value; this.setWeek(n, i); },
+        setBreakFrom: (e) => { const n = week.map(x => Object.assign({}, x)); n[i].bf = e.target.value; this.setWeek(n); },
+        setBreakTo: (e) => { const n = week.map(x => Object.assign({}, x)); n[i].bt = e.target.value; this.setWeek(n); },
+        copyWeek: () => {
+          const src = week[i];
+          const n = week.map(x => x.on ? Object.assign({}, x, { from: src.from, to: src.to, bf: src.bf, bt: src.bt }) : Object.assign({}, x));
+          this.setState({ week: n, dirty: true, toast: 'copied' });
+        }
+      };
+    });
+
+    const totalNet = week.reduce((a, d) => a + (d.on ? Math.max(0, mins(d.to) - mins(d.from) - Math.max(0, mins(d.bt) - mins(d.bf))) : 0), 0);
+    const workDays = week.filter(d => d.on).length;
+
+    const exceptions = (BASE_EXC[master] || [])
+      .concat(this.state.vacAdded.filter(v => v.master === master))
+      .filter(e => !this.state.removed[e.id])
+      .map(e => ({
+        kind: e.kind, dates: e.dates, note: e.note,
+        icon: e.kind === 'Больничный'
+          ? ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 8v8M8 12h8'], { width:16, height:16 })
+          : (e.kind === 'Отпуск'
+              ? ICON(['M3 18h18','M12 18V9','M12 9c0-3.3 2.7-6 6-6 0 3.3-2.7 6-6 6Z','M12 9c0-3.3-2.7-6-6-6 0 3.3 2.7 6 6 6Z'], { width:16, height:16 })
+              : ICON(['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'], { width:16, height:16 })),
+        iconStyle: 'flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;margin-top:1px;' +
+          (e.kind === 'Больничный' ? 'background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text)'
+            : (e.kind === 'Отпуск' ? 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)'
+                                   : 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)')),
+        remove: () => this.setState(p => ({ removed: Object.assign({}, p.removed, { [e.id]: true }), toast: 'excRemoved' }))
+      }));
+
+    const reqList = (noReqState ? [] : (BASE_REQ[master] || [])).map(r => {
+      const state = this.state.reqs[r.id];
+      return {
+        initials: r.initials, title: r.title, text: r.text, meta: r.meta,
+        pending: !state, done: !!state,
+        doneText: state === 'approved' ? 'Согласовано, график обновлён' : 'Отклонено, комментарий отправлен',
+        doneIcon: state === 'approved'
+          ? ICON(['m5 12.5 4.5 4.5L19 7.5'], { width:14, height:14 })
+          : ICON(['m6 6 12 12M18 6 6 18'], { width:14, height:14 }),
+        doneStyle: 'display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r-pill);font-size:12.5px;font-weight:600;width:max-content;' +
+          (state === 'approved' ? 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)'
+                                : 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)'),
+        approve: () => this.setState(p => ({ reqs: Object.assign({}, p.reqs, { [r.id]: 'approved' }), toast: 'approved' })),
+        reject: () => this.setState({ reject: r.id, comment: '' })
+      };
+    });
+
+    const pending = reqList.filter(r => r.pending).length;
+    const rejectItem = (BASE_REQ[master] || []).filter(r => r.id === this.state.reject)[0];
+
+    const saving = this.state.saving || st === 'saving';
+    const toastKind = this.state.toast || (st === 'toast' ? 'saved' : null);
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      stateOpts: [['normal','Обычный график'],['conflict','Конфликт с записями'],['saving','Сохранение'],['toast','Тост'],['noRequests','Заявок нет'],['loading','Загрузка']]
+        .map(s => ({
+          label: s[1], style: chipPv(st === s[0]),
+          onClick: () => this.setState({ st: s[0], week: null, conflict: null, dirty: s[0] === 'conflict', saving: false, toast: null, reqs: {}, removed: {}, vacOpen: false, reject: null })
+        })),
+
+      menu: MENU.map(m => ({
+        name: m.name, href: m.on ? 'Админ - Графики.dc.html' : (m.href || ('#' + m.name)),
+        icon: ICON(m.icon, { width: 17, height: 17 }),
+        iconColor: m.on ? 'var(--accent-brand)' : 'var(--text-secondary)',
+        badge: m.on && pending > 0 && !loading,
+        badgeText: String(pending),
+        style: 'display:flex;align-items:center;gap:11px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;' +
+          (m.on ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary);font-weight:600'
+                : 'border:1px solid transparent;color:var(--text-secondary)')
+      })),
+
+      subline: loading
+        ? 'Загружаем графики'
+        : ('Недельный шаблон, исключения и заявки · заявок в работе: ' + pending),
+      weekTotal: 'Рабочих дней: ' + workDays + ' · приёма в неделю: ' + hoursText(totalNet),
+
+      masterTabs: MASTERS.map(m => ({
+        initials: m.initials, name: m.name,
+        style: mTab(master === m.id),
+        onClick: () => this.setState({ master: m.id, week: null, conflict: null, dirty: false, toast: null })
+      })),
+
+      isLoading: loading,
+      showBody: !loading,
+      skelRows: [1,2,3,4,5,6,7],
+      skelSide: [1,2,3],
+
+      days,
+
+      dirty: this.state.dirty && !saving,
+      saveDisabled: saving || !this.state.dirty,
+      isSaving: saving,
+      saveLabel: saving ? 'Сохраняем' : 'Сохранить график',
+      saveStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:0;border-radius:var(--r-button);font-size:14.5px;font-weight:600;font-family:inherit;' +
+        (saving || !this.state.dirty
+          ? 'background:var(--action-primary-disabled);color:var(--action-on-primary-disabled);cursor:' + (saving ? 'progress' : 'not-allowed')
+          : 'background:var(--action-primary);color:var(--action-on-primary);cursor:pointer'),
+      save: () => {
+        if (saving || !this.state.dirty) return;
+        this.setState({ saving: true });
+        setTimeout(() => this.setState({ saving: false, dirty: false, conflict: null, toast: 'saved', st: st === 'saving' ? 'normal' : st }), 900);
+      },
+
+      conflictOn: conflictDay !== null && conflictDay !== undefined && !loading,
+      conflictText: conflictDay !== null && conflictDay !== undefined
+        ? ('Новые часы ' + (DAYS[conflictDay] || '').toLowerCase() + ' обрезают время, на которое уже записаны клиенты. Перенесите записи или оставьте прежние часы.')
+        : '',
+      conflicts: [
+        { when:'23 сент · 10:30', initials:'ЕП', client:'Елена Петрова', services:'Маникюр с покрытием', sum:'2 500 ₽' },
+        { when:'23 сент · 11:00', initials:'ОК', client:'Ольга Кузьмина', services:'Классический маникюр', sum:'1 600 ₽' },
+        { when:'30 сент · 10:00', initials:'НС', client:'Наталья Соколова', services:'Снятие · Укрепление гелем', sum:'1 400 ₽' }
+      ],
+      keepConflict: () => this.setState({ week: null, conflict: null, dirty: false, st: st === 'conflict' ? 'normal' : st, toast: 'reverted' }),
+      forceConflict: () => {
+        this.setState({ saving: true });
+        setTimeout(() => this.setState({ saving: false, dirty: false, conflict: null, st: st === 'conflict' ? 'normal' : st, toast: 'forced' }), 900);
+      },
+
+      exceptions,
+      noExceptions: exceptions.length === 0,
+      vacFormOpen: this.state.vacOpen,
+      openVacation: () => this.setState({ vacOpen: true }),
+      closeVacation: () => this.setState({ vacOpen: false }),
+      vacFrom: this.state.vacFrom, onVacFrom: (e) => this.setState({ vacFrom: e.target.value }),
+      vacTo: this.state.vacTo, onVacTo: (e) => this.setState({ vacTo: e.target.value }),
+      vacKind: this.state.vacKind, onVacKind: (e) => this.setState({ vacKind: e.target.value }),
+      vacDisabled: !this.state.vacFrom || !this.state.vacTo || this.state.vacTo < this.state.vacFrom,
+      vacAddStyle: 'flex:1;min-height:44px;border:0;border-radius:var(--r-button);font-size:14px;font-weight:600;font-family:inherit;' +
+        ((!this.state.vacFrom || !this.state.vacTo || this.state.vacTo < this.state.vacFrom)
+          ? 'background:var(--action-primary-disabled);color:var(--action-on-primary-disabled);cursor:not-allowed'
+          : 'background:var(--action-primary);color:var(--action-on-primary);cursor:pointer'),
+      addVacation: () => {
+        if (!this.state.vacFrom || !this.state.vacTo || this.state.vacTo < this.state.vacFrom) return;
+        const fmt = (s) => { const p = s.split('-'); return (+p[2]) + '.' + p[1] + '.' + p[0]; };
+        this.setState(p => ({
+          vacAdded: p.vacAdded.concat([{
+            id: 'new-' + Date.now(), master: master, kind: p.vacKind,
+            dates: fmt(p.vacFrom) + ' – ' + fmt(p.vacTo),
+            note: 'Записи на эти даты больше не открываются'
+          }]),
+          vacOpen: false, toast: 'excAdded'
+        }));
+      },
+
+      requests: reqList,
+      noRequests: reqList.length === 0,
+      requestsBadge: reqList.length === 0 ? 'всё закрыто' : (pending + ' в работе'),
+      requestsBadgeStyle: 'flex:none;padding:5px 12px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;' +
+        (reqList.length === 0 ? 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)'
+          : (pending > 0 ? 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)'
+                         : 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)')),
+
+      toastOn: !!toastKind,
+      toastTitle: toastKind === 'copied' ? 'День скопирован на неделю'
+        : (toastKind === 'excAdded' ? 'Исключение добавлено'
+        : (toastKind === 'excRemoved' ? 'Исключение удалено'
+        : (toastKind === 'approved' ? 'Заявка согласована'
+        : (toastKind === 'rejected' ? 'Заявка отклонена'
+        : (toastKind === 'reverted' ? 'Изменения отменены'
+        : (toastKind === 'forced' ? 'График сохранён' : 'График сохранён')))))),
+      toastText: toastKind === 'copied' ? 'Часы и перерыв применены ко всем рабочим дням'
+        : (toastKind === 'excAdded' ? 'Записи на эти даты больше не открываются'
+        : (toastKind === 'excRemoved' ? 'Мастер снова работает по недельному шаблону'
+        : (toastKind === 'approved' ? 'Мастер увидит решение в кабинете'
+        : (toastKind === 'rejected' ? 'Комментарий отправлен мастеру'
+        : (toastKind === 'reverted' ? 'Прежние часы возвращены, записи не тронуты'
+        : (toastKind === 'forced' ? 'Три записи ушли в раздел «Записи» на перенос' : 'Новые часы действуют со следующей недели')))))),
+      closeToast: () => this.setState({ toast: null, st: st === 'toast' ? 'normal' : st }),
+
+      rejectOpen: !!rejectItem,
+      rejectSubject: rejectItem ? rejectItem.text : '',
+      rejectComment: this.state.comment,
+      onRejectComment: (e) => this.setState({ comment: e.target.value }),
+      rejectDisabled: this.state.comment.trim().length === 0,
+      rejectBtnStyle: 'flex:1;min-height:48px;border-radius:var(--r-button);font-size:15px;font-weight:600;font-family:inherit;' +
+        (this.state.comment.trim().length === 0
+          ? 'border:1px solid var(--border-default);background:transparent;color:var(--text-disabled);cursor:not-allowed;opacity:.7'
+          : 'border:1px solid var(--error-border);background:var(--error-bg);color:var(--error-text);cursor:pointer'),
+      confirmReject: () => {
+        if (this.state.comment.trim().length === 0) return;
+        const id = this.state.reject;
+        this.setState(p => ({ reqs: Object.assign({}, p.reqs, { [id]: 'rejected' }), reject: null, comment: '', toast: 'rejected' }));
+      },
+      closeReject: () => this.setState({ reject: null, comment: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

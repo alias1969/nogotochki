@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="3">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка кабинета" style="position:sticky;top:0;z-index:30;background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Главная - лендинг.dc.html" style="display:flex;align-items:center;gap:10px;flex:none">
+          <svg viewBox="0 0 100 100" width="34" height="34" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+            <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <circle cx="50" cy="52" r="34"></circle>
+              <path d="M40 70 C38 56 40 44 43 36"></path>
+              <path d="M50 71 C50 56 53 44 56 37"></path>
+              <path d="M59 71 C60 58 63 49 66 43"></path>
+              <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+              <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+            </g>
+          </svg>
+          <span style="{{ logoWordStyle }}">Ноготочки</span>
+        </a>
+
+        <nav style="{{ navStyle }}">
+          <a href="Личный кабинет - Предстоящие записи.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;color:var(--text-secondary)">Предстоящие</a>
+          <span style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;font-weight:600;border-bottom:1.5px solid var(--accent-brand)">История</span>
+          <a href="Личный кабинет - Профиль.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14.5px;color:var(--text-secondary)">Профиль</a>
+        </nav>
+
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          <span style="{{ userNameStyle }}">
+            <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ЕП</span>
+            <span style="font-size:14.5px;font-weight:600">Елена</span>
+          </span>
+          <button type="button" aria-label="Уведомления" style="position:relative;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:var(--r-button);background:transparent;color:var(--text-primary);cursor:pointer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5"></path><path d="M10.5 19a2 2 0 0 0 3 0"></path></svg>
+            <i style="position:absolute;top:5px;right:5px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--accent-brand);color:#2E2622;font-size:10.5px;font-weight:700;font-style:normal;display:grid;place-items:center;font-variant-numeric:tabular-nums">2</i>
+          </button>
+          <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer">
+            <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+            <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+          </button>
+          <a href="Запись. Шаг 1 - Услуги.dc.html" style="{{ headerCtaStyle }}">Записаться</a>
+        </div>
+      </div>
+    </header>
+
+    <main data-screen-label="История записей" style="{{ mainStyle }}">
+      <div style="{{ wrapStyle }}">
+        <h1 style="{{ h1Style }}">Мои записи</h1>
+
+        <div style="{{ tabsStyle }}">
+          <a href="Личный кабинет - Предстоящие записи.dc.html" style="{{ tabIdleStyle }}">Предстоящие</a>
+          <span style="{{ tabActiveStyle }}">История</span>
+        </div>
+
+        <div style="{{ filtersStyle }}">
+          <div style="display:grid;gap:8px">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">статус</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ statusFilters }}" as="f" hint-placeholder-count="5">
+                <button type="button" onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:grid;gap:8px">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">период</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ periodFilters }}" as="f" hint-placeholder-count="4">
+                <button type="button" onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px;display:grid;gap:12px">
+            <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="3">
+              <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:grid;gap:12px">
+                <i style="height:20px;width:44%;border-radius:9px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                <i style="height:13px;width:30%;border-radius:7px;background:var(--bg-subtle)"></i>
+                <i style="height:13px;width:70%;border-radius:7px;background:var(--bg-subtle)"></i>
+                <i style="height:44px;width:200px;border-radius:var(--r-button);background:var(--bg-subtle)"></i>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px;padding:48px 22px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);text-align:center">
+            <svg width="86" height="86" viewBox="0 0 100 100" fill="none" stroke="var(--accent-brand)" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 16px;display:block">
+              <circle cx="50" cy="52" r="30"></circle>
+              <path d="M50 36v18l13 8"></path>
+              <path d="M20 32a34 34 0 0 1 8-9M18 44v-8h8" stroke-dasharray="4 6"></path>
+            </svg>
+            <p style="margin:0 0 8px;font-family:var(--font-display);font-weight:500;font-size:30px;line-height:1.15">Здесь появятся ваши прошедшие записи</p>
+            <p style="margin:0 auto 24px;max-width:40ch;font-size:15.5px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">После каждого визита запись сохранится в истории — вместе с мастером, услугами и суммой.</p>
+            <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 28px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:16px;font-weight:600" style-hover="background:var(--action-primary-hover)">Записаться</a>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <p style="margin:22px 0 0;font-size:13.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ countLine }}</p>
+            <div style="margin-top:12px;display:grid;gap:12px">
+              <sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+                <div style="{{ it.cardStyle }}">
+                  <div style="{{ it.topStyle }}">
+                    <div style="min-width:0;display:flex;flex-direction:column;gap:6px">
+                      <b style="{{ it.whenStyle }}">{{ it.when }}</b>
+                      <span style="font-size:13.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ it.range }}</span>
+                    </div>
+                    <span style="{{ it.statusStyle }}">
+                      <span style="display:inline-flex;flex:none">{{ it.statusIcon }}</span>
+                      {{ it.statusLabel }}
+                    </span>
+                  </div>
+
+                  <div style="{{ it.bodyStyle }}">
+                    <div style="display:flex;gap:12px;align-items:center;min-width:0">
+                      <span style="width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:15px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">{{ it.initials }}</span>
+                      <div style="min-width:0">
+                        <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">мастер</span>
+                        <b style="display:block;margin-top:3px;font-size:15.5px;font-weight:600">{{ it.master }}</b>
+                      </div>
+                    </div>
+                    <div style="min-width:0;flex:1">
+                      <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">услуги</span>
+                      <p style="margin:8px 0 0;font-size:14.5px;line-height:1.5;text-wrap:pretty">{{ it.services }}</p>
+                      <span style="display:block;margin-top:8px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums">{{ it.sum }}</span>
+                    </div>
+                  </div>
+
+                  <div style="{{ it.footStyle }}">
+                    <span style="font-size:13.5px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ it.note }}</span>
+                    <a href="Запись. Шаг 1 - Услуги.dc.html" style="{{ it.repeatStyle }}">Записаться ещё раз</a>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:20px 0 0;padding:24px;border:1px dashed var(--border-strong);border-radius:var(--r-card);text-align:center;font-size:14.5px;color:var(--text-secondary)">По этим фильтрам записей нет. Попробуйте другой статус или период</p>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </main>
+
+    <nav style="{{ bottomNavStyle }}">
+      <a href="Личный кабинет - Предстоящие записи.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+        Предстоящие
+      </a>
+      <span style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-primary);font-size:11px;font-weight:600">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-brand)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2M3 4.5v4h4"></path><path d="M12 8v4.5l3 1.8"></path></svg>
+        История
+      </span>
+      <a href="Личный кабинет - Профиль.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"></circle><path d="M4.8 20.5a7.4 7.4 0 0 1 14.4 0"></path></svg>
+        Профиль
+      </a>
+      <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:flex;flex-direction:column;align-items:center;gap:4px;min-height:52px;padding:8px 6px;color:var(--text-secondary);font-size:11px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+        Записаться
+      </a>
+    </nav>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:960},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;empty&quot;,&quot;loading&quot;],&quot;default&quot;:&quot;list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const S_DONE = ICON(['m5 12.5 4.5 4.5L19 7.5'],{width:14,height:14,strokeWidth:2.1});
+const S_CLIENT = ICON(['m6 6 12 12M18 6 6 18'],{width:14,height:14,strokeWidth:2.1});
+const S_SALON = ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M5.6 5.6l12.8 12.8'],{width:14,height:14,strokeWidth:1.9});
+const S_NOSHOW = ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 8v4.5M12 16h.01'],{width:14,height:14,strokeWidth:1.9});
+
+const STATUS = {
+  done:   { label:'Завершена', icon:S_DONE, tone:'success', note:'Визит прошёл. Спасибо, что были у нас' },
+  client: { label:'Отменена клиентом', icon:S_CLIENT, tone:'info', note:'Вы отменили запись через личный кабинет' },
+  salon:  { label:'Отменена салоном', icon:S_SALON, tone:'error', note:'Мастер заболел, мы предупредили заранее' },
+  noshow: { label:'Клиент не пришёл', icon:S_NOSHOW, tone:'warning', note:'Мы держали время, но визит не состоялся' }
+};
+
+const ITEMS = [
+  { id:1, when:'4 сентября, четверг', range:'14:30–16:40 · 2 ч 10 мин', initials:'АК', master:'Анна Ковалёва', services:'Маникюр с покрытием · Снятие покрытия · Дизайн за ноготь', sum:'3 150 ₽', status:'done', days:14 },
+  { id:2, when:'28 августа, четверг', range:'11:00–12:45 · 1 ч 45 мин', initials:'ДС', master:'Дарья Смирнова', services:'Педикюр с покрытием', sum:'3 200 ₽', status:'done', days:21 },
+  { id:3, when:'19 августа, вторник', range:'18:00–19:00 · 1 ч', initials:'ИГ', master:'Ирина Гай', services:'Классический маникюр', sum:'1 600 ₽', status:'client', days:30 },
+  { id:4, when:'2 августа, воскресенье', range:'12:30–14:10 · 1 ч 40 мин', initials:'МЛ', master:'Мария Лис', services:'Маникюр с покрытием · Дизайн за ноготь', sum:'2 950 ₽', status:'salon', days:47 },
+  { id:5, when:'11 июля, пятница', range:'17:00–17:40 · 40 мин', initials:'АК', master:'Анна Ковалёва', services:'Укрепление гелем', sum:'900 ₽', status:'noshow', days:69 },
+  { id:6, when:'24 мая, суббота', range:'10:30–12:00 · 1 ч 30 мин', initials:'ДС', master:'Дарья Смирнова', services:'Маникюр с покрытием', sum:'2 500 ₽', status:'done', days:117 }
+];
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, st: null, status: 'all', period: 'all' };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'list'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const st = this.st();
+    const loading = st === 'loading';
+    const empty = st === 'empty';
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+    const filterChip = (on) => 'min-height:44px;padding:0 16px;border-radius:var(--r-pill);font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;font-family:inherit;' +
+      (on ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+          : 'border:1px solid var(--border-strong);background:transparent;color:var(--text-primary)');
+
+    const tone = (t) => {
+      if (t === 'success') return 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)';
+      if (t === 'error') return 'background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text)';
+      if (t === 'warning') return 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)';
+      return 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)';
+    };
+
+    const periodDays = { all: 9999, m1: 31, m3: 92, y1: 366 };
+    const list = ITEMS
+      .filter(it => this.state.status === 'all' || this.state.status === it.status)
+      .filter(it => it.days <= periodDays[this.state.period]);
+
+    const statusFilters = [['all','Все'],['done','Завершена'],['client','Отменена клиентом'],['salon','Отменена салоном'],['noshow','Не пришёл']]
+      .map(f => ({ label: f[1], style: filterChip(this.state.status === f[0]), onClick: () => this.setState({ status: f[0] }) }));
+    const periodFilters = [['all','За всё время'],['m1','Месяц'],['m3','3 месяца'],['y1','Год']]
+      .map(f => ({ label: f[1], style: filterChip(this.state.period === f[0]), onClick: () => this.setState({ period: f[0] }) }));
+
+    const plural = (n) => (n % 10 === 1 && n % 100 !== 11) ? 'запись' : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'записи' : 'записей');
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      stateOpts: [['list','Список'],['empty','Пусто'],['loading','Загрузка']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], status: 'all', period: 'all' }) })),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: (mob
+        ? 'width:390px;max-width:100%;height:844px;overflow-y:auto;overflow-x:hidden;border:1px solid rgba(46,38,34,.16);border-radius:24px;box-shadow:0 18px 50px rgba(46,38,34,.16);'
+        : 'width:100%;min-width:1280px;') + 'position:relative;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 12px;gap:8px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;gap:20px;') + 'display:flex;align-items:center;justify-content:space-between',
+      logoWordStyle: 'font-family:var(--font-script);line-height:1;color:var(--text-primary);text-shadow:0 0 14px rgba(242,216,167,.55);' + (mob ? 'font-size:21px' : 'font-size:25px'),
+      navStyle: mob ? 'display:none' : 'display:flex;align-items:center;gap:22px;white-space:nowrap',
+      userNameStyle: (mob ? 'display:none;' : 'display:inline-flex;') + 'align-items:center;gap:9px',
+      headerCtaStyle: (mob ? 'display:none;' : 'display:inline-flex;padding:0 18px;font-size:14.5px;') + 'align-items:center;justify-content:center;min-height:44px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-weight:600;white-space:nowrap',
+
+      mainStyle: 'background:var(--bg-page);color:var(--text-primary);' + (mob ? 'padding:24px 0 96px' : 'padding:40px 0 72px'),
+      wrapStyle: mob ? 'padding:0 16px' : 'max-width:1000px;margin:0 auto;padding:0 40px',
+      h1Style: 'margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:30px;line-height:34px' : 'font-size:46px;line-height:50px'),
+      tabsStyle: 'margin-top:20px;display:flex;gap:6px;padding:4px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:var(--bg-subtle);' + (mob ? '' : 'width:max-content'),
+      tabActiveStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:var(--r-pill);background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary);font-size:14.5px;font-weight:600;' + (mob ? 'flex:1' : ''),
+      tabIdleStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:var(--r-pill);color:var(--text-secondary);font-size:14.5px;font-weight:600;' + (mob ? 'flex:1' : ''),
+      filtersStyle: 'margin-top:20px;display:grid;gap:16px;padding:' + (mob ? '16px' : '18px 22px') + ';border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle)',
+      statusFilters, periodFilters,
+
+      isLoading: loading,
+      isEmpty: empty,
+      showList: !loading && !empty,
+      skeletons: [1,2,3],
+      noMatches: !loading && !empty && list.length === 0,
+      countLine: list.length + ' ' + plural(list.length) + ' в истории',
+
+      items: list.map(it => {
+        const s = STATUS[it.status];
+        return {
+          when: it.when, range: it.range, initials: it.initials, master: it.master,
+          services: it.services, sum: it.sum, note: s.note,
+          statusLabel: s.label, statusIcon: s.icon,
+          statusStyle: 'flex:none;display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:var(--r-pill);font-size:12.5px;font-weight:600;' + tone(s.tone) + (mob ? ';align-self:start' : ''),
+          cardStyle: 'border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden',
+          topStyle: 'display:flex;gap:14px;align-items:flex-start;justify-content:space-between;' + (mob ? 'padding:16px;flex-direction:column' : 'padding:18px 22px'),
+          whenStyle: 'font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:23px;line-height:27px' : 'font-size:28px;line-height:32px'),
+          bodyStyle: 'display:flex;gap:22px;align-items:flex-start;border-top:1px solid var(--border-default);' + (mob ? 'padding:14px 16px;flex-direction:column;gap:14px' : 'padding:18px 22px'),
+          footStyle: 'display:flex;gap:14px;align-items:center;justify-content:space-between;border-top:1px solid var(--border-default);background:var(--bg-subtle);' + (mob ? 'padding:14px 16px;flex-direction:column;align-items:stretch' : 'padding:16px 22px'),
+          repeatStyle: 'flex:none;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:var(--r-button);border:1px solid var(--accent-brand);color:var(--text-primary);font-size:14.5px;font-weight:600'
+        };
+      }),
+
+      bottomNavStyle: (mob ? 'display:grid;' : 'display:none;') + 'position:sticky;bottom:0;z-index:40;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 8px 12px;background:var(--bg-elevated);border-top:1px solid var(--border-default);box-shadow:var(--shadow-menu);text-align:center'
+    };
+  }
+}
+</script>
+</body>
+</html>

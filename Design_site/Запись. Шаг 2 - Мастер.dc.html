@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="4">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка записи" style="position:sticky;top:0;z-index:30;background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-button);color:var(--text-primary);font-size:14.5px;font-weight:600;flex:none" style-hover="background:var(--bg-subtle)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+          Назад
+        </a>
+        <span style="{{ headerTitleStyle }}">Запись</span>
+        <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;flex:none">
+          <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+          <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+        </button>
+      </div>
+
+      <div style="{{ progressWrapStyle }}">
+        <sc-if value="{{ showStepsRow }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:12px">
+            <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--text-link)">
+              <i style="width:26px;height:26px;border-radius:50%;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);display:grid;place-items:center;font-style:normal">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+              </i>Услуги
+            </a>
+            <i style="flex:1;min-width:24px;height:1px;background:var(--border-default)"></i>
+            <span style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600"><i style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--accent-brand);color:var(--text-primary);display:grid;place-items:center;font-size:12px;font-weight:600;font-style:normal;box-shadow:var(--glow-soft)">2</i>Мастер</span>
+            <i style="flex:1;min-width:24px;height:1px;background:var(--border-default)"></i>
+            <span style="display:flex;align-items:center;gap:9px;font-size:14px;color:var(--text-disabled)"><i style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border-default);display:grid;place-items:center;font-size:12px;font-style:normal">3</i>Время</span>
+            <i style="flex:1;min-width:24px;height:1px;background:var(--border-default)"></i>
+            <span style="display:flex;align-items:center;gap:9px;font-size:14px;color:var(--text-disabled)"><i style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border-default);display:grid;place-items:center;font-size:12px;font-style:normal">4</i>Подтверждение</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showStepsCompact }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <b style="font-size:15px">Мастер</b>
+              <span style="font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">Шаг 2 из 4</span>
+            </div>
+            <div style="margin-top:10px;height:4px;border-radius:2px;background:var(--bg-subtle);overflow:hidden"><i style="display:block;width:50%;height:100%;background:var(--accent-brand)"></i></div>
+          </div>
+        </sc-if>
+      </div>
+    </header>
+
+    <main data-screen-label="Шаг 2 · мастер" style="{{ mainStyle }}">
+      <div style="{{ wrapStyle }}">
+
+        <div style="{{ summaryStyle }}">
+          <div style="min-width:0;display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">выбранные услуги</span>
+            <p style="margin:0;font-size:14.5px;line-height:1.5;text-wrap:pretty">{{ chosenNames }}</p>
+            <span style="font-size:13.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ chosenTotals }}</span>
+          </div>
+          <a href="Запись. Шаг 1 - Услуги.dc.html" style="flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--border-default);border-radius:var(--r-button);font-size:14px;font-weight:600" style-hover="border-color:var(--accent-brand)">Изменить</a>
+        </div>
+
+        <h1 style="{{ h1Style }}">Выберите мастера</h1>
+        <p style="margin:10px 0 0;font-size:16px;color:var(--text-secondary)">Показываем тех, кто делает все выбранные услуги</p>
+
+        <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ gridStyle }}">
+            <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="4">
+              <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:flex;gap:16px;align-items:flex-start">
+                <i style="width:72px;height:72px;border-radius:50%;flex:none;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                <div style="flex:1;display:grid;gap:10px">
+                  <i style="height:17px;width:55%;border-radius:9px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                  <i style="height:13px;width:40%;border-radius:7px;background:var(--bg-subtle)"></i>
+                  <i style="height:13px;width:85%;border-radius:7px;background:var(--bg-subtle)"></i>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px;padding:40px 22px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);text-align:center">
+            <svg width="76" height="76" viewBox="0 0 100 100" fill="none" stroke="var(--accent-brand)" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 14px;display:block">
+              <circle cx="38" cy="38" r="14"></circle>
+              <path d="M16 78a22 22 0 0 1 44 0"></path>
+              <circle cx="72" cy="58" r="16" stroke-dasharray="4 6"></circle>
+              <path d="M66 52l12 12M78 52l-12 12"></path>
+            </svg>
+            <p style="margin:0 0 8px;font-family:var(--font-display);font-weight:500;font-size:26px;line-height:1.2;text-wrap:pretty">Все выбранные услуги вместе не делает ни один мастер</p>
+            <p style="margin:0 0 22px;max-width:44ch;margin-left:auto;margin-right:auto;font-size:14.5px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">Уберите одну услугу или запишитесь двумя визитами — так мастера подберутся под каждый набор.</p>
+            <div style="{{ emptyActionsStyle }}">
+              <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 26px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:16px;font-weight:600" style-hover="background:var(--action-primary-hover)">Изменить услуги</a>
+              <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:var(--r-button);border:1px solid var(--accent-brand);color:var(--text-primary);font-size:16px;font-weight:600" style-hover="background:rgba(176,141,87,.1)">Разделить на две записи</a>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+          <div style="{{ gridStyle }}">
+            <label style="{{ anyCardStyle }}">
+              <input type="radio" name="master" checked="{{ anyOn }}" onChange="{{ pickAny }}" style="width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--action-primary)">
+              <span style="width:64px;height:64px;border-radius:50%;border:1px dashed var(--border-strong);color:var(--accent-brand);display:grid;place-items:center;flex:none">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"></circle><path d="M3 20a6 6 0 0 1 12 0M16.5 5.4a3.4 3.4 0 0 1 0 6.4M19 19.6a5.8 5.8 0 0 0-2.2-4.2"></path></svg>
+              </span>
+              <span style="flex:1;display:grid;gap:5px">
+                <b style="font-size:17px;font-weight:600">Любой мастер</b>
+                <span style="font-size:14px;color:var(--text-secondary)">Кто освободится раньше</span>
+                <span style="font-size:13px;color:var(--success-text)">Обычно на 2–3 дня раньше</span>
+              </span>
+            </label>
+
+            <sc-for list="{{ masters }}" as="m" hint-placeholder-count="3">
+              <label style="{{ m.cardStyle }}">
+                <input type="radio" name="master" checked="{{ m.on }}" disabled="{{ m.busy }}" onChange="{{ m.pick }}" style="width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--action-primary)">
+                <span style="{{ m.avatarStyle }}">{{ m.initials }}</span>
+                <span style="flex:1;display:grid;gap:5px;min-width:0">
+                  <b style="font-size:17px;font-weight:600">{{ m.name }}</b>
+                  <span style="font-size:14px;color:var(--text-secondary)">{{ m.spec }}</span>
+                  <span style="font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ m.exp }}</span>
+                  <span style="font-size:14px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ m.about }}</span>
+                  <sc-if value="{{ m.busy }}" hint-placeholder-val="{{ false }}">
+                    <span style="margin-top:4px;display:inline-flex;align-items:center;gap:7px;align-self:start;padding:6px 12px;border-radius:var(--r-pill);background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text);font-size:12.5px;font-weight:600">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>
+                      Свободного времени нет до 5 октября
+                    </span>
+                  </sc-if>
+                </span>
+              </label>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </main>
+
+    <div data-screen-label="Панель итога" style="{{ barOuterStyle }}">
+      <div style="{{ barInnerStyle }}">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <b style="{{ barSumStyle }}">{{ barSummary }}</b>
+          <span style="font-size:13px;color:var(--text-secondary)">{{ barMaster }}</span>
+        </div>
+        <div style="{{ barActionStyle }}">
+          <sc-if value="{{ showNextHint }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:12.5px;color:var(--text-secondary)">Выберите мастера или «Любой мастер»</span>
+          </sc-if>
+          <button type="button" onClick="{{ goNext }}" disabled="{{ nextDisabled }}" style="{{ nextStyle }}">Далее</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;selected&quot;,&quot;none&quot;,&quot;loading&quot;,&quot;empty&quot;],&quot;default&quot;:&quot;selected&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const CHOSEN = [
+  { name:'Маникюр с покрытием', min:90, price:2500 },
+  { name:'Снятие покрытия', min:30, price:500 },
+  { name:'Дизайн за ноготь', min:10, price:150 }
+];
+
+const MASTERS = [
+  { id:'anna', initials:'АК', name:'Анна Ковалёва', spec:'Маникюр, укрепление, дизайн', exp:'Стаж 8 лет', about:'Люблю аккуратную форму и спокойные оттенки.', busy:false },
+  { id:'maria', initials:'МЛ', name:'Мария Лис', spec:'Маникюр, дизайн, наращивание', exp:'Стаж 6 лет', about:'Рисую тонкие линии и нежные градиенты.', busy:false },
+  { id:'irina', initials:'ИГ', name:'Ирина Гай', spec:'Маникюр, снятие, дизайн', exp:'Стаж 4 года', about:'Слежу за состоянием ногтей и подбираю уход.', busy:true }
+];
+
+const rub = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+const dur = (m) => { const h = Math.floor(m/60), mm = m%60; return (h && mm) ? h + ' ч ' + mm + ' мин' : (h ? h + ' ч' : mm + ' мин'); };
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, st: null, pick: undefined };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'selected'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const st = this.st();
+    const loading = st === 'loading';
+    const empty = st === 'empty';
+
+    const mparam = new URLSearchParams(location.search).get('master');
+    const fromUrl = mparam ? (((MASTERS.filter(m => m.id === mparam || m.name === mparam)[0]) || {}).id || null) : null;
+    const pick = this.state.pick !== undefined ? this.state.pick : (fromUrl || (st === 'selected' ? 'anna' : null));
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const card = (on, busy) => 'display:flex;gap:16px;align-items:flex-start;border-radius:var(--r-card);' +
+      (mob ? 'padding:18px;' : 'padding:20px;') +
+      (busy
+        ? 'border:1px solid var(--border-default);background:var(--bg-subtle);opacity:.6;cursor:not-allowed'
+        : (on
+          ? 'border:1.5px solid var(--accent-brand);background:var(--slot-selected-bg);box-shadow:var(--glow-soft);cursor:pointer'
+          : 'border:1px solid var(--border-default);background:var(--bg-surface);box-shadow:var(--shadow-card);cursor:pointer'));
+
+    const totalMin = CHOSEN.reduce((a,s)=>a+s.min,0);
+    const totalPrice = CHOSEN.reduce((a,s)=>a+s.price,0);
+
+    const picked = MASTERS.filter(m => m.id === pick)[0];
+    const nextDisabled = loading || empty || !pick;
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      stateOpts: [['selected','Мастер выбран'],['none','Не выбран'],['loading','Загрузка'],['empty','Никто не делает всё']]
+        .map(s => ({ label: s[1], style: chipPv(st === s[0]), onClick: () => this.setState({ st: s[0], pick: undefined }) })),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: mob
+        ? 'width:390px;max-width:100%;height:844px;overflow-y:auto;overflow-x:hidden;background:var(--bg-page);border:1px solid rgba(46,38,34,.16);border-radius:24px;box-shadow:0 18px 50px rgba(46,38,34,.16)'
+        : 'width:100%;min-width:1280px;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 12px;gap:10px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;gap:20px;') + 'display:flex;align-items:center;justify-content:space-between',
+      headerTitleStyle: 'font-family:var(--font-script);color:var(--text-primary);line-height:1;' + (mob ? 'font-size:22px' : 'font-size:26px'),
+      progressWrapStyle: (mob ? 'padding:4px 16px 14px;' : 'max-width:1240px;margin:0 auto;padding:6px 40px 18px;') + 'border-top:1px solid var(--border-default)',
+      showStepsRow: !mob,
+      showStepsCompact: mob,
+
+      mainStyle: 'background:var(--bg-page);color:var(--text-primary);' + (mob ? 'padding:20px 0 32px' : 'padding:36px 0 56px'),
+      wrapStyle: mob ? 'padding:0 16px' : 'max-width:1240px;margin:0 auto;padding:0 40px',
+      summaryStyle: 'display:flex;gap:16px;align-items:center;justify-content:space-between;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle);' +
+        (mob ? 'padding:16px;flex-direction:column;align-items:stretch' : 'padding:18px 22px'),
+      chosenNames: CHOSEN.map(s=>s.name).join(' · '),
+      chosenTotals: CHOSEN.length + ' услуги · ' + dur(totalMin) + ' · ' + rub(totalPrice),
+      h1Style: 'margin:28px 0 0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:28px;line-height:32px' : 'font-size:44px;line-height:48px'),
+      gridStyle: (mob ? 'margin-top:20px;display:grid;gap:12px' : 'margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px'),
+
+      isLoading: loading,
+      isEmpty: empty,
+      showList: !loading && !empty,
+      skeletons: [1,2,3,4],
+      emptyActionsStyle: 'display:flex;gap:12px;justify-content:center;' + (mob ? 'flex-direction:column' : 'flex-wrap:wrap'),
+
+      anyOn: pick === 'any',
+      anyCardStyle: card(pick === 'any', false),
+      pickAny: () => this.setState({ pick: 'any' }),
+      masters: MASTERS.map(m => ({
+        initials: m.initials, name: m.name, spec: m.spec, exp: m.exp, about: m.about, busy: m.busy,
+        on: pick === m.id,
+        pick: () => { if (!m.busy) this.setState({ pick: m.id }); },
+        cardStyle: card(pick === m.id, m.busy),
+        avatarStyle: 'width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:21px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A'
+      })),
+
+      barSummary: CHOSEN.length + ' услуги · ' + dur(totalMin) + ' · ' + rub(totalPrice),
+      barMaster: pick === 'any' ? 'Мастер: любой, кто освободится раньше' : (picked ? ('Мастер: ' + picked.name) : 'Мастер не выбран'),
+      barOuterStyle: 'position:sticky;bottom:0;z-index:20;background:var(--bg-elevated);border-top:1px solid var(--border-default);box-shadow:var(--shadow-menu)',
+      barInnerStyle: (mob ? 'padding:14px 16px 16px;flex-direction:column;align-items:stretch;gap:12px;' : 'max-width:1240px;margin:0 auto;padding:18px 40px;align-items:center;gap:24px;') + 'display:flex;justify-content:space-between',
+      barSumStyle: 'font-weight:600;font-variant-numeric:tabular-nums;' + (mob ? 'font-size:15px' : 'font-size:17px'),
+      barActionStyle: 'display:flex;align-items:center;gap:14px;' + (mob ? 'flex-direction:column;align-items:stretch;gap:8px' : ''),
+      showNextHint: nextDisabled && !loading && !empty,
+      nextDisabled,
+      goNext: () => { if (!nextDisabled) location.href = 'Запись. Шаг 3 - Дата и время.dc.html'; },
+      nextStyle: 'display:flex;align-items:center;justify-content:center;min-height:52px;padding:0 32px;border:0;border-radius:var(--r-button);font-size:16px;font-weight:600;font-family:inherit;' +
+        (nextDisabled
+          ? 'background:var(--action-primary-disabled);color:var(--action-on-primary-disabled);cursor:not-allowed'
+          : 'background:var(--action-primary);color:var(--action-on-primary);cursor:pointer')
+    };
+  }
+}
+</script>
+</body>
+</html>

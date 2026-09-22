@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+@keyframes ng-toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="5">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-theme="{{ themeAttr }}" style="position:relative;width:100%;min-width:1280px;background:var(--bg-page);color:var(--text-primary);display:flex">
+
+    <aside data-screen-label="Меню админки" style="flex:none;width:236px;min-height:1080px;border-right:1px solid var(--border-default);background:var(--bg-subtle);display:flex;flex-direction:column">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:10px">
+        <svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+          <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <circle cx="50" cy="52" r="34"></circle>
+            <path d="M40 70 C38 56 40 44 43 36"></path>
+            <path d="M50 71 C50 56 53 44 56 37"></path>
+            <path d="M59 71 C60 58 63 49 66 43"></path>
+            <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+            <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+          </g>
+        </svg>
+        <span style="display:grid">
+          <span style="font-family:var(--font-script);font-size:19px;line-height:1.1">Ноготочки</span>
+          <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">админ-панель</span>
+        </span>
+      </div>
+      <nav style="padding:12px 10px;display:grid;gap:2px">
+        <sc-for list="{{ menu }}" as="m" hint-placeholder-count="10">
+          <a href="{{ m.href }}" style="{{ m.style }}">
+            <span style="flex:none;display:inline-flex;color:{{ m.iconColor }}">{{ m.icon }}</span>
+            <span style="flex:1;min-width:0">{{ m.name }}</span>
+            <sc-if value="{{ m.lock }}" hint-placeholder-val="{{ false }}">
+              <span style="flex:none;display:inline-flex;color:var(--accent-brand)" title="Только для администратора">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+              </span>
+            </sc-if>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto;padding:14px 16px;border-top:1px solid var(--border-default)">
+        <a href="Вход администратора.dc.html" style="display:flex;align-items:center;gap:9px;min-height:40px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+          Выйти
+        </a>
+      </div>
+    </aside>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <header data-screen-label="Верхняя строка" style="position:sticky;top:0;z-index:20;border-bottom:1px solid var(--border-default);background:var(--bg-page)">
+        <div style="padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+          <span style="display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:0 13px;border:1px solid var(--border-default);border-radius:8px;background:var(--bg-surface);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">
+            <span style="color:var(--accent-brand);display:inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg></span>
+            Пятница, 18 сентября 2026
+          </span>
+          <div style="display:flex;align-items:center;gap:10px;flex:none">
+            <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12.5px;font-weight:600;cursor:pointer">
+              <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+              {{ themeLabel }}
+            </button>
+            <span style="display:inline-flex;align-items:center;gap:9px;padding-left:6px;border-left:1px solid var(--border-default)">
+              <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12.5px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ОР</span>
+              <span style="display:grid">
+                <b style="font-size:13px;font-weight:600">Ольга Р.</b>
+                <span style="font-size:11px;color:var(--text-secondary)">администратор</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main data-screen-label="Роли и доступы" style="flex:1;padding:28px">
+        <div style="display:grid;gap:20px">
+
+          <div style="display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap">
+            <div style="min-width:0">
+              <h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:40px;line-height:1.08;letter-spacing:-.01em">Роли и доступы</h1>
+              <p style="margin:8px 0 0;font-size:14px;color:var(--text-secondary)">{{ subline }}</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex:none">
+              <span style="display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:var(--r-pill);background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text);font-size:12.5px;font-weight:600">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+                Только администратор
+              </span>
+              <button type="button" onClick="{{ openInvite }}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:14.5px;font-weight:600;cursor:pointer">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"></rect><path d="m3.5 7 8.5 6 8.5-6"></path></svg>
+                Пригласить сотрудника
+              </button>
+            </div>
+          </div>
+
+          <div style="padding:16px 20px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle);display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+            <div style="display:grid;gap:8px;min-width:0">
+              <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">роль</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ roleFilters }}" as="f" hint-placeholder-count="4">
+                  <button type="button" onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <label style="display:grid;gap:8px;flex:1;min-width:240px">
+              <span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">поиск</span>
+              <span style="position:relative;display:block">
+                <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-secondary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></span>
+                <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Имя или e-mail" style="width:100%;min-height:40px;padding:9px 12px 9px 34px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:400 13.5px/1.4 var(--font-ui)">
+              </span>
+            </label>
+          </div>
+
+          <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);padding:20px;display:grid;gap:10px">
+              <sc-for list="{{ skelRows }}" as="r" hint-placeholder-count="7">
+                <i style="height:46px;border-radius:10px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showTable }}" hint-placeholder-val="{{ true }}">
+            <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+              <div style="display:grid;grid-template-columns:minmax(190px,1.1fr) minmax(200px,1.2fr) 148px 144px 104px 120px 96px 92px;background:var(--bg-subtle);border-bottom:1px solid var(--border-default)">
+                <sc-for list="{{ columns }}" as="c" hint-placeholder-count="8">
+                  <span style="{{ c.style }}">{{ c.label }}</span>
+                </sc-for>
+              </div>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+                <div style="{{ r.rowStyle }}">
+                  <span style="padding:11px 14px;display:flex;align-items:center;gap:11px;min-width:0">
+                    <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">{{ r.initials }}</span>
+                    <span style="min-width:0;display:grid;gap:2px">
+                      <b style="font-size:13.5px;font-weight:600">{{ r.name }}</b>
+                      <sc-if value="{{ r.isMe }}" hint-placeholder-val="{{ false }}">
+                        <span style="justify-self:start;padding:3px 9px;border-radius:var(--r-pill);background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text);font-size:10.5px;font-weight:600">это вы</span>
+                      </sc-if>
+                    </span>
+                  </span>
+                  <span style="padding:12px 14px;display:flex;align-items:center;min-width:0;font-size:12.5px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.email }}</span>
+                  <span style="padding:10px 14px;display:flex;align-items:center">
+                    <select value="{{ r.role }}" onChange="{{ r.changeRole }}" style="{{ r.roleStyle }}">
+                      <option value="client">Клиент</option>
+                      <option value="master">Мастер</option>
+                      <option value="admin">Администратор</option>
+                    </select>
+                  </span>
+                  <span style="padding:12px 14px;display:flex;align-items:center;min-width:0">
+                    <sc-if value="{{ r.hasMaster }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12.5px">{{ r.masterName }}</span>
+                    </sc-if>
+                    <sc-if value="{{ r.canBind }}" hint-placeholder-val="{{ false }}">
+                      <button type="button" onClick="{{ r.bind }}" style="display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 11px;border:1px solid var(--accent-brand);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12px;font-weight:600;cursor:pointer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1 1"></path><path d="M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1-1"></path></svg>
+                        Привязать
+                      </button>
+                    </sc-if>
+                    <sc-if value="{{ r.noMaster }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12.5px;color:var(--text-secondary)">—</span>
+                    </sc-if>
+                  </span>
+                  <span style="padding:12px 14px;display:flex;align-items:center;font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--text-secondary)">{{ r.registered }}</span>
+                  <span style="padding:12px 14px;display:flex;align-items:center;font-size:12.5px;font-variant-numeric:tabular-nums">{{ r.lastLogin }}</span>
+                  <span style="padding:12px 14px;display:flex;align-items:center">
+                    <span style="{{ r.statusStyle }}">{{ r.statusLabel }}</span>
+                  </span>
+                  <span style="padding:10px 12px;display:flex;align-items:center;gap:5px">
+                    <button type="button" onClick="{{ r.resetPass }}" title="Сбросить пароль" aria-label="Сбросить пароль" style="{{ r.iconBtn }}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path><path d="M12 14.5v2"></path></svg>
+                    </button>
+                    <button type="button" onClick="{{ r.toggleActive }}" disabled="{{ r.toggleOff }}" title="{{ r.toggleTitle }}" aria-label="{{ r.toggleTitle }}" style="{{ r.offBtn }}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v7"></path><path d="M6.4 7.4a8 8 0 1 0 11.2 0"></path></svg>
+                    </button>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Что может каждая роль</h2>
+              <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-secondary)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5.5M12 7.8h.01"></path></svg>
+                Справка, права зашиты в сервисе и не редактируются
+              </span>
+            </div>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 168px 168px;background:var(--bg-subtle);border-bottom:1px solid var(--border-default)">
+              <span style="padding:12px 20px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">действие</span>
+              <span style="padding:12px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">клиент</span>
+              <span style="padding:12px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">мастер</span>
+              <span style="padding:12px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">администратор</span>
+            </div>
+            <sc-for list="{{ matrix }}" as="m" hint-placeholder-count="11">
+              <div style="{{ m.rowStyle }}">
+                <span style="padding:12px 20px;display:flex;align-items:center;font-size:13.5px;line-height:1.45;text-wrap:pretty">{{ m.action }}</span>
+                <span style="padding:10px 14px;display:flex;align-items:center">
+                  <span style="{{ m.clientStyle }}">{{ m.client }}</span>
+                </span>
+                <span style="padding:10px 14px;display:flex;align-items:center">
+                  <span style="{{ m.masterStyle }}">{{ m.master }}</span>
+                </span>
+                <span style="padding:10px 14px;display:flex;align-items:center">
+                  <span style="{{ m.adminStyle }}">{{ m.admin }}</span>
+                </span>
+              </div>
+            </sc-for>
+            <div style="padding:14px 20px;display:flex;gap:18px;flex-wrap:wrap;background:var(--bg-subtle)">
+              <sc-for list="{{ legend }}" as="l" hint-placeholder-count="3">
+                <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-secondary)">
+                  <span style="{{ l.chipStyle }}">{{ l.label }}</span>
+                  {{ l.text }}
+                </span>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:28px;bottom:28px;z-index:80;width:340px;animation:ng-toast .22s ease-out">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--bg-elevated);border:1px solid var(--success-border);box-shadow:var(--shadow-modal)">
+          <span style="flex:none;color:var(--success-text);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+          <div style="flex:1;min-width:0">
+            <b style="display:block;font-size:14px;font-weight:600">{{ toastTitle }}</b>
+            <span style="font-size:13px;line-height:1.5;color:var(--text-secondary)">{{ toastText }}</span>
+          </div>
+          <button type="button" onClick="{{ closeToast }}" aria-label="Закрыть" style="flex:none;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:var(--text-secondary);cursor:pointer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ dialogOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="width:100%;max-width:490px;padding:28px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal)">
+          <span style="{{ dialogIconStyle }}">{{ dialogIcon }}</span>
+          <h2 style="margin:16px 0 0;font-family:var(--font-display);font-weight:500;font-size:28px;line-height:1.15">{{ dialogTitle }}</h2>
+          <p style="margin:12px 0 0;font-size:15px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">{{ dialogText }}</p>
+          <sc-if value="{{ dialogWarn }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px;display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border-radius:10px;background:var(--warning-bg);border:1px solid var(--warning-border)">
+              <span style="flex:none;color:var(--warning-text);margin-top:1px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"></path><path d="M12 9v4M12 16.5h.01"></path></svg></span>
+              <p style="margin:0;font-size:13px;line-height:1.55;color:var(--warning-text)">{{ dialogWarnText }}</p>
+            </div>
+          </sc-if>
+          <sc-if value="{{ dialogIsInvite }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px;display:grid;gap:12px">
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">E-mail сотрудника</span>
+                <input type="email" value="{{ inviteEmail }}" onChange="{{ onInviteEmail }}" placeholder="master@nogotochki.ru" style="{{ inviteEmailStyle }}">
+                <sc-if value="{{ inviteError }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                    Проверьте адрес — нужен вид имя@домен
+                  </span>
+                </sc-if>
+              </label>
+              <label style="display:grid;gap:6px">
+                <span style="font-size:12.5px;font-weight:600">Роль в приглашении</span>
+                <select value="{{ inviteRole }}" onChange="{{ onInviteRole }}" style="width:100%;min-height:42px;padding:10px 13px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:400 14px/1.4 var(--font-ui)">
+                  <option value="master">Мастер</option>
+                  <option value="admin">Администратор</option>
+                </select>
+              </label>
+              <p style="margin:0;font-size:12.5px;line-height:1.55;color:var(--text-secondary)">Сотрудник получит ссылку на создание пароля. Ссылка действует 48 часов.</p>
+            </div>
+          </sc-if>
+          <div style="margin-top:22px;display:flex;gap:10px">
+            <button type="button" onClick="{{ dialogPrimary }}" disabled="{{ dialogPrimaryOff }}" style="{{ dialogPrimaryStyle }}">{{ dialogPrimaryLabel }}</button>
+            <button type="button" onClick="{{ closeDialog }}" style="flex:1;min-height:48px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">{{ dialogCancelLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:1080},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;roleChange&quot;,&quot;lastAdmin&quot;,&quot;toast&quot;,&quot;loading&quot;],&quot;default&quot;:&quot;list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:16,height:16,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const MENU = [
+  { name:'Сегодня', icon:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'], href:'Админ - Сегодня.dc.html' },
+  { name:'Расписание', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'] },
+  { name:'Записи', icon:['M5 3.5h10l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z','M8 12h8M8 16h5'], href:'Админ - Записи.dc.html' },
+  { name:'Услуги', icon:['M4 7h16M4 12h16M4 17h10'], href:'Админ - Услуги.dc.html' },
+  { name:'Мастера', icon:['M9 11.5a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z','M2.6 19.5a6.6 6.6 0 0 1 12.8 0','M16.5 5.2a3.4 3.4 0 0 1 0 6.6M19 19.2a5.8 5.8 0 0 0-2.2-4'], href:'Админ - Мастера.dc.html' },
+  { name:'Графики', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z','M8.5 14h3'], href:'Админ - Графики.dc.html' },
+  { name:'Клиенты', icon:['M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z','M4.8 20.2a7.4 7.4 0 0 1 14.4 0'], href:'Админ - Клиенты.dc.html', lock:true },
+  { name:'Роли', icon:['M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z','M9.5 12l1.8 1.8L15 10'], on:true, lock:true },
+  { name:'Настройки', icon:['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z','M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4'], lock:true }
+];
+
+const ROLE_LABEL = { client:'Клиент', master:'Мастер', admin:'Администратор' };
+
+const USERS = [
+  { id:'u1', initials:'ОР', name:'Ольга Рогова', email:'olga@nogotochki.ru', role:'admin', master:null, reg:'12.01.2023', login:'сегодня, 08:41', active:true, me:true },
+  { id:'u2', initials:'АК', name:'Анна Ковалёва', email:'anna@nogotochki.ru', role:'master', master:'Анна Ковалёва', reg:'03.02.2023', login:'сегодня, 09:14', active:true },
+  { id:'u3', initials:'МЛ', name:'Мария Лис', email:'maria@nogotochki.ru', role:'master', master:'Мария Лис', reg:'18.04.2024', login:'вчера, 20:02', active:true },
+  { id:'u4', initials:'ДС', name:'Дарья Смирнова', email:'darya@nogotochki.ru', role:'master', master:null, reg:'07.09.2025', login:'14.09.2026', active:true },
+  { id:'u5', initials:'ЕП', name:'Елена Петрова', email:'elena.petrova@mail.ru', role:'client', master:null, reg:'21.03.2023', login:'17.09.2026', active:true },
+  { id:'u6', initials:'НС', name:'Наталья Соколова', email:'sokolova.n@yandex.ru', role:'client', master:null, reg:'09.09.2024', login:'17.09.2026', active:true },
+  { id:'u7', initials:'ИГ', name:'Ирина Гай', email:'irina@nogotochki.ru', role:'master', master:'Ирина Гай', reg:'15.06.2025', login:'02.09.2026', active:false }
+];
+
+const MATRIX = [
+  ['Видеть свободные слоты', 'full', 'full', 'full'],
+  ['Видеть контакты клиента', 'no', 'own', 'full'],
+  ['Создавать записи себе', 'full', 'full', 'full'],
+  ['Создавать записи другим', 'no', 'no', 'full'],
+  ['Видеть чужие записи', 'no', 'own', 'full'],
+  ['Отменять и переносить', 'own', 'own', 'full'],
+  ['Отмечать визит и неявку', 'no', 'own', 'full'],
+  ['Закрывать время мастера', 'no', 'own', 'full'],
+  ['Управлять услугами и графиками', 'no', 'no', 'full'],
+  ['Назначать роли', 'no', 'no', 'full'],
+  ['Видеть финансы и экспорт', 'no', 'no', 'full']
+];
+
+const VAL = {
+  full: { label:'полный доступ', tone:'success' },
+  own: { label:'только своё', tone:'upcoming' },
+  no: { label:'нет', tone:'plain' }
+};
+
+class Component extends DCLogic {
+  state = {
+    theme: null, st: null, query: '', filter: 'Все', roles: {}, actives: {}, bound: {},
+    dialog: null, pendingRole: null, toast: null, inviteEmail: '', inviteRole: 'master', inviteTried: false
+  };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'list'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const st = this.st();
+    const loading = st === 'loading';
+
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+    const filterChip = (on) => 'min-height:40px;padding:0 15px;border-radius:var(--r-pill);font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;font-family:inherit;' +
+      (on ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+          : 'border:1px solid var(--border-strong);background:transparent;color:var(--text-primary)');
+    const tone = (t) => {
+      if (t === 'success') return 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)';
+      if (t === 'warning') return 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)';
+      if (t === 'error') return 'background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text)';
+      if (t === 'upcoming') return 'background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text)';
+      if (t === 'plain') return 'border:1px solid var(--border-default);background:transparent;color:var(--text-secondary)';
+      return 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)';
+    };
+    const iconBtn = 'width:30px;height:30px;flex:none;display:grid;place-items:center;border:1px solid var(--border-default);border-radius:7px;background:transparent;color:var(--text-secondary);cursor:pointer';
+
+    const data = USERS.map(u => Object.assign({}, u, {
+      role: this.state.roles[u.id] || u.role,
+      active: this.state.actives[u.id] !== undefined ? this.state.actives[u.id] : u.active,
+      master: this.state.bound[u.id] ? u.name : u.master
+    }));
+
+    const admins = data.filter(u => u.role === 'admin' && u.active);
+
+    const q = this.state.query.trim().toLowerCase();
+    const byFilter = { 'Все': null, 'Клиенты': 'client', 'Мастера': 'master', 'Администраторы': 'admin' };
+    const list = data
+      .filter(u => !byFilter[this.state.filter] || u.role === byFilter[this.state.filter])
+      .filter(u => !q || u.name.toLowerCase().indexOf(q) >= 0 || u.email.toLowerCase().indexOf(q) >= 0);
+
+    const columns = ['пользователь','e-mail','роль','привязанный мастер','регистрация','последний вход','статус','действия'].map(label => ({
+      label,
+      style: 'padding:12px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);display:flex;align-items:center'
+    }));
+
+    const rows = list.map((u, i) => ({
+      initials: u.initials, name: u.name, email: u.email, role: u.role,
+      isMe: !!u.me,
+      roleStyle: 'width:100%;min-height:38px;padding:8px 11px;border-radius:8px;font:600 12.5px/1.2 var(--font-ui);cursor:pointer;' +
+        (u.role === 'admin'
+          ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+          : 'border:1px solid var(--border-strong);background:var(--bg-surface);color:var(--text-primary)'),
+      changeRole: (e) => {
+        const next = e.target.value;
+        if (next === u.role) return;
+        this.setState({ dialog: 'role', pendingRole: { id: u.id, name: u.name, from: u.role, to: next } });
+      },
+      hasMaster: !!u.master,
+      masterName: u.master || '',
+      canBind: !u.master && u.role === 'master',
+      noMaster: !u.master && u.role !== 'master',
+      bind: () => this.setState({ dialog: 'bind', pendingRole: { id: u.id, name: u.name } }),
+      registered: u.reg, lastLogin: u.active ? u.login : 'нет доступа',
+      statusLabel: u.active ? 'Активен' : 'Отключён',
+      statusStyle: 'display:inline-flex;align-items:center;padding:5px 11px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;' +
+        (u.active ? tone('success') : tone('plain')),
+      iconBtn,
+      offBtn: iconBtn + (u.me ? ';opacity:.45;cursor:not-allowed' : ';border-color:var(--error-border);color:var(--error-text)'),
+      toggleOff: !!u.me,
+      toggleTitle: u.me ? 'Нельзя отключить свой аккаунт' : (u.active ? 'Отключить аккаунт' : 'Включить аккаунт'),
+      toggleActive: () => {
+        if (u.me) return;
+        if (u.active && u.role === 'admin' && admins.length <= 1) { this.setState({ dialog: 'lastAdmin', pendingRole: { id: u.id, name: u.name } }); return; }
+        this.setState({ dialog: 'disable', pendingRole: { id: u.id, name: u.name, active: u.active } });
+      },
+      resetPass: () => this.setState({ toast: 'reset' }),
+      rowStyle: 'display:grid;grid-template-columns:minmax(190px,1.1fr) minmax(200px,1.2fr) 148px 144px 104px 120px 96px 92px;align-items:stretch;border-bottom:1px solid var(--border-default);' +
+        (i % 2 === 1 ? 'background:var(--bg-page);' : '') + (u.active ? '' : 'opacity:.72')
+    }));
+
+    const matrix = MATRIX.map((m, i) => {
+      const cell = (k) => 'display:inline-flex;align-items:center;padding:5px 11px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;white-space:nowrap;' + tone(VAL[k].tone);
+      return {
+        action: m[0],
+        client: VAL[m[1]].label, master: VAL[m[2]].label, admin: VAL[m[3]].label,
+        clientStyle: cell(m[1]), masterStyle: cell(m[2]), adminStyle: cell(m[3]),
+        rowStyle: 'display:grid;grid-template-columns:minmax(0,1fr) 168px 168px 168px;align-items:stretch;border-bottom:1px solid var(--border-default);' +
+          (i % 2 === 1 ? 'background:var(--bg-page)' : '')
+      };
+    });
+
+    const legend = [
+      { label:'полный доступ', tone:'success', text:'действие доступно без ограничений' },
+      { label:'только своё', tone:'upcoming', text:'только свои записи и своё расписание' },
+      { label:'нет', tone:'plain', text:'действие недоступно' }
+    ].map(l => ({
+      label: l.label, text: l.text,
+      chipStyle: 'display:inline-flex;align-items:center;padding:4px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:600;' + tone(l.tone)
+    }));
+
+    // диалоги
+    const forced = st === 'roleChange' ? 'role' : (st === 'lastAdmin' ? 'lastAdmin' : null);
+    const dlg = this.state.dialog || forced;
+    const pend = this.state.pendingRole ||
+      (forced === 'role' ? { id:'u2', name:'Анны Ковалёвой', from:'master', to:'admin' } : (forced === 'lastAdmin' ? { id:'u1', name:'Ольги Роговой' } : null));
+
+    const emailOk = /^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(this.state.inviteEmail.trim());
+    const inviteError = this.state.inviteTried && !emailOk;
+
+    const toastKind = this.state.toast || (st === 'toast' ? 'role' : null);
+
+    const dialogTitle = dlg === 'role' ? 'Изменить роль?'
+      : (dlg === 'lastAdmin' ? 'Нельзя оставить сервис без администратора'
+      : (dlg === 'bind' ? 'Привязать аккаунт к мастеру?'
+      : (dlg === 'invite' ? 'Пригласить сотрудника'
+      : (dlg === 'disable' ? (pend && pend.active ? 'Отключить аккаунт?' : 'Включить аккаунт?') : ''))));
+
+    const dialogText = dlg === 'role' && pend
+      ? ('Вы меняете роль ' + pend.name + ' на «' + (ROLE_LABEL[pend.to] || '').toLowerCase() + '». ' +
+         (pend.to === 'admin' ? 'Она получит доступ к клиентам, финансам и назначению ролей.' : 'Прежние права будут сняты сразу после подтверждения.'))
+      : (dlg === 'lastAdmin' && pend
+          ? ('Это единственный активный администратор. Сначала назначьте администратором кого-то ещё, потом отключайте аккаунт ' + pend.name + '.')
+          : (dlg === 'bind' && pend
+              ? ('Аккаунт ' + pend.name + ' будет связан с карточкой мастера. В кабинете появятся её записи и график.')
+              : (dlg === 'invite'
+                  ? 'Отправим письмо со ссылкой на создание пароля. Роль можно поменять позже.'
+                  : (dlg === 'disable' && pend
+                      ? (pend.active
+                          ? ('Аккаунт ' + pend.name + ' потеряет доступ к сервису. Записи и история останутся.')
+                          : ('Аккаунт ' + pend.name + ' снова сможет войти в сервис.'))
+                      : ''))));
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      stateOpts: [['list','Список'],['roleChange','Изменение роли'],['lastAdmin','Последний администратор'],['toast','Тост'],['loading','Загрузка']]
+        .map(s => ({
+          label: s[1], style: chipPv(st === s[0]),
+          onClick: () => this.setState({ st: s[0], dialog: null, pendingRole: null, toast: null, query: '', filter: 'Все', inviteTried: false })
+        })),
+
+      menu: MENU.map(m => ({
+        name: m.name, href: m.on ? 'Админ - Роли и доступы.dc.html' : (m.href || ('#' + m.name)),
+        icon: ICON(m.icon, { width: 17, height: 17 }),
+        iconColor: m.on ? 'var(--accent-brand)' : 'var(--text-secondary)',
+        lock: !!m.lock,
+        style: 'display:flex;align-items:center;gap:11px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;' +
+          (m.on ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary);font-weight:600'
+                : 'border:1px solid transparent;color:var(--text-secondary)')
+      })),
+
+      subline: loading
+        ? 'Загружаем пользователей'
+        : (list.length + ' из ' + data.length + ' · администраторов: ' + admins.length + ' · мастеров: ' + data.filter(u => u.role === 'master').length),
+
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      roleFilters: ['Все','Клиенты','Мастера','Администраторы'].map(f => ({
+        label: f, style: filterChip(this.state.filter === f), onClick: () => this.setState({ filter: f })
+      })),
+
+      isLoading: loading,
+      showTable: !loading,
+      skelRows: [1,2,3,4,5,6,7],
+      columns, rows, matrix, legend,
+
+      openInvite: () => this.setState({ dialog: 'invite', inviteEmail: '', inviteRole: 'master', inviteTried: false }),
+
+      dialogOpen: !!dlg,
+      dialogIsInvite: dlg === 'invite',
+      dialogTitle, dialogText,
+      dialogWarn: dlg === 'lastAdmin',
+      dialogWarnText: 'Нельзя оставить сервис без администратора',
+      dialogIcon: dlg === 'lastAdmin'
+        ? ICON(['M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z','M12 9v4M12 16.5h.01'], { width:26, height:26 })
+        : (dlg === 'invite'
+            ? ICON(['M2.5 7a2.5 2.5 0 0 1 2.5-2.5h14A2.5 2.5 0 0 1 21.5 7v10a2.5 2.5 0 0 1-2.5 2.5H5A2.5 2.5 0 0 1 2.5 17Z','m3.5 7 8.5 6 8.5-6'], { width:26, height:26 })
+            : (dlg === 'bind'
+                ? ICON(['M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1 1','M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1-1'], { width:26, height:26 })
+                : ICON(['M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z','M9.5 12l1.8 1.8L15 10'], { width:26, height:26 }))),
+      dialogIconStyle: 'display:inline-grid;place-items:center;width:56px;height:56px;border-radius:50%;' +
+        (dlg === 'lastAdmin' ? 'background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text)'
+          : 'background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text)'),
+      dialogPrimaryLabel: dlg === 'lastAdmin' ? 'Понятно'
+        : (dlg === 'invite' ? 'Отправить приглашение'
+        : (dlg === 'bind' ? 'Привязать'
+        : (dlg === 'disable' ? (pend && pend.active ? 'Отключить' : 'Включить') : 'Изменить роль'))),
+      dialogCancelLabel: dlg === 'lastAdmin' ? 'Закрыть' : 'Отмена',
+      dialogPrimaryOff: dlg === 'invite' && this.state.inviteTried && !emailOk,
+      dialogPrimaryStyle: 'flex:1;min-height:48px;border-radius:var(--r-button);font-size:15px;font-weight:600;font-family:inherit;' +
+        (dlg === 'invite' && this.state.inviteTried && !emailOk
+          ? 'border:1px solid var(--border-default);background:transparent;color:var(--text-disabled);cursor:not-allowed;opacity:.7'
+          : 'border:0;background:var(--action-primary);color:var(--action-on-primary);cursor:pointer'),
+      dialogPrimary: () => {
+        if (dlg === 'lastAdmin') { this.setState({ dialog: null, pendingRole: null, st: st === 'lastAdmin' ? 'list' : st }); return; }
+        if (dlg === 'invite') {
+          if (!emailOk) { this.setState({ inviteTried: true }); return; }
+          this.setState({ dialog: null, toast: 'invited' });
+          return;
+        }
+        if (dlg === 'bind' && pend) { this.setState(p => ({ bound: Object.assign({}, p.bound, { [pend.id]: true }), dialog: null, pendingRole: null, toast: 'bound' })); return; }
+        if (dlg === 'disable' && pend) { this.setState(p => ({ actives: Object.assign({}, p.actives, { [pend.id]: !pend.active }), dialog: null, pendingRole: null, toast: 'disabled' })); return; }
+        if (dlg === 'role' && pend) {
+          this.setState(p => ({ roles: Object.assign({}, p.roles, { [pend.id]: pend.to }), dialog: null, pendingRole: null, st: st === 'roleChange' ? 'list' : st, toast: 'role' }));
+        }
+      },
+      closeDialog: () => this.setState({ dialog: null, pendingRole: null, inviteTried: false, st: (st === 'roleChange' || st === 'lastAdmin') ? 'list' : st }),
+
+      inviteEmail: this.state.inviteEmail,
+      onInviteEmail: (e) => this.setState({ inviteEmail: e.target.value, inviteTried: false }),
+      inviteEmailStyle: 'width:100%;min-height:42px;padding:10px 13px;border-radius:var(--r-input);color:var(--text-primary);font:400 14px/1.4 var(--font-ui);' +
+        (inviteError ? 'border:1px solid var(--error);background:var(--error-bg)' : 'border:1px solid var(--border-strong);background:var(--bg-surface)'),
+      inviteError,
+      inviteRole: this.state.inviteRole,
+      onInviteRole: (e) => this.setState({ inviteRole: e.target.value }),
+
+      toastOn: !!toastKind,
+      toastTitle: toastKind === 'reset' ? 'Ссылка на сброс отправлена'
+        : (toastKind === 'invited' ? 'Приглашение отправлено'
+        : (toastKind === 'bound' ? 'Аккаунт привязан к мастеру'
+        : (toastKind === 'disabled' ? 'Статус аккаунта изменён' : 'Роль изменена'))),
+      toastText: toastKind === 'reset' ? 'Письмо с новой ссылкой придёт на e-mail пользователя'
+        : (toastKind === 'invited' ? 'Ссылка на создание пароля действует 48 часов'
+        : (toastKind === 'bound' ? 'В кабинете мастера появились записи и график'
+        : (toastKind === 'disabled' ? 'Доступ к сервису обновлён' : 'Новые права действуют при следующем входе'))),
+      closeToast: () => this.setState({ toast: null, st: st === 'toast' ? 'list' : st })
+    };
+  }
+}
+</script>
+</body>
+</html>

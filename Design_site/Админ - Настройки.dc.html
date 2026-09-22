@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --r-input:8px; --r-button:12px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+@keyframes ng-toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ng-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="6">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-theme="{{ themeAttr }}" style="position:relative;width:100%;min-width:1280px;background:var(--bg-page);color:var(--text-primary);display:flex">
+
+    <aside data-screen-label="Меню админки" style="flex:none;width:236px;min-height:1140px;border-right:1px solid var(--border-default);background:var(--bg-subtle);display:flex;flex-direction:column">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:10px">
+        <svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+          <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <circle cx="50" cy="52" r="34"></circle>
+            <path d="M40 70 C38 56 40 44 43 36"></path>
+            <path d="M50 71 C50 56 53 44 56 37"></path>
+            <path d="M59 71 C60 58 63 49 66 43"></path>
+            <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+            <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+          </g>
+        </svg>
+        <span style="display:grid">
+          <span style="font-family:var(--font-script);font-size:19px;line-height:1.1">Ноготочки</span>
+          <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-secondary)">админ-панель</span>
+        </span>
+      </div>
+      <nav style="padding:12px 10px;display:grid;gap:2px">
+        <sc-for list="{{ menu }}" as="m" hint-placeholder-count="10">
+          <a href="{{ m.href }}" style="{{ m.style }}">
+            <span style="flex:none;display:inline-flex;color:{{ m.iconColor }}">{{ m.icon }}</span>
+            <span style="flex:1;min-width:0">{{ m.name }}</span>
+            <sc-if value="{{ m.lock }}" hint-placeholder-val="{{ false }}">
+              <span style="flex:none;display:inline-flex;color:var(--accent-brand)" title="Только для администратора">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+              </span>
+            </sc-if>
+          </a>
+        </sc-for>
+      </nav>
+      <div style="margin-top:auto;padding:14px 16px;border-top:1px solid var(--border-default)">
+        <a href="Вход администратора.dc.html" style="display:flex;align-items:center;gap:9px;min-height:40px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+          Выйти
+        </a>
+      </div>
+    </aside>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <header data-screen-label="Верхняя строка" style="position:sticky;top:0;z-index:20;border-bottom:1px solid var(--border-default);background:var(--bg-page)">
+        <div style="padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+          <span style="display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:0 13px;border:1px solid var(--border-default);border-radius:8px;background:var(--bg-surface);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums">
+            <span style="color:var(--accent-brand);display:inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg></span>
+            Пятница, 18 сентября 2026
+          </span>
+          <div style="display:flex;align-items:center;gap:10px;flex:none">
+            <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--border-default);border-radius:8px;background:transparent;color:var(--text-primary);font-size:12.5px;font-weight:600;cursor:pointer">
+              <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+              {{ themeLabel }}
+            </button>
+            <span style="display:inline-flex;align-items:center;gap:9px;padding-left:6px;border-left:1px solid var(--border-default)">
+              <span style="width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12.5px;font-weight:600;border:1px solid var(--border-hair);background:var(--sand);color:#5C4A3A">ОР</span>
+              <span style="display:grid">
+                <b style="font-size:13px;font-weight:600">Ольга Р.</b>
+                <span style="font-size:11px;color:var(--text-secondary)">администратор</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main data-screen-label="Настройки" style="flex:1;padding:28px">
+        <div style="max-width:1040px;display:grid;gap:20px">
+
+          <div style="display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap">
+            <div style="min-width:0">
+              <h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:40px;line-height:1.08;letter-spacing:-.01em">Настройки</h1>
+              <p style="margin:8px 0 0;font-size:14px;color:var(--text-secondary)">{{ subline }}</p>
+            </div>
+            <span style="flex:none;display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:var(--r-pill);background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text);font-size:12.5px;font-weight:600">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+              Только администратор
+            </span>
+          </div>
+
+          <sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:var(--r-card);background:var(--warning-bg);border:1px solid var(--warning-border)">
+              <span style="flex:none;color:var(--warning-text);margin-top:1px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"></path><path d="M12 9v4M12 16.5h.01"></path></svg></span>
+              <div style="flex:1;min-width:0">
+                <b style="display:block;font-size:14.5px;font-weight:600;color:var(--warning-text)">Есть несохранённые изменения</b>
+                <span style="font-size:13.5px;line-height:1.5;color:var(--warning-text)">Если уйти с экрана сейчас, правки потеряются. Сохраните или верните значения по умолчанию.</span>
+              </div>
+              <button type="button" onClick="{{ discard }}" style="flex:none;min-height:40px;padding:0 16px;border:1px solid var(--warning-border);border-radius:var(--r-button);background:var(--bg-surface);color:var(--warning-text);font-size:13.5px;font-weight:600;cursor:pointer">Отменить правки</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showErrors }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:var(--r-card);background:var(--error-bg);border:1px solid var(--error-border)">
+              <span style="flex:none;color:var(--error-text);margin-top:1px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg></span>
+              <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--error-text)">Проверьте поля: {{ errorList }}</p>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;gap:18px">
+              <sc-for list="{{ skelCards }}" as="s" hint-placeholder-count="4">
+                <div style="padding:22px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:grid;gap:12px">
+                  <i style="height:22px;width:26%;border-radius:9px;background:linear-gradient(90deg,var(--bg-subtle) 25%,var(--border-default) 50%,var(--bg-subtle) 75%);background-size:280% 100%;animation:ng-shimmer 1.4s linear infinite"></i>
+                  <i style="height:44px;border-radius:10px;background:var(--bg-subtle)"></i>
+                  <i style="height:44px;width:72%;border-radius:10px;background:var(--bg-subtle)"></i>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showBody }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;gap:18px">
+
+              <section style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                <div style="padding:16px 22px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:12px">
+                  <span style="flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--bg-subtle);border:1px solid var(--border-default);color:var(--accent-brand)">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-6 8 6v10"></path><path d="M9.5 20v-6h5v6"></path></svg>
+                  </span>
+                  <h2 style="margin:0;flex:1;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Студия</h2>
+                  <span style="font-size:12.5px;color:var(--text-secondary)">Показывается на лендинге и в подвале</span>
+                </div>
+                <div style="padding:20px 22px;display:grid;gap:16px">
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                    <label style="display:grid;gap:6px">
+                      <span style="font-size:12.5px;font-weight:600">Название</span>
+                      <input type="text" value="{{ fName }}" onChange="{{ onName }}" style="{{ nameStyle }}">
+                      <sc-if value="{{ nameError }}" hint-placeholder-val="{{ false }}">
+                        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                          Название не может быть пустым
+                        </span>
+                      </sc-if>
+                    </label>
+                    <label style="display:grid;gap:6px">
+                      <span style="font-size:12.5px;font-weight:600">Адрес</span>
+                      <input type="text" value="{{ fAddress }}" onChange="{{ onAddress }}" style="{{ inputOk }}">
+                    </label>
+                    <label style="display:grid;gap:6px">
+                      <span style="font-size:12.5px;font-weight:600">Телефон</span>
+                      <input type="tel" value="{{ fPhone }}" onChange="{{ onPhone }}" style="{{ phoneStyle }}">
+                      <sc-if value="{{ phoneError }}" hint-placeholder-val="{{ false }}">
+                        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                          Нужно 11 цифр, как +7 495 123-45-67
+                        </span>
+                      </sc-if>
+                    </label>
+                    <label style="display:grid;gap:6px">
+                      <span style="font-size:12.5px;font-weight:600">E-mail</span>
+                      <input type="email" value="{{ fEmail }}" onChange="{{ onEmail }}" style="{{ emailStyle }}">
+                      <sc-if value="{{ emailError }}" hint-placeholder-val="{{ false }}">
+                        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                          Проверьте адрес — нужен вид имя@домен
+                        </span>
+                      </sc-if>
+                    </label>
+                    <label style="display:grid;gap:6px">
+                      <span style="font-size:12.5px;font-weight:600">Telegram</span>
+                      <input type="text" value="{{ fTg }}" onChange="{{ onTg }}" style="{{ inputOk }}">
+                    </label>
+                    <label style="display:grid;gap:6px">
+                      <span style="font-size:12.5px;font-weight:600">Instagram</span>
+                      <input type="text" value="{{ fIg }}" onChange="{{ onIg }}" style="{{ inputOk }}">
+                    </label>
+                  </div>
+
+                  <div style="display:grid;gap:9px">
+                    <span style="font-size:12.5px;font-weight:600">Часы работы</span>
+                    <div style="border:1px solid var(--border-default);border-radius:12px;overflow:hidden">
+                      <div style="display:grid;grid-template-columns:168px 230px minmax(0,1fr);background:var(--bg-subtle);border-bottom:1px solid var(--border-default)">
+                        <span style="padding:10px 16px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">день</span>
+                        <span style="padding:10px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">часы</span>
+                        <span style="padding:10px 14px;font:600 11px/1.3 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary)">заметка</span>
+                      </div>
+                      <sc-for list="{{ hours }}" as="h" hint-placeholder-count="7">
+                        <div style="{{ h.rowStyle }}">
+                          <span style="padding:10px 16px;display:flex;align-items:center;gap:11px;min-width:0">
+                            <input type="checkbox" checked="{{ h.open }}" onChange="{{ h.toggle }}" aria-label="Рабочий день" style="width:17px;height:17px;flex:none;accent-color:var(--action-primary)">
+                            <b style="font-size:13.5px;font-weight:600">{{ h.day }}</b>
+                          </span>
+                          <span style="padding:8px 14px;display:flex;align-items:center;gap:6px">
+                            <sc-if value="{{ h.open }}" hint-placeholder-val="{{ true }}">
+                              <span style="display:flex;align-items:center;gap:6px">
+                                <input type="time" value="{{ h.from }}" onChange="{{ h.setFrom }}" style="{{ h.timeStyle }}">
+                                <span style="color:var(--text-secondary)">–</span>
+                                <input type="time" value="{{ h.to }}" onChange="{{ h.setTo }}" style="{{ h.timeStyle }}">
+                              </span>
+                            </sc-if>
+                            <sc-if value="{{ h.closed }}" hint-placeholder-val="{{ false }}">
+                              <span style="padding:5px 12px;border-radius:var(--r-pill);border:1px solid var(--border-default);background:var(--bg-subtle);font-size:12px;font-weight:600;color:var(--text-secondary)">Выходной</span>
+                            </sc-if>
+                          </span>
+                          <span style="padding:10px 14px;display:flex;align-items:center;font-size:12.5px;color:var(--text-secondary)">{{ h.note }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ hoursError }}" hint-placeholder-val="{{ false }}">
+                      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                        Закрытие должно быть позже открытия
+                      </span>
+                    </sc-if>
+                  </div>
+                </div>
+              </section>
+
+              <section style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                <div style="padding:16px 22px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:12px">
+                  <span style="flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--bg-subtle);border:1px solid var(--border-default);color:var(--accent-brand)">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+                  </span>
+                  <h2 style="margin:0;flex:1;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Правила записи</h2>
+                  <span style="font-size:12.5px;color:var(--text-secondary)">Влияет на календарь и сетку слотов</span>
+                </div>
+                <div style="padding:20px 22px;display:grid;gap:14px">
+                  <sc-for list="{{ bookingRules }}" as="r" hint-placeholder-count="4">
+                    <div style="{{ r.rowStyle }}">
+                      <div style="flex:1;min-width:0;display:grid;gap:3px">
+                        <b style="font-size:14px;font-weight:600">{{ r.title }}</b>
+                        <span style="font-size:12.5px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ r.hint }}</span>
+                        <sc-if value="{{ r.error }}" hint-placeholder-val="{{ false }}">
+                          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                            {{ r.errorText }}
+                          </span>
+                        </sc-if>
+                      </div>
+                      <span style="flex:none;display:flex;align-items:center;gap:9px">
+                        <sc-if value="{{ r.isSelect }}" hint-placeholder-val="{{ false }}">
+                          <select value="{{ r.value }}" onChange="{{ r.onChange }}" style="{{ r.controlStyle }}">
+                            <sc-for list="{{ r.options }}" as="o" hint-placeholder-count="4">
+                              <option value="{{ o.value }}">{{ o.label }}</option>
+                            </sc-for>
+                          </select>
+                        </sc-if>
+                        <sc-if value="{{ r.isNumber }}" hint-placeholder-val="{{ true }}">
+                          <span style="display:flex;align-items:center;gap:9px">
+                            <input type="number" value="{{ r.value }}" onChange="{{ r.onChange }}" style="{{ r.controlStyle }}">
+                            <span style="font-size:12.5px;color:var(--text-secondary);min-width:52px">{{ r.unit }}</span>
+                          </span>
+                        </sc-if>
+                        <sc-if value="{{ r.isDefault }}" hint-placeholder-val="{{ false }}">
+                          <span style="padding:5px 11px;border-radius:var(--r-pill);border:1px solid var(--border-default);background:var(--bg-subtle);font-size:11px;font-weight:600;color:var(--text-secondary)">по умолчанию</span>
+                        </sc-if>
+                      </span>
+                    </div>
+                  </sc-for>
+                </div>
+              </section>
+
+              <section style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                <div style="padding:16px 22px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:12px">
+                  <span style="flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--bg-subtle);border:1px solid var(--border-default);color:var(--accent-brand)">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 1 2.7 6.2"></path><path d="M3 19.5v-4h4"></path></svg>
+                  </span>
+                  <h2 style="margin:0;flex:1;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Отмена и перенос</h2>
+                  <span style="font-size:12.5px;color:var(--text-secondary)">Действует в личном кабинете клиента</span>
+                </div>
+                <div style="padding:20px 22px;display:grid;gap:14px">
+                  <sc-for list="{{ cancelRules }}" as="r" hint-placeholder-count="2">
+                    <div style="{{ r.rowStyle }}">
+                      <div style="flex:1;min-width:0;display:grid;gap:3px">
+                        <b style="font-size:14px;font-weight:600">{{ r.title }}</b>
+                        <span style="font-size:12.5px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ r.hint }}</span>
+                        <sc-if value="{{ r.error }}" hint-placeholder-val="{{ false }}">
+                          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                            {{ r.errorText }}
+                          </span>
+                        </sc-if>
+                      </div>
+                      <span style="flex:none;display:flex;align-items:center;gap:9px">
+                        <input type="number" value="{{ r.value }}" onChange="{{ r.onChange }}" style="{{ r.controlStyle }}">
+                        <span style="font-size:12.5px;color:var(--text-secondary);min-width:52px">{{ r.unit }}</span>
+                        <sc-if value="{{ r.isDefault }}" hint-placeholder-val="{{ false }}">
+                          <span style="padding:5px 11px;border-radius:var(--r-pill);border:1px solid var(--border-default);background:var(--bg-subtle);font-size:11px;font-weight:600;color:var(--text-secondary)">по умолчанию</span>
+                        </sc-if>
+                      </span>
+                    </div>
+                  </sc-for>
+
+                  <label style="display:grid;gap:7px">
+                    <span style="font-size:12.5px;font-weight:600">Текст при поздней отмене</span>
+                    <textarea rows="2" value="{{ fLateText }}" onChange="{{ onLateText }}" style="{{ lateStyle }}"></textarea>
+                    <span style="font-size:12px;line-height:1.5;color:var(--text-secondary)">{{ lateHint }}</span>
+                    <sc-if value="{{ lateError }}" hint-placeholder-val="{{ false }}">
+                      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                        Оставьте в тексте телефон салона
+                      </span>
+                    </sc-if>
+                  </label>
+                </div>
+              </section>
+
+              <section style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);overflow:hidden">
+                <div style="padding:16px 22px;border-bottom:1px solid var(--border-default);display:flex;align-items:center;gap:12px">
+                  <span style="flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--bg-subtle);border:1px solid var(--border-default);color:var(--accent-brand)">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5"></path><path d="M10.5 19a2 2 0 0 0 3 0"></path></svg>
+                  </span>
+                  <h2 style="margin:0;flex:1;font-family:var(--font-display);font-weight:500;font-size:24px;line-height:1.2">Уведомления</h2>
+                  <span style="font-size:12.5px;color:var(--text-secondary)">Приходят в личный кабинет клиента</span>
+                </div>
+                <div style="padding:20px 22px;display:grid;gap:12px">
+                  <sc-for list="{{ notifications }}" as="n" hint-placeholder-count="5">
+                    <label style="{{ n.rowStyle }}">
+                      <input type="checkbox" checked="{{ n.on }}" onChange="{{ n.toggle }}" style="width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--action-primary)">
+                      <span style="flex:1;min-width:0;display:grid;gap:3px">
+                        <b style="font-size:14px;font-weight:600">{{ n.title }}</b>
+                        <span style="font-size:12.5px;line-height:1.5;color:var(--text-secondary);text-wrap:pretty">{{ n.hint }}</span>
+                      </span>
+                    </label>
+                  </sc-for>
+                  <div style="display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border-radius:12px;background:var(--info-bg);border:1px solid var(--info-border)">
+                    <span style="flex:none;color:var(--info-text);margin-top:1px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5.5M12 7.8h.01"></path></svg></span>
+                    <p style="margin:0;font-size:13px;line-height:1.55;color:var(--info-text)">E-mail и Telegram в MVP не подключены — уведомления приходят только в личный кабинет.</p>
+                  </div>
+                </div>
+              </section>
+
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:18px 22px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-subtle)">
+                <button type="button" onClick="{{ save }}" disabled="{{ saveDisabled }}" style="{{ saveStyle }}">
+                  <sc-if value="{{ isSaving }}" hint-placeholder-val="{{ false }}">
+                    <i style="width:15px;height:15px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;display:inline-block;animation:ng-spin .8s linear infinite;margin-right:9px"></i>
+                  </sc-if>
+                  {{ saveLabel }}
+                </button>
+                <button type="button" onClick="{{ openReset }}" style="min-height:48px;padding:0 20px;border:1px solid var(--border-strong);border-radius:var(--r-button);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Вернуть значения по умолчанию</button>
+                <span style="flex:1"></span>
+                <span style="font-size:12.5px;color:var(--text-secondary)">{{ savedHint }}</span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </main>
+    </div>
+
+    <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:28px;bottom:28px;z-index:80;width:340px;animation:ng-toast .22s ease-out">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--bg-elevated);border:1px solid var(--success-border);box-shadow:var(--shadow-modal)">
+          <span style="flex:none;color:var(--success-text);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+          <div style="flex:1;min-width:0">
+            <b style="display:block;font-size:14px;font-weight:600">{{ toastTitle }}</b>
+            <span style="font-size:13px;line-height:1.5;color:var(--text-secondary)">{{ toastText }}</span>
+          </div>
+          <button type="button" onClick="{{ closeToast }}" aria-label="Закрыть" style="flex:none;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:var(--text-secondary);cursor:pointer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ dialogOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70;background:rgba(31,28,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div style="width:100%;max-width:480px;padding:28px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-elevated);box-shadow:var(--shadow-modal)">
+          <span style="{{ dialogIconStyle }}">{{ dialogIcon }}</span>
+          <h2 style="margin:16px 0 0;font-family:var(--font-display);font-weight:500;font-size:28px;line-height:1.15">{{ dialogTitle }}</h2>
+          <p style="margin:12px 0 0;font-size:15px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">{{ dialogText }}</p>
+          <sc-if value="{{ dialogNote }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:16px 0 0;padding:13px 15px;border-radius:10px;background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);font-size:13px;line-height:1.55;color:var(--st-upcoming-text)">Изменение правил повлияет только на будущие записи</p>
+          </sc-if>
+          <div style="margin-top:22px;display:flex;gap:10px">
+            <button type="button" onClick="{{ dialogPrimary }}" style="{{ dialogPrimaryStyle }}">{{ dialogPrimaryLabel }}</button>
+            <button type="button" onClick="{{ closeDialog }}" style="flex:1;min-height:48px;border-radius:var(--r-button);border:1px solid var(--border-strong);background:transparent;color:var(--text-primary);font-size:15px;font-weight:600;cursor:pointer">Отмена</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:1140},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема&quot;},&quot;screenState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;dirty&quot;,&quot;errors&quot;,&quot;saving&quot;,&quot;toast&quot;,&quot;loading&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Состояние экрана&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:16,height:16,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+const MENU = [
+  { name:'Сегодня', icon:['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3 2'], href:'Админ - Сегодня.dc.html' },
+  { name:'Расписание', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'] },
+  { name:'Записи', icon:['M5 3.5h10l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z','M8 12h8M8 16h5'], href:'Админ - Записи.dc.html' },
+  { name:'Услуги', icon:['M4 7h16M4 12h16M4 17h10'], href:'Админ - Услуги.dc.html' },
+  { name:'Мастера', icon:['M9 11.5a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z','M2.6 19.5a6.6 6.6 0 0 1 12.8 0','M16.5 5.2a3.4 3.4 0 0 1 0 6.6M19 19.2a5.8 5.8 0 0 0-2.2-4'], href:'Админ - Мастера.dc.html' },
+  { name:'Графики', icon:['M3 9.5h18M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z','M8.5 14h3'], href:'Админ - Графики.dc.html' },
+  { name:'Клиенты', icon:['M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z','M4.8 20.2a7.4 7.4 0 0 1 14.4 0'], href:'Админ - Клиенты.dc.html', lock:true },
+  { name:'Роли', icon:['M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z','M9.5 12l1.8 1.8L15 10'], href:'Админ - Роли и доступы.dc.html', lock:true },
+  { name:'Настройки', icon:['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z','M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4'], on:true, lock:true }
+];
+
+const DAYS = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
+
+const DEFAULTS = {
+  name: 'Бьюти-студия «Ноготочки»',
+  address: 'Москва, Большая Никитская, 12, второй этаж',
+  phone: '+7 495 123-45-67',
+  email: 'hello@nogotochki.ru',
+  tg: '@nogotochki',
+  ig: 'nogotochki.studio',
+  hours: [
+    { open:true, from:'10:00', to:'21:00' },
+    { open:true, from:'10:00', to:'21:00' },
+    { open:true, from:'10:00', to:'21:00' },
+    { open:true, from:'10:00', to:'21:00' },
+    { open:true, from:'10:00', to:'21:00' },
+    { open:true, from:'10:00', to:'20:00' },
+    { open:true, from:'11:00', to:'18:00' }
+  ],
+  horizon: '3',
+  step: '15',
+  hold: '10',
+  lead: '2',
+  cancelHours: '24',
+  moveLimit: '3',
+  lateText: 'Отменить онлайн уже нельзя. Позвоните в салон: +7 495 123-45-67',
+  notify: { confirm:true, remind:true, move:true, cancel:true, expire:true }
+};
+
+const NOTIFY = [
+  ['confirm','Подтверждение записи','Приходит сразу после подтверждения — с мастером, датой и суммой'],
+  ['remind','Напоминание о визите','Накануне визита, за сутки до начала'],
+  ['move','Перенос записи','Когда время меняет клиент или администратор'],
+  ['cancel','Отмена записи','Кто отменил и освободилось ли время'],
+  ['expire','Истечение резерва','Если клиент не подтвердил запись за 10 минут']
+];
+
+class Component extends DCLogic {
+  state = { theme: null, st: null, v: null, dialog: null, saving: false, toast: null, validated: false, touched: false };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  st() { return this.state.st ?? (this.props.screenState ?? 'normal'); }
+
+  vals() {
+    if (this.state.v) return this.state.v;
+    const st = this.st();
+    const base = JSON.parse(JSON.stringify(DEFAULTS));
+    if (st === 'dirty') { base.cancelHours = '12'; base.hold = '15'; return base; }
+    if (st === 'errors') { base.name = ''; base.hold = '0'; base.cancelHours = '-4'; base.lateText = 'Отменить онлайн уже нельзя'; return base; }
+    return base;
+  }
+
+  set(patch) {
+    const next = Object.assign({}, this.vals(), patch);
+    this.setState({ v: next, touched: true, validated: false });
+  }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const st = this.st();
+    const loading = st === 'loading';
+    const v = this.vals();
+
+    const chipPv = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const inputBase = 'width:100%;min-height:42px;padding:10px 13px;border-radius:var(--r-input);color:var(--text-primary);font:400 14px/1.4 var(--font-ui);';
+    const ok = inputBase + 'border:1px solid var(--border-strong);background:var(--bg-surface)';
+    const bad = inputBase + 'border:1px solid var(--error);background:var(--error-bg)';
+    const numBase = 'width:96px;min-height:42px;padding:10px 12px;border-radius:var(--r-input);color:var(--text-primary);font:600 14px/1.2 var(--font-ui);font-variant-numeric:tabular-nums;text-align:center;';
+    const numOk = numBase + 'border:1px solid var(--border-strong);background:var(--bg-surface)';
+    const numBad = numBase + 'border:1px solid var(--error);background:var(--error-bg)';
+    const selStyle = 'min-width:148px;min-height:42px;padding:10px 12px;border:1px solid var(--border-strong);border-radius:var(--r-input);background:var(--bg-surface);color:var(--text-primary);font:600 13.5px/1.2 var(--font-ui);cursor:pointer';
+    const ruleRow = 'display:flex;gap:18px;align-items:center;padding:14px 16px;border:1px solid var(--border-default);border-radius:12px;background:var(--bg-surface)';
+    const timeStyle = 'min-height:38px;padding:8px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:600 13px/1.2 var(--font-ui);font-variant-numeric:tabular-nums';
+
+    const showErrorsNow = st === 'errors' || this.state.validated;
+    const nameError = showErrorsNow && !v.name.trim();
+    const phoneError = showErrorsNow && v.phone.replace(/\D/g, '').length !== 11;
+    const emailError = showErrorsNow && !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(v.email.trim());
+    const holdError = showErrorsNow && !(Number(v.hold) >= 5 && Number(v.hold) <= 30);
+    const stepError = showErrorsNow && !(Number(v.step) >= 5);
+    const leadError = showErrorsNow && !(Number(v.lead) >= 0);
+    const cancelError = showErrorsNow && !(Number(v.cancelHours) >= 0 && Number(v.cancelHours) <= 168);
+    const moveError = showErrorsNow && !(Number(v.moveLimit) >= 1 && Number(v.moveLimit) <= 10);
+    const hoursError = showErrorsNow && v.hours.some(h => h.open && h.to <= h.from);
+    const lateError = showErrorsNow && v.lateText.replace(/\D/g, '').length < 10;
+
+    const errs = [];
+    if (nameError) errs.push('название студии');
+    if (phoneError) errs.push('телефон');
+    if (emailError) errs.push('e-mail');
+    if (hoursError) errs.push('часы работы');
+    if (stepError) errs.push('шаг сетки');
+    if (holdError) errs.push('длительность резерва');
+    if (leadError) errs.push('минимальное время до визита');
+    if (cancelError) errs.push('часы для отмены');
+    if (moveError) errs.push('лимит переносов');
+    if (lateError) errs.push('текст поздней отмены');
+
+    const dirty = this.state.touched || st === 'dirty' || st === 'errors';
+    const saving = this.state.saving || st === 'saving';
+
+    const hours = v.hours.map((h, i) => ({
+      day: DAYS[i], open: h.open, closed: !h.open, from: h.from, to: h.to,
+      timeStyle,
+      note: h.open ? (i === 6 ? 'короткий день' : (i === 5 ? 'до 20:00' : 'полный день')) : 'студия закрыта',
+      rowStyle: 'display:grid;grid-template-columns:168px 230px minmax(0,1fr);align-items:stretch;border-bottom:1px solid var(--border-default);' +
+        (i % 2 === 1 ? 'background:var(--bg-page);' : '') + (h.open ? '' : 'color:var(--text-secondary)'),
+      toggle: () => { const n = v.hours.map(x => Object.assign({}, x)); n[i].open = !n[i].open; this.set({ hours: n }); },
+      setFrom: (e) => { const n = v.hours.map(x => Object.assign({}, x)); n[i].from = e.target.value; this.set({ hours: n }); },
+      setTo: (e) => { const n = v.hours.map(x => Object.assign({}, x)); n[i].to = e.target.value; this.set({ hours: n }); }
+    }));
+
+    const bookingRules = [
+      { title:'Горизонт записи', hint:'На сколько месяцев вперёд клиент видит календарь', isSelect:true,
+        value: v.horizon, options:[{value:'1',label:'1 месяц'},{value:'2',label:'2 месяца'},{value:'3',label:'3 месяца'},{value:'6',label:'6 месяцев'}],
+        onChange:(e)=>this.set({ horizon: e.target.value }), isDefault: v.horizon === DEFAULTS.horizon, controlStyle: selStyle, error:false },
+      { title:'Шаг сетки слотов', hint:'С каким интервалом показывать свободное время', isSelect:true,
+        value: v.step, options:[{value:'10',label:'10 минут'},{value:'15',label:'15 минут'},{value:'30',label:'30 минут'},{value:'60',label:'60 минут'}],
+        onChange:(e)=>this.set({ step: e.target.value }), isDefault: v.step === DEFAULTS.step, controlStyle: stepError ? selStyle + ';border-color:var(--error)' : selStyle,
+        error: stepError, errorText:'Шаг не меньше 5 минут' },
+      { title:'Длительность резерва слота', hint:'Сколько времени держим слот, пока клиент подтверждает запись', isNumber:true,
+        value: v.hold, unit:'минут', onChange:(e)=>this.set({ hold: e.target.value }), isDefault: v.hold === DEFAULTS.hold,
+        controlStyle: holdError ? numBad : numOk, error: holdError, errorText:'От 5 до 30 минут' },
+      { title:'Минимальное время до визита', hint:'За сколько часов до начала ещё можно записаться онлайн', isNumber:true,
+        value: v.lead, unit:'часа', onChange:(e)=>this.set({ lead: e.target.value }), isDefault: v.lead === DEFAULTS.lead,
+        controlStyle: leadError ? numBad : numOk, error: leadError, errorText:'Не меньше нуля' }
+    ].map(r => Object.assign({}, r, { rowStyle: ruleRow, isNumber: !!r.isNumber, isSelect: !!r.isSelect }));
+
+    const cancelRules = [
+      { title:'Отмена онлайн не позднее чем за', hint:'Позже клиент видит телефон салона вместо кнопок отмены и переноса',
+        value: v.cancelHours, unit:'часов', onChange:(e)=>this.set({ cancelHours: e.target.value }),
+        isDefault: v.cancelHours === DEFAULTS.cancelHours, controlStyle: cancelError ? numBad : numOk,
+        error: cancelError, errorText:'От 0 до 168 часов' },
+      { title:'Лимит переносов одной записи', hint:'Сколько раз клиент может перенести визит сам',
+        value: v.moveLimit, unit:'раза', onChange:(e)=>this.set({ moveLimit: e.target.value }),
+        isDefault: v.moveLimit === DEFAULTS.moveLimit, controlStyle: moveError ? numBad : numOk,
+        error: moveError, errorText:'От 1 до 10' }
+    ].map(r => Object.assign({}, r, { rowStyle: ruleRow }));
+
+    const notifications = NOTIFY.map(n => ({
+      title: n[1], hint: n[2], on: !!v.notify[n[0]],
+      toggle: () => this.set({ notify: Object.assign({}, v.notify, { [n[0]]: !v.notify[n[0]] }) }),
+      rowStyle: 'display:flex;gap:13px;align-items:flex-start;padding:13px 16px;border-radius:12px;cursor:pointer;' +
+        (v.notify[n[0]] ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg)' : 'border:1px solid var(--border-default);background:var(--bg-surface)')
+    }));
+
+    const dlg = this.state.dialog;
+    const toastKind = this.state.toast || (st === 'toast' ? 'saved' : null);
+
+    const doSave = () => {
+      this.setState({ saving: true, dialog: null });
+      setTimeout(() => this.setState({ saving: false, touched: false, validated: false, toast: 'saved', st: (st === 'saving' || st === 'dirty' || st === 'errors') ? 'normal' : st }), 900);
+    };
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      stateOpts: [['normal','Обычное'],['dirty','Несохранённые правки'],['errors','Ошибки валидации'],['saving','Сохранение'],['toast','Тост'],['loading','Загрузка']]
+        .map(s => ({
+          label: s[1], style: chipPv(st === s[0]),
+          onClick: () => this.setState({ st: s[0], v: null, dialog: null, saving: false, toast: null, validated: false, touched: false })
+        })),
+
+      menu: MENU.map(m => ({
+        name: m.name, href: m.on ? 'Админ - Настройки.dc.html' : (m.href || ('#' + m.name)),
+        icon: ICON(m.icon, { width: 17, height: 17 }),
+        iconColor: m.on ? 'var(--accent-brand)' : 'var(--text-secondary)',
+        lock: !!m.lock,
+        style: 'display:flex;align-items:center;gap:11px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;' +
+          (m.on ? 'background:var(--bg-surface);border:1px solid var(--accent-brand);color:var(--text-primary);font-weight:600'
+                : 'border:1px solid transparent;color:var(--text-secondary)')
+      })),
+
+      subline: loading ? 'Загружаем настройки' : 'Студия, правила записи, отмены и уведомления',
+
+      isLoading: loading,
+      showBody: !loading,
+      skelCards: [1,2,3,4],
+
+      dirty: dirty && !saving,
+      discard: () => this.setState({ v: null, touched: false, validated: false, st: (st === 'dirty' || st === 'errors') ? 'normal' : st, toast: 'discarded' }),
+      showErrors: showErrorsNow && errs.length > 0,
+      errorList: errs.join(', '),
+
+      fName: v.name, onName: (e) => this.set({ name: e.target.value }), nameStyle: nameError ? bad : ok, nameError,
+      fAddress: v.address, onAddress: (e) => this.set({ address: e.target.value }), inputOk: ok,
+      fPhone: v.phone, onPhone: (e) => this.set({ phone: e.target.value }), phoneStyle: phoneError ? bad : ok, phoneError,
+      fEmail: v.email, onEmail: (e) => this.set({ email: e.target.value }), emailStyle: emailError ? bad : ok, emailError,
+      fTg: v.tg, onTg: (e) => this.set({ tg: e.target.value }),
+      fIg: v.ig, onIg: (e) => this.set({ ig: e.target.value }),
+      hours, hoursError,
+
+      bookingRules, cancelRules, notifications,
+
+      fLateText: v.lateText, onLateText: (e) => this.set({ lateText: e.target.value }),
+      lateStyle: 'width:100%;min-height:76px;padding:11px 13px;border-radius:var(--r-input);color:var(--text-primary);font:400 14px/1.5 var(--font-ui);resize:vertical;' +
+        (lateError ? 'border:1px solid var(--error);background:var(--error-bg)' : 'border:1px solid var(--border-strong);background:var(--bg-surface)'),
+      lateHint: 'Клиент увидит этот текст вместо кнопок отмены, если до визита меньше ' + (v.cancelHours || '24') + ' ч',
+      lateError,
+
+      isSaving: saving,
+      saveDisabled: saving || !dirty,
+      saveLabel: saving ? 'Сохраняем' : 'Сохранить',
+      saveStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border:0;border-radius:var(--r-button);font-size:15px;font-weight:600;font-family:inherit;' +
+        (saving || !dirty
+          ? 'background:var(--action-primary-disabled);color:var(--action-on-primary-disabled);cursor:' + (saving ? 'progress' : 'not-allowed')
+          : 'background:var(--action-primary);color:var(--action-on-primary);cursor:pointer'),
+      save: () => {
+        if (saving || !dirty) return;
+        if (errs.length > 0 || (!this.state.validated && [nameError, phoneError, emailError].some(Boolean))) { this.setState({ validated: true }); return; }
+        const bad2 = !v.name.trim() || v.phone.replace(/\D/g,'').length !== 11 ||
+          !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(v.email.trim()) ||
+          !(Number(v.hold) >= 5 && Number(v.hold) <= 30) || !(Number(v.step) >= 5) || !(Number(v.lead) >= 0) ||
+          !(Number(v.cancelHours) >= 0 && Number(v.cancelHours) <= 168) || !(Number(v.moveLimit) >= 1 && Number(v.moveLimit) <= 10) ||
+          v.hours.some(h => h.open && h.to <= h.from) || v.lateText.replace(/\D/g,'').length < 10;
+        if (bad2) { this.setState({ validated: true }); return; }
+        this.setState({ dialog: 'save' });
+      },
+      savedHint: saving ? 'Применяем настройки' : (dirty ? 'Изменения ещё не применены' : 'Последнее сохранение: сегодня, 08:52'),
+      openReset: () => this.setState({ dialog: 'reset' }),
+
+      dialogOpen: !!dlg,
+      dialogTitle: dlg === 'reset' ? 'Вернуть значения по умолчанию?' : 'Сохранить настройки?',
+      dialogText: dlg === 'reset'
+        ? 'Все правила вернутся к исходным: горизонт 3 месяца, резерв 10 минут, отмена за 24 часа, лимит переносов 3. Данные студии останутся.'
+        : 'Новые правила начнут действовать сразу после сохранения.',
+      dialogNote: true,
+      dialogIcon: dlg === 'reset'
+        ? ICON(['M3.5 12a8.5 8.5 0 1 1 2.7 6.2','M3 19.5v-4h4'], { width:26, height:26 })
+        : ICON(['m5 12.5 4.5 4.5L19 7.5'], { width:26, height:26 }),
+      dialogIconStyle: 'display:inline-grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--st-upcoming-bg);border:1px solid var(--st-upcoming-border);color:var(--st-upcoming-text)',
+      dialogPrimaryLabel: dlg === 'reset' ? 'Вернуть по умолчанию' : 'Сохранить',
+      dialogPrimaryStyle: 'flex:1;min-height:48px;border:0;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit',
+      dialogPrimary: () => {
+        if (dlg === 'reset') {
+          this.setState({ v: JSON.parse(JSON.stringify(DEFAULTS)), dialog: null, touched: false, validated: false, st: (st === 'dirty' || st === 'errors') ? 'normal' : st, toast: 'reset' });
+          return;
+        }
+        doSave();
+      },
+      closeDialog: () => this.setState({ dialog: null }),
+
+      toastOn: !!toastKind,
+      toastTitle: toastKind === 'reset' ? 'Значения по умолчанию возвращены'
+        : (toastKind === 'discarded' ? 'Правки отменены' : 'Настройки сохранены'),
+      toastText: toastKind === 'reset' ? 'Не забудьте сохранить, чтобы правила применились'
+        : (toastKind === 'discarded' ? 'Вернули последние сохранённые значения' : 'Новые правила действуют для будущих записей'),
+      closeToast: () => this.setState({ toast: null, st: st === 'toast' ? 'normal' : st })
+    };
+  }
+}
+</script>
+</body>
+</html>

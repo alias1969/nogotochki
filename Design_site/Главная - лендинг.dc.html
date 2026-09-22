@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --slot-selected-bg:#FBEFD8; --slot-selected-border:var(--brass); --slot-selected-text:var(--espresso);
+  --st-upcoming-bg:#F7EFE2; --st-upcoming-border:#E0CBA8; --st-upcoming-text:var(--bronze);
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-6:24px; --s-8:32px; --s-12:48px; --s-16:64px;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+  --glow-strong:0 0 0 1px rgba(176,141,87,.5), 0 0 28px rgba(242,216,167,1);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --slot-selected-bg:#41341F; --slot-selected-border:#C9A46A; --slot-selected-text:#FFF3DC;
+  --st-upcoming-bg:rgba(201,164,106,.14); --st-upcoming-border:rgba(201,164,106,.4); --st-upcoming-text:#D9B77E;
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+  --glow-strong:0 0 0 1px rgba(201,164,106,.6), 0 0 40px rgba(240,201,138,.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+html{scroll-behavior:smooth}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка" style="{{ headerStyle }}">
+      <div style="{{ headerInnerStyle }}">
+        <a href="#top" style="display:flex;align-items:center;gap:10px;flex:none">
+          <svg viewBox="0 0 100 100" width="36" height="36" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+            <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <circle cx="50" cy="52" r="34"></circle>
+              <path d="M40 70 C38 56 40 44 43 36"></path>
+              <path d="M50 71 C50 56 53 44 56 37"></path>
+              <path d="M59 71 C60 58 63 49 66 43"></path>
+              <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+              <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+            </g>
+          </svg>
+          <span style="{{ logoWordStyle }}">Ноготочки</span>
+        </a>
+
+        <nav style="{{ navStyle }}">
+          <a href="#uslugi" style="color:var(--text-secondary);font-size:14.5px">Услуги</a>
+          <a href="#mastera" style="color:var(--text-secondary);font-size:14.5px">Мастера</a>
+          <a href="#kak" style="color:var(--text-secondary);font-size:14.5px">Как это работает</a>
+          <a href="#otzyvy" style="color:var(--text-secondary);font-size:14.5px">Отзывы</a>
+          <a href="#o-salone" style="color:var(--text-secondary);font-size:14.5px">О салоне</a>
+          <a href="#kontakty" style="color:var(--text-secondary);font-size:14.5px">Контакты</a>
+          <a href="#voprosy" style="color:var(--text-secondary);font-size:14.5px">Вопросы</a>
+        </nav>
+
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer">
+            <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+            <span style="{{ themeLabelStyle }}">{{ themeLabel }}</span>
+          </button>
+          <a href="Вход.dc.html" style="{{ loginStyle }}">Войти</a>
+          <a href="Запись. Шаг 1 - Услуги.dc.html" style="{{ headerCtaStyle }}" style-hover="background:var(--action-primary-hover)">{{ headerCtaLabel }}</a>
+          <button type="button" onClick="{{ toggleMenu }}" aria-label="Меню" style="{{ burgerStyle }}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:2px;padding:8px 16px 16px;background:var(--bg-page);border-top:1px solid var(--border-default);box-shadow:var(--shadow-menu)">
+          <a href="#uslugi" onClick="{{ closeMenu }}" style="padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-primary);font-size:15.5px;border-bottom:1px solid var(--border-default)">Услуги</a>
+          <a href="#mastera" onClick="{{ closeMenu }}" style="padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-primary);font-size:15.5px;border-bottom:1px solid var(--border-default)">Мастера</a>
+          <a href="#kak" onClick="{{ closeMenu }}" style="padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-primary);font-size:15.5px;border-bottom:1px solid var(--border-default)">Как это работает</a>
+          <a href="#otzyvy" onClick="{{ closeMenu }}" style="padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-primary);font-size:15.5px;border-bottom:1px solid var(--border-default)">Отзывы</a>
+          <a href="#o-salone" onClick="{{ closeMenu }}" style="padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-primary);font-size:15.5px;border-bottom:1px solid var(--border-default)">О салоне</a>
+          <a href="#kontakty" onClick="{{ closeMenu }}" style="padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-primary);font-size:15.5px;border-bottom:1px solid var(--border-default)">Контакты</a>
+          <a href="#voprosy" onClick="{{ closeMenu }}" style="padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-primary);font-size:15.5px">Вопросы</a>
+          <a href="Вход.dc.html" onClick="{{ closeMenu }}" style="margin-top:6px;padding:12px 4px;min-height:44px;display:flex;align-items:center;color:var(--text-link);font-size:15.5px;font-weight:600">Войти в личный кабинет</a>
+        </div>
+      </sc-if>
+    </header>
+
+    <main id="top" style="background:var(--bg-page);color:var(--text-primary)">
+
+      <section data-screen-label="Главный экран" style="{{ heroSecStyle }}">
+        <div style="{{ heroGridStyle }}">
+          <div>
+            <p style="margin:0 0 14px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">бьюти-студия · онлайн-запись</p>
+            <h1 style="{{ h1Style }}">Запишитесь к своему мастеру за минуту</h1>
+            <p style="{{ heroSubStyle }}">Выберите услугу, мастера и удобное время. Без звонков и ожидания ответа</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
+              <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:16px;font-weight:600" style-hover="background:var(--action-primary-hover)">Записаться онлайн</a>
+              <a href="#uslugi" style="display:inline-flex;align-items:center;min-height:52px;padding:0 24px;border-radius:var(--r-button);border:1px solid var(--accent-brand);color:var(--text-primary);font-size:16px;font-weight:600" style-hover="background:rgba(176,141,87,.1)">Посмотреть услуги</a>
+            </div>
+            <div style="{{ trustRowStyle }}">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="color:var(--accent-brand);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg></span>
+                <span style="font-size:14.5px;color:var(--text-secondary)">Работаем с 2019 года</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="color:var(--accent-brand);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.6"></circle><path d="M2.6 20a6.6 6.6 0 0 1 12.8 0M16.5 5.2a3.6 3.6 0 0 1 0 6.6M18.5 19.6a6 6 0 0 0-2.3-4.3"></path></svg></span>
+                <span style="font-size:14.5px;color:var(--text-secondary)">5 мастеров</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="color:var(--accent-brand);display:inline-flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h6M4 7h10M4 17h13"></path><path d="M19 5.5 20 8.5 23 9.5 20 10.5 19 13.5 18 10.5 15 9.5 18 8.5 Z"></path></svg></span>
+                <span style="font-size:14.5px;color:var(--text-secondary)">Запись за 4 шага</span>
+              </div>
+            </div>
+          </div>
+          <div style="{{ heroPhotoStyle }}">
+            <img src="assets/studio.png" alt="Интерьер студии «Ноготочки» в тёплом вечернем свете" style="display:block;width:100%;height:100%;object-fit:cover;border-radius:var(--r-photo)">
+          </div>
+        </div>
+      </section>
+
+      <section id="uslugi" data-screen-label="Услуги и цены" style="{{ secStyle }}">
+        <div style="{{ wrapStyle }}">
+          <h2 style="{{ h2Style }}">Услуги и цены</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 24px">
+            <sc-for list="{{ cats }}" as="cat" hint-placeholder-count="4">
+              <button type="button" onClick="{{ cat.onClick }}" style="{{ cat.style }}">{{ cat.name }}</button>
+            </sc-for>
+          </div>
+          <div style="{{ servicesGridStyle }}">
+            <sc-for list="{{ services }}" as="srv" hint-placeholder-count="3">
+              <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+                  <b style="font-size:17px;font-weight:600;line-height:1.3">{{ srv.name }}</b>
+                  <span style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap">{{ srv.price }}</span>
+                </div>
+                <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>{{ srv.dur }}</span>
+                <p style="margin:0;font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ srv.desc }}</p>
+                <a href="{{ srv.bookHref }}" style="margin-top:6px;display:flex;justify-content:center;align-items:center;min-height:44px;padding:11px;border-radius:var(--r-button);border:1px solid var(--accent-brand);color:var(--text-primary);font-size:14.5px;font-weight:600" style-hover="background:rgba(176,141,87,.1)">Записаться</a>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin:20px 0 0;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-secondary)">
+            <span style="color:var(--accent-brand);display:inline-flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg></span>
+            Оплата на месте: наличными или картой
+          </p>
+        </div>
+      </section>
+
+      <section id="kak" data-screen-label="Как это работает" style="{{ secAltStyle }}">
+        <div style="{{ wrapStyle }}">
+          <h2 style="{{ h2Style }}">Как это работает</h2>
+          <div style="{{ stepsGridStyle }}">
+            <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+              <div style="padding:22px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border-hair);display:grid;place-items:center;color:var(--accent-brand);flex:none">{{ st.icon }}</span>
+                  <span style="font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-secondary);font-variant-numeric:tabular-nums">шаг {{ st.n }}</span>
+                </div>
+                <b style="font-size:17px;font-weight:600;line-height:1.3">{{ st.title }}</b>
+                <p style="margin:0;font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ st.text }}</p>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:28px;display:flex">
+            <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:16px;font-weight:600" style-hover="background:var(--action-primary-hover)">Записаться онлайн</a>
+          </div>
+        </div>
+      </section>
+
+      <section data-screen-label="Преимущества" style="{{ secStyle }}">
+        <div style="{{ wrapStyle }}">
+          <h2 style="{{ h2Style }}">Преимущества онлайн-записи</h2>
+          <div style="{{ tilesGridStyle }}">
+            <sc-for list="{{ perks }}" as="pk" hint-placeholder-count="4">
+              <div style="padding:22px;border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-subtle);display:flex;flex-direction:column;gap:10px">
+                <span style="color:var(--accent-brand);display:inline-flex">{{ pk.icon }}</span>
+                <b style="font-size:16.5px;font-weight:600;line-height:1.3">{{ pk.title }}</b>
+                <p style="margin:0;font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ pk.text }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <section id="mastera" data-screen-label="Мастера" style="{{ secAltStyle }}">
+        <div style="{{ wrapStyle }}">
+          <h2 style="{{ h2Style }}">Наши мастера</h2>
+          <div style="{{ mastersGridStyle }}">
+            <sc-for list="{{ masters }}" as="m" hint-placeholder-count="4">
+              <div style="{{ m.cardStyle }}">
+                <span style="width:88px;height:88px;border-radius:50%;background:var(--sand);color:#5C4A3A;display:grid;place-items:center;font-size:28px;font-weight:600;border:1px solid var(--border-hair);flex:none">{{ m.initials }}</span>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <b style="font-size:17px;font-weight:600">{{ m.name }}</b>
+                  <span style="font-size:13.5px;color:var(--text-secondary)">{{ m.spec }}</span>
+                  <span style="font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ m.exp }}</span>
+                </div>
+                <p style="margin:0;font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">{{ m.about }}</p>
+                <a href="{{ m.bookHref }}" style="margin-top:auto;display:flex;justify-content:center;align-items:center;min-height:44px;padding:11px;border-radius:var(--r-button);border:1px solid var(--accent-brand);color:var(--text-primary);font-size:14.5px;font-weight:600" style-hover="background:rgba(176,141,87,.1)">Записаться к мастеру</a>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <section id="otzyvy" data-screen-label="Отзывы" style="{{ secStyle }}">
+        <div style="{{ wrapStyle }}">
+          <h2 style="{{ h2Style }}">Отзывы клиентов</h2>
+          <div style="{{ reviewsGridStyle }}">
+            <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="4">
+              <div style="padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span style="width:44px;height:44px;border-radius:50%;background:var(--sand);color:#5C4A3A;display:grid;place-items:center;font-size:15px;font-weight:600;border:1px solid var(--border-hair);flex:none">{{ r.initials }}</span>
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <b style="font-size:15px;font-weight:600">{{ r.name }}</b>
+                    <span style="font-size:12.5px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ r.date }} · {{ r.service }}</span>
+                  </div>
+                </div>
+                <span style="font-size:14px;letter-spacing:.14em;color:var(--accent-brand)">{{ r.stars }}</span>
+                <p style="margin:0;font-size:14.5px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">{{ r.text }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <section id="o-salone" data-screen-label="О салоне" style="{{ secAltStyle }}">
+        <div style="{{ wrapStyle }}">
+          <h2 style="{{ h2Style }}">О салоне</h2>
+          <div style="{{ aboutGridStyle }}">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <p style="margin:0;font-size:16.5px;line-height:1.7;color:var(--text-secondary);text-wrap:pretty">Уютная студия в тёплых тонах: мягкий свет, спокойная музыка и один клиент у мастера в моменте. К каждому подбираем уход под состояние ногтей, а не по шаблону.</p>
+              <p style="margin:0;font-size:16.5px;line-height:1.7;color:var(--text-secondary);text-wrap:pretty">Инструменты проходят полный цикл стерилизации, одноразовые материалы открываем при вас. Работаем на профессиональных материалах и показываем, чем именно покрываем ногти.</p>
+              <div style="{{ statsGridStyle }}">
+                <div style="padding:18px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface)">
+                  <p style="margin:0;font-family:var(--font-display);font-weight:500;font-size:36px;line-height:1;font-variant-numeric:tabular-nums">7</p>
+                  <p style="margin:6px 0 0;font-size:13px;color:var(--text-secondary)">лет работы</p>
+                </div>
+                <div style="padding:18px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface)">
+                  <p style="margin:0;font-family:var(--font-display);font-weight:500;font-size:36px;line-height:1;font-variant-numeric:tabular-nums">3 400</p>
+                  <p style="margin:6px 0 0;font-size:13px;color:var(--text-secondary)">довольных клиентов</p>
+                </div>
+                <div style="padding:18px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface)">
+                  <p style="margin:0;font-family:var(--font-display);font-weight:500;font-size:36px;line-height:1;font-variant-numeric:tabular-nums">18</p>
+                  <p style="margin:6px 0 0;font-size:13px;color:var(--text-secondary)">услуг в прайсе</p>
+                </div>
+              </div>
+            </div>
+            <div style="{{ aboutPhotoStyle }}">
+              <img src="assets/studio.png" alt="Рабочее место мастера и подсветка логотипа на стене" style="display:block;width:100%;height:100%;object-fit:cover;border-radius:var(--r-photo)">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="kontakty" data-screen-label="Контакты" style="{{ secStyle }}">
+        <div style="{{ wrapStyle }}">
+          <h2 style="{{ h2Style }}">Контакты и часы работы</h2>
+          <div style="{{ contactsGridStyle }}">
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <span style="color:var(--accent-brand);flex:none;margin-top:2px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.6"></circle></svg></span>
+                  <p style="margin:0;font-size:15.5px;line-height:1.6">Москва, Большая Никитская, 12<br><span style="color:var(--text-secondary);font-size:14px">второй этаж, вход со двора</span></p>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center">
+                  <span style="color:var(--accent-brand);flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h3l1.6 4-2 1.4a11 11 0 0 0 5.5 5.5l1.4-2 4 1.6v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3 5.7 2 2 0 0 1 5 3.5Z"></path></svg></span>
+                  <a href="tel:+74951234567" style="font-size:15.5px;font-variant-numeric:tabular-nums;font-weight:600">+7 495 123-45-67</a>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center">
+                  <span style="color:var(--accent-brand);flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m4 7 8 6 8-6"></path></svg></span>
+                  <a href="mailto:hello@nogotochki.ru" style="font-size:15.5px">hello@nogotochki.ru</a>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;margin-top:4px">
+                  <a href="#kontakty" style="min-height:44px;padding:0 16px;display:inline-flex;align-items:center;border:1px solid var(--border-default);border-radius:var(--r-pill);font-size:14px;color:var(--text-primary)" style-hover="border-color:var(--accent-brand)">Telegram</a>
+                  <a href="#kontakty" style="min-height:44px;padding:0 16px;display:inline-flex;align-items:center;border:1px solid var(--border-default);border-radius:var(--r-pill);font-size:14px;color:var(--text-primary)" style-hover="border-color:var(--accent-brand)">ВКонтакте</a>
+                  <a href="#kontakty" style="min-height:44px;padding:0 16px;display:inline-flex;align-items:center;border:1px solid var(--border-default);border-radius:var(--r-pill);font-size:14px;color:var(--text-primary)" style-hover="border-color:var(--accent-brand)">WhatsApp</a>
+                </div>
+              </div>
+
+              <div style="border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);overflow:hidden">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border-default)">
+                  <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">часы работы</span>
+                  <span style="{{ openBadgeStyle }}">{{ openLabel }}</span>
+                </div>
+                <sc-for list="{{ schedule }}" as="d" hint-placeholder-count="3">
+                  <div style="{{ d.rowStyle }}">
+                    <span style="font-size:14.5px;font-weight:{{ d.weight }}">{{ d.day }}</span>
+                    <span style="font-size:14.5px;font-variant-numeric:tabular-nums;font-weight:{{ d.weight }}">{{ d.hours }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="{{ mapSlotStyle }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-secondary);text-align:center;padding:24px">
+                <span style="color:var(--accent-brand)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.6"></circle></svg></span>
+                <p style="margin:0;font-size:14px;line-height:1.5">Место под скриншот карты<br>метка студии — Большая Никитская, 12</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="voprosy" data-screen-label="Вопросы" style="{{ secAltStyle }}">
+        <div style="{{ faqWrapStyle }}">
+          <h2 style="{{ h2Style }}">Частые вопросы</h2>
+          <div style="margin-top:24px;border-top:1px solid var(--border-default)">
+            <sc-for list="{{ faq }}" as="q" hint-placeholder-count="6">
+              <div style="border-bottom:1px solid var(--border-default)">
+                <button type="button" onClick="{{ q.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;padding:16px 4px;background:transparent;border:0;color:var(--text-primary);font-size:16px;font-weight:600;text-align:left;cursor:pointer">
+                  <span>{{ q.q }}</span>
+                  <span style="{{ q.signStyle }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5 12 15.5 18 9.5"></path></svg>
+                  </span>
+                </button>
+                <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin:0;padding:0 4px 20px;max-width:70ch;font-size:15px;line-height:1.65;color:var(--text-secondary);text-wrap:pretty">{{ q.a }}</p>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <section data-screen-label="Финальный призыв" style="{{ secStyle }}">
+        <div style="{{ wrapStyle }}">
+          <div style="{{ ctaStyle }}">
+            <h2 style="{{ ctaTitleStyle }}">Свободное время есть уже сегодня</h2>
+            <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:var(--text-secondary)">Выберите услугу и запишитесь за минуту</p>
+            <a href="Запись. Шаг 1 - Услуги.dc.html" style="margin-top:26px;display:inline-flex;align-items:center;min-height:56px;padding:0 32px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:17px;font-weight:600" style-hover="background:var(--action-primary-hover)">Записаться онлайн</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer data-screen-label="Подвал" style="background:var(--bg-subtle);color:var(--text-primary);border-top:1px solid var(--border-default)">
+      <div style="{{ footerWrapStyle }}">
+        <div style="{{ footerGridStyle }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <svg viewBox="0 0 100 100" width="32" height="32" aria-hidden="true" style="flex:none;color:var(--accent-brand)">
+                <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                  <circle cx="50" cy="52" r="34"></circle>
+                  <path d="M40 70 C38 56 40 44 43 36"></path>
+                  <path d="M50 71 C50 56 53 44 56 37"></path>
+                  <path d="M59 71 C60 58 63 49 66 43"></path>
+                  <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+                  <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+                </g>
+              </svg>
+              <span style="font-family:var(--font-script);font-size:24px;line-height:1">Ноготочки</span>
+            </div>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:var(--text-secondary);max-width:32ch">Студия маникюра в тёплых тонах. Одна студия, пять мастеров, запись онлайн круглосуточно.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <p style="margin:0 0 4px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">разделы</p>
+            <a href="#uslugi" style="font-size:14.5px;color:var(--text-primary)">Услуги</a>
+            <a href="#mastera" style="font-size:14.5px;color:var(--text-primary)">Мастера</a>
+            <a href="#kak" style="font-size:14.5px;color:var(--text-primary)">Как это работает</a>
+            <a href="#otzyvy" style="font-size:14.5px;color:var(--text-primary)">Отзывы</a>
+            <a href="#o-salone" style="font-size:14.5px;color:var(--text-primary)">О салоне</a>
+            <a href="#voprosy" style="font-size:14.5px;color:var(--text-primary)">Вопросы</a>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <p style="margin:0 0 4px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">контакты</p>
+            <a href="tel:+74951234567" style="font-size:14.5px;font-variant-numeric:tabular-nums;color:var(--text-primary)">+7 495 123-45-67</a>
+            <a href="mailto:hello@nogotochki.ru" style="font-size:14.5px;color:var(--text-primary)">hello@nogotochki.ru</a>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:var(--text-secondary)">Москва, Большая Никитская, 12</p>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:var(--text-secondary);font-variant-numeric:tabular-nums">Пн–Пт 10:00–21:00<br>Сб 10:00–20:00 · Вс 11:00–18:00</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <p style="margin:0 0 4px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">личный кабинет</p>
+            <a href="Вход.dc.html" style="font-size:14.5px;color:var(--text-primary)">Войти</a>
+            <a href="Регистрация.dc.html" style="font-size:14.5px;color:var(--text-primary)">Регистрация</a>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:var(--text-secondary)">Уведомления о записях приходят в кабинет</p>
+          </div>
+        </div>
+        <div style="{{ footerBottomStyle }}">
+          <p style="margin:0;font-size:13px;color:var(--text-secondary)">© 2026 Бьюти-студия «Ноготочки»</p>
+          <div style="display:flex;flex-wrap:wrap;gap:18px">
+            <a href="#kontakty" style="font-size:13px;color:var(--text-secondary)">Политика конфиденциальности</a>
+            <a href="#kontakty" style="font-size:13px;color:var(--text-secondary)">Пользовательское соглашение</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <sc-if value="{{ showFloat }}" hint-placeholder-val="{{ false }}">
+      <div data-theme="{{ themeAttr }}" style="{{ floatStyle }}">
+        <a href="Запись. Шаг 1 - Услуги.dc.html" style="display:flex;justify-content:center;align-items:center;min-height:52px;padding:0 24px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-size:16px;font-weight:600;box-shadow:var(--shadow-menu)">Записаться онлайн</a>
+      </div>
+    </sc-if>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;showFloatingCta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Поведение&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:22,height:22,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+// Соответствие названий лендинга идентификаторам в шагах записи
+const SERVICE_IDS = {
+  'Маникюр с покрытием': 'man-cover',
+  'Классический маникюр без покрытия': 'man-classic',
+  'Педикюр с покрытием': 'ped-cover',
+  'Снятие покрытия': 'remove',
+  'Дизайн (за ноготь)': 'design',
+  'Укрепление гелем': 'gel'
+};
+const MASTER_IDS = {
+  'Анна Ковалёва': 'anna',
+  'Мария Лис': 'maria',
+  'Ирина Гай': 'irina'
+};
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, cat: 'Маникюр', open: {}, menu: false, scrolled: false };
+
+  componentDidMount() {
+    this._onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const s = y > 420;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this._onScroll); }
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+
+  services() {
+    return [
+      { cat:'Маникюр', name:'Маникюр с покрытием', dur:'1 ч 30 мин', price:'2 500 ₽', desc:'Снятие, форма, уход за кутикулой, гель-лак.' },
+      { cat:'Маникюр', name:'Классический маникюр без покрытия', dur:'1 ч', price:'1 600 ₽', desc:'Форма, кутикула, полировка и питательное масло.' },
+      { cat:'Педикюр', name:'Педикюр с покрытием', dur:'1 ч 45 мин', price:'3 200 ₽', desc:'Обработка стоп, форма ногтей, гель-лак.' },
+      { cat:'Уход', name:'Снятие покрытия', dur:'30 мин', price:'500 ₽', desc:'Аккуратное снятие гель-лака без спила ногтя.' },
+      { cat:'Дизайн', name:'Дизайн (за ноготь)', dur:'10 мин', price:'150 ₽', desc:'Роспись, втирка, стразы или тонкая линия.' },
+      { cat:'Уход', name:'Укрепление гелем', dur:'40 мин', price:'900 ₽', desc:'Для тонких ногтей, держится до четырёх недель.' }
+    ];
+  }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const wrap = mob ? 'padding:0 16px' : 'max-width:1240px;margin:0 auto;padding:0 40px';
+    const sec = (alt) => (mob ? 'padding:56px 0;' : 'padding:96px 0;') + (alt ? 'background:var(--bg-subtle)' : 'background:var(--bg-page)');
+    const chip = (on) => 'min-height:44px;padding:0 18px;border-radius:var(--r-pill);font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;' +
+      (on ? 'border:1px solid var(--accent-brand);background:var(--slot-selected-bg);color:var(--slot-selected-text)'
+          : 'border:1px solid var(--border-strong);background:transparent;color:var(--text-primary)');
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+
+    const steps = [
+      { n:'1', title:'Выберите услуги', text:'Сумма и длительность считаются сразу.', icon: ICON(['M4 12h6M4 7h10M4 17h13','M19 5.5 20 8.5 23 9.5 20 10.5 19 13.5 18 10.5 15 9.5 18 8.5Z'],{width:20,height:20}) },
+      { n:'2', title:'Выберите мастера', text:'Или оставьте «Любой мастер» — подберём свободного.', icon: ICON(['M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z','M4.5 20.5a7.5 7.5 0 0 1 15 0'],{width:20,height:20}) },
+      { n:'3', title:'Выберите дату и время', text:'В календаре видно только свободные слоты.', icon: ICON(['M3 9.5h18','M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z'],{width:20,height:20}) },
+      { n:'4', title:'Подтвердите запись', text:'Она появится в личном кабинете.', icon: ICON(['M20 6 9 17l-5-5'],{width:20,height:20}) }
+    ];
+
+    const perks = [
+      { title:'Запись круглосуточно', text:'Не нужно ждать, пока студия откроется.', icon: ICON(['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z','M12 7.5v5l3.5 2']) },
+      { title:'Видно свободное время', text:'Только реально доступные слоты.', icon: ICON(['M3 9.5h18','M8 2.5v4M16 2.5v4','M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z']) },
+      { title:'Без двойных записей', text:'Время бронируется за вами сразу.', icon: ICON(['M6 11V8a6 6 0 0 1 12 0v3','M5 11h14v9H5z']) },
+      { title:'Отмена и перенос в кабинете', text:'В пару касаний, без звонка.', icon: ICON(['M3.5 12a8.5 8.5 0 1 0 2.7-6.2','M3 4.5v4h4']) }
+    ];
+
+    const masters = [
+      { initials:'АК', name:'Анна Ковалёва', spec:'Маникюр, укрепление', exp:'Стаж 8 лет', about:'Люблю аккуратную форму и спокойные оттенки.' },
+      { initials:'МЛ', name:'Мария Лис', spec:'Дизайн, наращивание', exp:'Стаж 6 лет', about:'Рисую тонкие линии и нежные градиенты.' },
+      { initials:'ДС', name:'Дарья Смирнова', spec:'Педикюр, уход', exp:'Стаж 5 лет', about:'Работаю мягко, важно, чтобы вам было комфортно.' },
+      { initials:'ИГ', name:'Ирина Гай', spec:'Маникюр, снятие', exp:'Стаж 4 года', about:'Слежу за состоянием ногтей и подбираю уход.' }
+    ];
+    const mCard = 'padding:20px;border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:12px;' + (mob ? 'flex:none;width:262px;scroll-snap-align:start' : '');
+
+    const reviews = [
+      { initials:'ЕП', name:'Елена П.', date:'4 сентября', service:'Маникюр с покрытием', stars:'✦✦✦✦✦', text:'Записалась вечером на следующий день, всё совпало по времени. Форма ровная, покрытие держится третью неделю.' },
+      { initials:'ОК', name:'Ольга К.', date:'28 августа', service:'Педикюр с покрытием', stars:'✦✦✦✦✦', text:'Спокойно, без спешки и лишних разговоров. Понравилось, что сразу видно свободные окна в записи.' },
+      { initials:'НС', name:'Наталья С.', date:'22 августа', service:'Укрепление гелем', stars:'✦✦✦✦', text:'Ногти перестали ломаться. Перенесла визит через кабинет за минуту, звонить не пришлось.' },
+      { initials:'ВМ', name:'Вера М.', date:'15 августа', service:'Дизайн', stars:'✦✦✦✦✦', text:'Мастер предложила два варианта и показала, как будет смотреться. Вышла довольная.' }
+    ];
+
+    const faqData = [
+      ['Как записаться онлайн?','Нажмите «Записаться онлайн», выберите услуги, мастера и свободное время. Запись подтверждается сразу, звонить не нужно.'],
+      ['Можно ли выбрать конкретного мастера?','Да. На втором шаге выберите мастера из списка или оставьте «Любой мастер» — тогда подберём свободного на нужное время.'],
+      ['Как отменить или перенести запись?','В личном кабинете откройте запись и выберите отмену или другое время. Освободившийся слот сразу станет доступен другим клиентам.'],
+      ['Нужно ли вносить предоплату?','Нет, оплата на месте — наличными или картой в студии.'],
+      ['Что будет, если я опоздаю?','Позвоните нам: если следующий клиент не записан, мастер примет вас позже. Если опоздание больше 15 минут, услугу, возможно, придётся сократить.'],
+      ['Как восстановить пароль от личного кабинета?','На экране входа нажмите «Забыли пароль?» и укажите e-mail — пришлём ссылку для смены пароля.']
+    ];
+    const faq = faqData.map((it, i) => ({
+      q: it[0], a: it[1], open: !!this.state.open[i],
+      toggle: () => this.setState(s => ({ open: Object.assign({}, s.open, { [i]: !s.open[i] }) })),
+      signStyle: 'flex:none;display:inline-flex;color:var(--accent-brand);transition:transform .18s ease;transform:rotate(' + (this.state.open[i] ? '180deg' : '0deg') + ')'
+    }));
+
+    const now = new Date();
+    const dow = now.getDay();
+    const rows = [
+      { day:'Понедельник', hours:'10:00–21:00', idx:1, o:600, c:1260 },
+      { day:'Вторник', hours:'10:00–21:00', idx:2, o:600, c:1260 },
+      { day:'Среда', hours:'10:00–21:00', idx:3, o:600, c:1260 },
+      { day:'Четверг', hours:'10:00–21:00', idx:4, o:600, c:1260 },
+      { day:'Пятница', hours:'10:00–21:00', idx:5, o:600, c:1260 },
+      { day:'Суббота', hours:'10:00–20:00', idx:6, o:600, c:1200 },
+      { day:'Воскресенье', hours:'11:00–18:00', idx:0, o:660, c:1080 }
+    ];
+    const today = rows.find(r => r.idx === dow);
+    const mins = now.getHours() * 60 + now.getMinutes();
+    const isOpen = !!today && mins >= today.o && mins < today.c;
+    const schedule = rows.map(r => ({
+      day: r.day, hours: r.hours, weight: r.idx === dow ? '600' : '400',
+      rowStyle: 'display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 18px;border-top:1px solid var(--border-default);' +
+        (r.idx === dow ? 'background:var(--st-upcoming-bg)' : '')
+    }));
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeLabelStyle: mob ? 'display:none' : 'display:inline',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'],{width:18,height:18})
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8'],{width:18,height:18}),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+      setDesktop: () => this.setState({ mob: false, menu: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: mob
+        ? 'width:390px;max-width:100%;background:var(--bg-page);border:1px solid rgba(46,38,34,.16);border-radius:24px;overflow:hidden;box-shadow:0 18px 50px rgba(46,38,34,.16)'
+        : 'width:100%;min-width:1280px;background:var(--bg-page)',
+      floatStyle: 'position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:50;width:390px;max-width:calc(100% - 24px);padding:12px 16px 16px;background:linear-gradient(to top,var(--bg-page) 62%,rgba(0,0,0,0))',
+
+      headerStyle: 'position:sticky;top:0;z-index:40;background:var(--bg-page);border-bottom:1px solid var(--border-default)',
+      headerInnerStyle: (mob ? 'padding:10px 12px;gap:8px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;gap:20px;') + 'display:flex;align-items:center;justify-content:space-between',
+      headerCtaStyle: 'display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:var(--r-button);background:var(--action-primary);color:var(--action-on-primary);font-weight:600;white-space:nowrap;' +
+        (mob ? 'padding:0 12px;font-size:13.5px' : 'padding:0 18px;font-size:14.5px'),
+      headerCtaLabel: mob ? 'Записаться' : 'Записаться онлайн',
+      logoWordStyle: 'font-family:var(--font-script);line-height:1;color:var(--text-primary);text-shadow:0 0 14px rgba(242,216,167,.55);' +
+        (mob ? 'font-size:22px' : 'font-size:26px'),
+      navStyle: mob ? 'display:none' : 'display:flex;align-items:center;gap:18px;white-space:nowrap',
+      burgerStyle: (mob ? 'display:inline-grid;' : 'display:none;') + 'width:44px;height:44px;place-items:center;border:1px solid var(--border-default);border-radius:var(--r-button);background:transparent;color:var(--text-primary);cursor:pointer',
+      loginStyle: (mob ? 'display:none;' : 'display:inline-flex;') + 'align-items:center;min-height:44px;padding:0 10px;font-size:14.5px;font-weight:600;color:var(--text-link)',
+      menuOpen: mob && this.state.menu,
+      toggleMenu: () => this.setState(s => ({ menu: !s.menu })),
+      closeMenu: () => this.setState({ menu: false }),
+
+      heroSecStyle: (mob ? 'padding:32px 0 48px;' : 'padding:72px 0 96px;') + 'background:var(--bg-page)',
+      heroGridStyle: (mob ? 'padding:0 16px;display:grid;gap:28px' : 'max-width:1240px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:56px;align-items:center'),
+      h1Style: 'margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;text-wrap:pretty;' + (mob ? 'font-size:36px;line-height:40px' : 'font-size:64px;line-height:67px'),
+      heroSubStyle: 'margin:18px 0 0;color:var(--text-secondary);max-width:46ch;text-wrap:pretty;' + (mob ? 'font-size:17px;line-height:26px' : 'font-size:18px;line-height:29px'),
+      trustRowStyle: 'margin-top:32px;display:flex;flex-wrap:wrap;gap:' + (mob ? '12px' : '14px 32px') + ';flex-direction:' + (mob ? 'column' : 'row'),
+      heroPhotoStyle: 'border-radius:var(--r-photo);overflow:hidden;box-shadow:var(--glow-soft);' + (mob ? 'height:240px' : 'height:460px'),
+
+      wrapStyle: wrap,
+      secStyle: sec(false),
+      secAltStyle: sec(true),
+      h2Style: 'margin:0;font-family:var(--font-display);font-weight:500;text-wrap:pretty;' + (mob ? 'font-size:28px;line-height:32px' : 'font-size:44px;line-height:48px'),
+
+      cats: ['Маникюр','Педикюр','Дизайн','Уход'].map(name => ({
+        name, style: chip(this.state.cat === name), onClick: () => this.setState({ cat: name })
+      })),
+      services: this.services().filter(s => s.cat === this.state.cat).map(s => Object.assign({}, s, {
+        bookHref: 'Запись. Шаг 1 - Услуги.dc.html' + (SERVICE_IDS[s.name] ? '?service=' + SERVICE_IDS[s.name] : '')
+      })),
+      servicesGridStyle: mob ? 'display:grid;gap:12px' : 'display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,380px));justify-content:start;gap:16px',
+
+      steps,
+      stepsGridStyle: (mob ? 'margin-top:24px;display:grid;gap:12px' : 'margin-top:36px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px'),
+      perks,
+      tilesGridStyle: (mob ? 'margin-top:24px;display:grid;gap:12px' : 'margin-top:36px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px'),
+
+      masters: masters.map(m => Object.assign({}, m, {
+        cardStyle: mCard,
+        bookHref: 'Запись. Шаг 1 - Услуги.dc.html' + (MASTER_IDS[m.name] ? '?master=' + MASTER_IDS[m.name] : '')
+      })),
+      mastersGridStyle: mob
+        ? 'margin-top:24px;margin-right:-16px;padding-right:16px;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory'
+        : 'margin-top:36px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px',
+
+      reviews,
+      reviewsGridStyle: (mob ? 'margin-top:24px;display:grid;gap:12px' : 'margin-top:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px'),
+
+      aboutGridStyle: (mob ? 'margin-top:24px;display:grid;gap:24px' : 'margin-top:36px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start'),
+      statsGridStyle: 'margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:' + (mob ? '8px' : '16px'),
+      aboutPhotoStyle: 'border-radius:var(--r-photo);overflow:hidden;box-shadow:var(--shadow-card);' + (mob ? 'height:220px' : 'height:420px'),
+
+      contactsGridStyle: (mob ? 'margin-top:24px;display:grid;gap:20px' : 'margin-top:36px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start'),
+      mapSlotStyle: 'position:relative;border:1px dashed var(--border-strong);border-radius:var(--r-photo);background:var(--bg-subtle);' + (mob ? 'height:220px' : 'height:100%;min-height:420px'),
+      openLabel: isOpen ? 'Сейчас открыто' : 'Закрыто',
+      openBadgeStyle: 'display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--r-pill);font-size:13px;font-weight:600;' +
+        (isOpen ? 'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text)'
+                : 'background:var(--info-bg);border:1px solid var(--info-border);color:var(--info-text)'),
+      schedule,
+
+      faq,
+      faqWrapStyle: mob ? 'padding:0 16px' : 'max-width:900px;margin:0 auto;padding:0 40px',
+
+      ctaStyle: 'border:1px solid var(--border-hair);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--glow-soft);text-align:center;' + (mob ? 'padding:36px 20px' : 'padding:72px 40px'),
+      ctaTitleStyle: 'margin:0;font-family:var(--font-display);font-weight:500;text-wrap:pretty;' + (mob ? 'font-size:30px;line-height:34px' : 'font-size:52px;line-height:56px'),
+
+      footerWrapStyle: mob ? 'padding:40px 16px 24px' : 'max-width:1240px;margin:0 auto;padding:64px 40px 32px',
+      footerGridStyle: mob ? 'display:grid;gap:28px' : 'display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:40px',
+      footerBottomStyle: 'margin-top:' + (mob ? '28px' : '48px') + ';padding-top:20px;border-top:1px solid var(--border-default);display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between',
+
+      showFloat: mob && this.state.scrolled && (this.props.showFloatingCta ?? true)
+    };
+  }
+}
+</script>
+</body>
+</html>

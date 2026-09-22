@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --cream:#F7F2EC; --ivory:#FFFDF9; --greige:#EAE1D7; --sand:#D9C9B6; --oak:#C8A479;
+  --brass:#B08D57; --bronze:#7C5E33; --espresso:#2E2622; --taupe:#7A6B60; --ink:#1F1C1A;
+  --glow:#F2D8A7; --sage:#7E8A6B;
+  --bg-page:var(--cream); --bg-surface:var(--ivory); --bg-elevated:#FFFFFC; --bg-subtle:var(--greige);
+  --text-primary:var(--espresso); --text-secondary:var(--taupe); --text-disabled:#A79689; --text-link:var(--bronze);
+  --border-default:#E2D7C9; --border-strong:#CBBBA8; --border-hair:rgba(176,141,87,.28);
+  --accent-brand:var(--brass);
+  --action-primary:var(--ink); --action-primary-hover:#332E2A; --action-primary-pressed:#12100F;
+  --action-primary-disabled:#D6CBBF; --action-on-primary:#F7F2EC; --action-on-primary-disabled:#8E8378;
+  --focus-ring:var(--brass); --focus-ring-halo:rgba(176,141,87,.28);
+  --success:#5F7A56; --success-text:#4F6647; --success-bg:#ECEFE6; --success-border:#C6D0BA;
+  --warning:#B9822F; --warning-text:#8A5C1A; --warning-bg:#FAF0DF; --warning-border:#E6CFA6;
+  --error:#B0503A; --error-text:#9C3F2A; --error-bg:#F9E9E3; --error-border:#E4C3B6;
+  --info:#6E6259; --info-text:#635749; --info-bg:#F0EAE3; --info-border:#D8CCC0;
+  --font-ui:'Manrope',system-ui,sans-serif;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-script:'Marck Script',cursive;
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-6:24px; --s-8:32px; --s-12:48px; --s-16:64px;
+  --r-input:8px; --r-button:12px; --r-photo:16px; --r-card:20px; --r-pill:999px;
+  --shadow-card:0 1px 2px rgba(46,38,34,.05), 0 2px 10px rgba(46,38,34,.05);
+  --shadow-menu:0 4px 16px rgba(46,38,34,.09), 0 1px 3px rgba(46,38,34,.05);
+  --shadow-modal:0 14px 44px rgba(46,38,34,.14), 0 2px 8px rgba(46,38,34,.06);
+  --glow-soft:0 0 0 1px rgba(176,141,87,.35), 0 0 18px rgba(242,216,167,.9);
+  --glow-strong:0 0 0 1px rgba(176,141,87,.5), 0 0 28px rgba(242,216,167,1);
+}
+[data-theme="dark"]{
+  --bg-page:#1A1613; --bg-surface:#241F1B; --bg-elevated:#2E2824; --bg-subtle:#211C18;
+  --text-primary:#F3ECE3; --text-secondary:#B5A698; --text-disabled:#6F645B; --text-link:#D9B77E;
+  --border-default:#3B332D; --border-strong:#554A41; --border-hair:rgba(201,164,106,.3);
+  --accent-brand:#C9A46A; --glow:#F0C98A;
+  --action-primary:#F3ECE3; --action-primary-hover:#FFF8EF; --action-primary-pressed:#DCD3C7;
+  --action-primary-disabled:#3B332D; --action-on-primary:#1F1C1A; --action-on-primary-disabled:#6F645B;
+  --focus-ring:#C9A46A; --focus-ring-halo:rgba(201,164,106,.35);
+  --success:#8FAF83; --success-text:#8FAF83; --success-bg:rgba(143,175,131,.14); --success-border:rgba(143,175,131,.38);
+  --warning:#E0A75A; --warning-text:#E0A75A; --warning-bg:rgba(224,167,90,.14); --warning-border:rgba(224,167,90,.36);
+  --error:#E08A70; --error-text:#E08A70; --error-bg:rgba(224,138,112,.14); --error-border:rgba(224,138,112,.36);
+  --info:#B3A698; --info-text:#B3A698; --info-bg:rgba(179,166,152,.12); --info-border:rgba(179,166,152,.32);
+  --shadow-card:0 1px 2px rgba(0,0,0,.28);
+  --shadow-menu:0 4px 14px rgba(0,0,0,.34);
+  --shadow-modal:0 16px 40px rgba(0,0,0,.44);
+  --glow-soft:0 0 0 1px rgba(201,164,106,.45), 0 0 26px rgba(240,201,138,.32);
+  --glow-strong:0 0 0 1px rgba(201,164,106,.6), 0 0 40px rgba(240,201,138,.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#EFE9E1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--accent-brand)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+::selection{background:rgba(242,216,167,.7)}
+@keyframes ng-spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#EFE9E1">
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:10px 16px;background:#EFE9E1;border-bottom:1px solid rgba(46,38,34,.1)">
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">предпросмотр</span>
+    <div style="display:flex;gap:2px;padding:3px;border:1px solid #D8CCBF;border-radius:999px;background:#F7F2EC">
+      <button type="button" onClick="{{ setDesktop }}" style="{{ pvDesktopStyle }}">Десктоп 1280</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ pvMobileStyle }}">Мобильный 390</button>
+    </div>
+    <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7A6B60;font-weight:600">состояние формы</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <sc-for list="{{ stateOpts }}" as="opt" hint-placeholder-count="6">
+        <button type="button" onClick="{{ opt.onClick }}" style="{{ opt.style }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="{{ frameOuterStyle }}">
+  <div data-theme="{{ themeAttr }}" style="{{ frameStyle }}">
+
+    <header data-screen-label="Шапка входа" style="background:var(--bg-page);border-bottom:1px solid var(--border-default)">
+      <div style="{{ headerInnerStyle }}">
+        <a href="Главная - лендинг.dc.html" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-button);color:var(--text-primary);font-size:14.5px;font-weight:600" style-hover="background:var(--bg-subtle)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+          Назад
+        </a>
+        <button type="button" onClick="{{ toggleTheme }}" aria-label="Переключить тему" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--border-default);border-radius:var(--r-pill);background:transparent;color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer">
+          <span style="color:var(--accent-brand);display:inline-flex">{{ themeIcon }}</span>
+          <span>{{ themeLabel }}</span>
+        </button>
+      </div>
+    </header>
+
+    <main data-screen-label="Вход" style="{{ mainStyle }}">
+      <div style="{{ formColStyle }}">
+        <div style="{{ cardStyle }}">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+            <svg viewBox="0 0 100 100" width="52" height="52" aria-hidden="true" style="color:var(--accent-brand)">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="50" cy="52" r="34"></circle>
+                <path d="M40 70 C38 56 40 44 43 36"></path>
+                <path d="M50 71 C50 56 53 44 56 37"></path>
+                <path d="M59 71 C60 58 63 49 66 43"></path>
+                <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+                <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+              </g>
+            </svg>
+            <span style="font-family:var(--font-script);font-size:26px;line-height:1;color:var(--text-primary);text-shadow:0 0 14px rgba(242,216,167,.55)">Ноготочки</span>
+          </div>
+
+          <div style="margin-top:24px;text-align:center">
+            <h1 style="{{ h1Style }}">С возвращением</h1>
+            <p style="margin:12px 0 0;font-size:16px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty">Войдите, чтобы управлять своими записями</p>
+          </div>
+
+          <sc-if value="{{ showLock }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:24px;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--warning-bg);border:1px solid var(--warning-border)">
+              <span style="color:var(--warning-text);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg></span>
+              <p style="margin:0;font-size:14.5px;line-height:1.5;color:var(--warning-text)"><b>Слишком много попыток</b><br>Попробуйте через 5 минут</p>
+            </div>
+          </sc-if>
+
+          <div style="margin-top:24px;display:grid;gap:18px">
+            <label style="display:grid;gap:6px">
+              <span style="font-size:13px;font-weight:600">E-mail</span>
+              <input type="email" defaultValue="{{ emailValue }}" placeholder="anna@mail.ru" disabled="{{ inputsDisabled }}" style="{{ emailInputStyle }}">
+              <sc-if value="{{ showEmailError }}" hint-placeholder-val="{{ false }}">
+                <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--error-text)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+                  Проверьте адрес почты: не хватает знака @
+                </span>
+              </sc-if>
+            </label>
+
+            <label style="display:grid;gap:6px">
+              <span style="font-size:13px;font-weight:600">Пароль</span>
+              <span style="position:relative;display:block">
+                <input type="{{ passType }}" defaultValue="{{ passValue }}" disabled="{{ inputsDisabled }}" style="{{ passInputStyle }}">
+                <button type="button" onClick="{{ togglePass }}" aria-label="Показать пароль" style="position:absolute;right:5px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:var(--r-input);background:transparent;color:var(--text-secondary);cursor:pointer">{{ eyeIcon }}</button>
+              </span>
+              <a href="Восстановление пароля - запрос.dc.html" style="justify-self:end;font-size:13px;font-weight:600;min-height:32px;display:inline-flex;align-items:center">Забыли пароль?</a>
+            </label>
+
+            <sc-if value="{{ showFormError }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--error-bg);border:1px solid var(--error-border)">
+                <span style="color:var(--error-text);flex:none;margin-top:1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg></span>
+                <p style="margin:0;font-size:14.5px;line-height:1.5;color:var(--error-text)">Неверный e-mail или пароль</p>
+              </div>
+            </sc-if>
+
+            <button type="button" onClick="{{ submit }}" disabled="{{ submitDisabled }}" style="{{ submitStyle }}">
+              <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+                <i style="width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;display:inline-block;animation:ng-spin .8s linear infinite;margin-right:10px"></i>
+              </sc-if>
+              {{ submitLabel }}
+            </button>
+          </div>
+
+          <div style="margin:24px 0 0;display:flex;align-items:center;gap:14px">
+            <i style="flex:1;height:1px;background:var(--border-default)"></i>
+            <span style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-secondary);font-weight:600">или</span>
+            <i style="flex:1;height:1px;background:var(--border-default)"></i>
+          </div>
+
+          <p style="margin:18px 0 0;text-align:center;font-size:15px;color:var(--text-secondary)">Нет аккаунта? <a href="Регистрация.dc.html" style="font-weight:600">Зарегистрироваться</a></p>
+        </div>
+
+        <p style="margin:18px auto 0;max-width:38ch;text-align:center;font-size:13px;line-height:1.6;color:var(--text-secondary)">Уведомления о записях приходят в личный кабинет. Оплата услуг — на месте, в студии.</p>
+      </div>
+
+      <div style="{{ photoColStyle }}">
+        <img src="assets/studio.png" alt="Интерьер студии «Ноготочки» в тёплом вечернем свете" style="display:block;width:100%;height:100%;object-fit:cover;border-radius:var(--r-photo)">
+      </div>
+    </main>
+
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;startWidth&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop' | 'mobile'&quot;,&quot;section&quot;:&quot;Тема и ширина&quot;},&quot;formState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;focus&quot;,&quot;loading&quot;,&quot;error&quot;,&quot;emailError&quot;,&quot;locked&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal' | 'focus' | 'loading' | 'error' | 'emailError' | 'locked'&quot;,&quot;section&quot;:&quot;Состояние формы&quot;}}">
+const ICON = (paths, extra) => React.createElement('svg', Object.assign({width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round'}, extra||{}), paths.map((d,i)=>React.createElement('path',{key:i,d})));
+
+class Component extends DCLogic {
+  state = { theme: null, mob: null, st: null, showPass: false };
+
+  theme() { return this.state.theme ?? (this.props.startTheme ?? 'light'); }
+  isMob() { return this.state.mob ?? (this.props.startWidth === 'mobile'); }
+  st() { return this.state.st ?? (this.props.formState ?? 'normal'); }
+
+  renderVals() {
+    const dark = this.theme() === 'dark';
+    const mob = this.isMob();
+    const st = this.st();
+    const focus = st === 'focus';
+    const loading = st === 'loading';
+    const formError = st === 'error';
+    const emailError = st === 'emailError';
+    const locked = st === 'locked';
+
+    const pv = (on) => 'min-height:36px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:0;' +
+      (on ? 'background:#1F1C1A;color:#F7F2EC' : 'background:transparent;color:#7A6B60');
+    const chip = (on) => 'min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;' +
+      (on ? 'border:1px solid #B08D57;background:#FBEFD8;color:#2E2622' : 'border:1px solid #D8CCBF;background:#F7F2EC;color:#7A6B60');
+
+    const inputBase = 'width:100%;min-height:44px;padding:11px 14px;border-radius:var(--r-input);color:var(--text-primary);font:400 15px/1.4 var(--font-ui);';
+    const normalInput = inputBase + 'border:1px solid var(--border-strong);background:var(--bg-page)';
+    const focusInput = inputBase + 'border:1px solid var(--accent-brand);background:var(--bg-page);outline:2px solid var(--focus-ring);outline-offset:2px';
+    const errorInput = inputBase + 'border:1px solid var(--error);background:var(--error-bg)';
+    const lockedInput = inputBase + 'border:1px solid var(--border-default);background:var(--bg-subtle);color:var(--text-disabled)';
+
+    const submitDisabled = locked || loading;
+    const submitStyle = 'width:100%;display:flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border:0;border-radius:var(--r-button);font-size:16px;font-weight:600;font-family:inherit;' +
+      (locked
+        ? 'background:var(--action-primary-disabled);color:var(--action-on-primary-disabled);cursor:not-allowed'
+        : 'background:var(--action-primary);color:var(--action-on-primary);cursor:' + (loading ? 'progress' : 'pointer'));
+
+    const states = [
+      ['normal','Обычное'], ['focus','Фокус'], ['loading','Загрузка'],
+      ['error','Ошибка входа'], ['emailError','Ошибка e-mail'], ['locked','Много попыток']
+    ];
+
+    return {
+      themeAttr: dark ? 'dark' : 'light',
+      themeLabel: dark ? 'Вечерняя' : 'Дневная',
+      themeIcon: dark
+        ? ICON(['M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z'])
+        : ICON(['M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z','M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8']),
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+
+      setDesktop: () => this.setState({ mob: false }),
+      setMobile: () => this.setState({ mob: true }),
+      pvDesktopStyle: pv(!mob),
+      pvMobileStyle: pv(mob),
+      stateOpts: states.map(s => ({ label: s[1], style: chip(st === s[0]), onClick: () => this.setState({ st: s[0] }) })),
+
+      frameOuterStyle: mob ? 'display:flex;justify-content:center;padding:24px 16px 40px' : 'padding:0',
+      frameStyle: mob
+        ? 'width:390px;max-width:100%;background:var(--bg-page);border:1px solid rgba(46,38,34,.16);border-radius:24px;overflow:hidden;box-shadow:0 18px 50px rgba(46,38,34,.16)'
+        : 'width:100%;min-width:1280px;background:var(--bg-page)',
+      headerInnerStyle: (mob ? 'padding:10px 16px;' : 'max-width:1240px;margin:0 auto;padding:14px 40px;') + 'display:flex;align-items:center;justify-content:space-between;gap:16px',
+
+      mainStyle: mob
+        ? 'background:var(--bg-page);color:var(--text-primary);padding:32px 16px 48px'
+        : 'background:var(--bg-page);color:var(--text-primary);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center;max-width:1240px;margin:0 auto;padding:72px 40px 96px',
+      formColStyle: mob ? 'width:100%' : 'max-width:460px;width:100%;justify-self:center',
+      photoColStyle: (mob ? 'display:none;' : 'display:block;height:620px;') + 'border-radius:var(--r-photo);overflow:hidden;box-shadow:var(--glow-soft)',
+      cardStyle: 'border:1px solid var(--border-default);border-radius:var(--r-card);background:var(--bg-surface);box-shadow:var(--shadow-card);' + (mob ? 'padding:28px 20px' : 'padding:40px 36px'),
+      h1Style: 'margin:0;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;' + (mob ? 'font-size:28px;line-height:32px' : 'font-size:44px;line-height:48px'),
+
+      emailValue: emailError ? 'anna.mail.ru' : 'anna@mail.ru',
+      passValue: emailError ? '' : 'nogotochki2026',
+      emailInputStyle: locked ? lockedInput : (emailError ? errorInput : (focus ? focusInput : normalInput)),
+      passInputStyle: locked ? lockedInput : (formError ? errorInput : normalInput),
+      inputsDisabled: locked || loading,
+      passType: this.state.showPass ? 'text' : 'password',
+      togglePass: () => this.setState(s => ({ showPass: !s.showPass })),
+      eyeIcon: this.state.showPass
+        ? ICON(['M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z','M12 9.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Z'],{width:20,height:20})
+        : ICON(['M3 3l18 18','M10.6 6.3A8.8 8.8 0 0 1 12 6c6 0 9.5 6 9.5 6a16 16 0 0 1-2.6 3.3M6.3 7.9A16.4 16.4 0 0 0 2.5 12S6 18 12 18c1.2 0 2.3-.2 3.3-.6','M9.6 9.9a2.8 2.8 0 0 0 3.9 3.9'],{width:20,height:20}),
+
+      showEmailError: emailError,
+      showFormError: formError,
+      showLock: locked,
+      isLoading: loading,
+      submitDisabled,
+      submitStyle,
+      submitLabel: loading ? 'Входим' : 'Войти',
+      submit: () => { if (submitDisabled) return; this.setState({ st: 'loading' }); setTimeout(() => { location.href = 'Личный кабинет - Предстоящие записи.dc.html'; }, 900); }
+    };
+  }
+}
+</script>
+</body>
+</html>
