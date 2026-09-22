@@ -1,0 +1,154 @@
+/* Экраны входа, регистрации и восстановления пароля.
+   Подключается после styles.css и пользуется его токенами, кнопками,
+   типографикой и шкалой иконок. Цвета, шрифты и кегли — только
+   переменными из tokens.css, как и на лендинге. */
+
+:root {
+  --auth-card-max: 460px;   /* ширина колонки с формой */
+  --auth-photo-h: 620px;    /* высота фото рядом с формой */
+  --result-mark: calc(var(--s-16) + var(--s-2));  /* 72px — кружок итога */
+}
+
+/* --- шапка ------------------------------------------------------------- */
+
+.auth-header { background: var(--bg-page); border-bottom: 1px solid var(--border-default); }
+
+.auth-header__inner {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  padding: var(--s-2) var(--layout-gutter);
+}
+
+.back {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  min-height: var(--tap); padding: 0 var(--s-3);
+  border: 1px solid var(--border-default); border-radius: var(--r-button);
+  color: var(--text-primary); font-size: var(--text-body-s); font-weight: 600;
+}
+.back:hover { background: var(--bg-subtle); }
+
+/* --- раскладка --------------------------------------------------------- */
+
+.auth {
+  background: var(--bg-page); color: var(--text-primary);
+  padding: var(--s-8) var(--layout-gutter) var(--s-12);
+}
+
+.auth__col { width: 100%; }
+
+.auth__photo {
+  display: none;
+  border-radius: var(--r-photo); overflow: hidden;
+  box-shadow: var(--glow-soft); background: var(--bg-subtle);
+}
+.auth__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.auth-card {
+  padding: var(--s-8) var(--s-6);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface); box-shadow: var(--shadow-card);
+}
+
+.auth-brand { display: flex; flex-direction: column; align-items: center; gap: var(--s-2); }
+.auth-brand svg { color: var(--accent-brand); }
+.auth-brand__word {
+  font-family: var(--font-script);
+  font-size: var(--text-h2); line-height: var(--text-h2-lh);
+  color: var(--text-primary); text-shadow: 0 0 var(--s-4) var(--focus-ring-halo);
+}
+
+.auth-head { margin-top: var(--s-6); text-align: center; }
+.auth-head h1, .auth-head h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h1); line-height: var(--text-h1-lh); text-wrap: pretty;
+}
+.auth-head p {
+  margin: var(--s-3) auto 0; max-width: 34ch;
+  font-size: var(--text-body-m); line-height: var(--text-body-m-lh);
+  color: var(--text-secondary); text-wrap: pretty;
+}
+
+/* Подпись «шаг 1 · запрос ссылки» над карточкой. */
+.auth-step { margin: 0 0 var(--s-3); text-align: center; }
+
+.auth-note {
+  margin: var(--s-4) auto 0; max-width: 40ch; text-align: center;
+  font-size: var(--text-body-s); line-height: var(--text-body-s-lh);
+  color: var(--text-secondary);
+}
+
+/* --- разделитель и низ карточки ----------------------------------------- */
+
+.auth-divider { margin-top: var(--s-6); display: flex; align-items: center; gap: var(--s-3); }
+.auth-divider i { flex: 1; height: 1px; background: var(--border-default); }
+
+.auth-foot {
+  margin: var(--s-4) 0 0; text-align: center;
+  font-size: var(--text-body-m); color: var(--text-secondary);
+}
+.auth-foot a { font-weight: 600; color: var(--text-link); }
+.auth-foot + .auth-foot { margin-top: var(--s-3); }
+
+/* --- итоговые состояния (письмо ушло, пароль сменён, ссылка мертва) ------ */
+
+.result {
+  margin-top: var(--s-6);
+  display: flex; flex-direction: column; align-items: center; gap: var(--s-4);
+  text-align: center;
+}
+.result[hidden] { display: none; }
+.result__mark {
+  width: var(--result-mark); height: var(--result-mark);
+  border-radius: var(--r-pill); display: grid; place-items: center;
+}
+.result__mark--ok {
+  background: var(--success-bg); border: 1px solid var(--success-border);
+  color: var(--success-text); box-shadow: var(--glow-soft);
+}
+.result__mark--warn {
+  background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text);
+}
+.result h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h1); line-height: var(--text-h1-lh); text-wrap: pretty;
+}
+.result p {
+  margin: 0; max-width: 38ch;
+  font-size: var(--text-body-m); line-height: var(--text-body-m-lh);
+  color: var(--text-secondary); text-wrap: pretty;
+}
+.result .btn, .result .notice { width: 100%; }
+.result .notice { justify-content: center; }
+
+/* Пока форма показывает итог, её саму убираем. */
+.form[hidden], .auth-divider[hidden], .auth-foot[hidden], .auth-head[hidden] { display: none; }
+
+/* --- десктоп ------------------------------------------------------------ */
+
+@media (min-width: 900px) {
+  .auth-header__inner {
+    max-width: var(--layout-max); margin: 0 auto;
+    padding: var(--s-3) var(--layout-gutter-d);
+  }
+
+  .auth {
+    max-width: var(--layout-max); margin: 0 auto;
+    padding: var(--s-16) var(--layout-gutter-d) var(--sec-pad-d);
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-16); align-items: center;
+  }
+  .auth__col { max-width: var(--auth-card-max); justify-self: center; }
+  .auth__photo { display: block; height: var(--auth-photo-h); }
+  .auth-card { padding: var(--s-12) var(--s-8); }
+
+  .auth-head h1, .auth-head h2, .result h2 {
+    font-size: var(--text-h1-d); line-height: var(--text-h1-d-lh);
+  }
+  .auth-head p, .auth-foot, .result p {
+    font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh);
+  }
+  .back, .auth-note { font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh); }
+
+  /* Восстановление пароля — одна колонка по центру, фото там нет. */
+  .auth--narrow { display: block; }
+  .auth--narrow .auth__col { margin: 0 auto; }
+}

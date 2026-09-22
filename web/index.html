@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ноготочки — запись в бьюти-студию онлайн</title>
+<meta name="description" content="Бьюти-студия «Ноготочки». Выберите услугу, мастера и удобное время — запись онлайн без звонков.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Шапка (L1) -->
+<header class="header">
+  <div class="header__inner">
+    <a class="logo" href="#top" aria-label="Ноготочки, на начало страницы">
+      <svg class="logo__mark" viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="50" cy="52" r="34"></circle>
+          <path d="M40 70 C38 56 40 44 43 36"></path>
+          <path d="M50 71 C50 56 53 44 56 37"></path>
+          <path d="M59 71 C60 58 63 49 66 43"></path>
+          <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+          <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+        </g>
+      </svg>
+      <span class="logo__word">Ноготочки</span>
+    </a>
+
+    <nav class="nav" aria-label="Разделы страницы">
+      <a href="#uslugi">Услуги</a>
+      <a href="#mastera">Мастера</a>
+      <a href="#kak">Как это работает</a>
+      <a href="#otzyvy">Отзывы</a>
+      <a href="#o-salone">О салоне</a>
+      <a href="#kontakty">Контакты</a>
+      <a href="#voprosy">Вопросы</a>
+    </nav>
+
+    <div class="header__actions">
+      <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+        <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+        <span class="theme-toggle__label" id="theme-label">Дневная</span>
+      </button>
+      <a class="header__login" id="header-login" data-screen="C1" href="#">Войти</a>
+      <a class="user-chip" id="user-chip" data-screen="K5" href="#" hidden>
+        <span class="user-chip__face" id="user-face"></span>
+        <span class="user-chip__name" id="user-name"></span>
+      </a>
+      <a class="btn btn--primary btn--sm" data-screen="B1" href="#" id="header-cta"><span class="cta-short">Записаться</span><span class="cta-long">Записаться онлайн</span></a>
+      <button class="burger" type="button" id="burger" aria-label="Меню" aria-expanded="false" aria-controls="menu">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="menu" id="menu" hidden>
+    <a href="#uslugi">Услуги</a>
+    <a href="#mastera">Мастера</a>
+    <a href="#kak">Как это работает</a>
+    <a href="#otzyvy">Отзывы</a>
+    <a href="#o-salone">О салоне</a>
+    <a href="#kontakty">Контакты</a>
+    <a href="#voprosy">Вопросы</a>
+    <a class="menu__login" data-screen="C1" href="#">Войти в личный кабинет</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Главный экран -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="overline">бьюти-студия · онлайн-запись</p>
+        <h1 class="display" style="margin-top:var(--s-3)">Запишитесь к своему мастеру за минуту</h1>
+        <p class="hero__sub">Выберите услугу, мастера и удобное время. Без звонков и ожидания ответа</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" data-screen="B1" href="#">Записаться онлайн</a>
+          <a class="btn btn--outline" href="#uslugi">Посмотреть услуги</a>
+        </div>
+        <div class="trust">
+          <div class="trust__item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>
+            <span>Работаем с 2019 года</span>
+          </div>
+          <div class="trust__item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.6"></circle><path d="M2.6 20a6.6 6.6 0 0 1 12.8 0M16.5 5.2a3.6 3.6 0 0 1 0 6.6M18.5 19.6a6 6 0 0 0-2.3-4.3"></path></svg>
+            <span id="trust-masters">Мастера студии</span>
+          </div>
+          <div class="trust__item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h6M4 7h10M4 17h13"></path><path d="M19 5.5 20 8.5 23 9.5 20 10.5 19 13.5 18 10.5 15 9.5 18 8.5 Z"></path></svg>
+            <span>Запись за 4 шага</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero__photo">
+        <img src="assets/studio.png" alt="Интерьер студии «Ноготочки» в тёплом вечернем свете" onerror="this.remove()">
+      </div>
+    </div>
+  </section>
+
+  <!-- Услуги и цены — список приходит из GET /api/services -->
+  <section class="section" id="uslugi">
+    <div class="wrap">
+      <h2 class="h2">Услуги и цены</h2>
+      <div class="chips" id="service-cats" role="tablist" aria-label="Категории услуг"></div>
+      <div class="grid services-grid" id="services" aria-busy="true" aria-live="polite"></div>
+      <p class="pay-note">
+        <svg class="icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg>
+        Оплата на месте: наличными или картой
+      </p>
+    </div>
+  </section>
+
+  <!-- Как это работает -->
+  <section class="section section--alt" id="kak">
+    <div class="wrap">
+      <h2 class="h2">Как это работает</h2>
+      <div class="grid steps-grid">
+        <div class="card">
+          <div class="step__head">
+            <span class="step__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h6M4 7h10M4 17h13"></path><path d="M19 5.5 20 8.5 23 9.5 20 10.5 19 13.5 18 10.5 15 9.5 18 8.5Z"></path></svg></span>
+            <span class="step__n">шаг 1</span>
+          </div>
+          <b class="h3">Выберите услуги</b>
+          <p class="prose body-s muted">Сумма и длительность считаются сразу.</p>
+        </div>
+        <div class="card">
+          <div class="step__head">
+            <span class="step__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"></path></svg></span>
+            <span class="step__n">шаг 2</span>
+          </div>
+          <b class="h3">Выберите мастера</b>
+          <p class="prose body-s muted">Или оставьте «Любой мастер» — подберём свободного.</p>
+        </div>
+        <div class="card">
+          <div class="step__head">
+            <span class="step__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5h18"></path><path d="M8 2.5v4M16 2.5v4"></path><path d="M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z"></path></svg></span>
+            <span class="step__n">шаг 3</span>
+          </div>
+          <b class="h3">Выберите дату и время</b>
+          <p class="prose body-s muted">В календаре видно только свободные слоты.</p>
+        </div>
+        <div class="card">
+          <div class="step__head">
+            <span class="step__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span class="step__n">шаг 4</span>
+          </div>
+          <b class="h3">Подтвердите запись</b>
+          <p class="prose body-s muted">Она появится в личном кабинете.</p>
+        </div>
+      </div>
+      <div style="margin-top:var(--s-8);display:flex">
+        <a class="btn btn--primary" data-screen="B1" href="#">Записаться онлайн</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Преимущества -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h2">Преимущества онлайн-записи</h2>
+      <div class="grid perks-grid">
+        <div class="card card--flat">
+          <span class="perk__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"></path><path d="M12 7.5v5l3.5 2"></path></svg></span>
+          <b class="h3">Запись круглосуточно</b>
+          <p class="prose body-s muted">Не нужно ждать, пока студия откроется.</p>
+        </div>
+        <div class="card card--flat">
+          <span class="perk__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5h18"></path><path d="M8 2.5v4M16 2.5v4"></path><path d="M6 4.5h12a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3Z"></path></svg></span>
+          <b class="h3">Видно свободное время</b>
+          <p class="prose body-s muted">Только реально доступные слоты.</p>
+        </div>
+        <div class="card card--flat">
+          <span class="perk__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11V8a6 6 0 0 1 12 0v3"></path><path d="M5 11h14v9H5z"></path></svg></span>
+          <b class="h3">Без двойных записей</b>
+          <p class="prose body-s muted">Время бронируется за вами сразу.</p>
+        </div>
+        <div class="card card--flat">
+          <span class="perk__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2"></path><path d="M3 4.5v4h4"></path></svg></span>
+          <b class="h3">Отмена и перенос в кабинете</b>
+          <p class="prose body-s muted">В пару касаний, без звонка.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Мастера — список приходит из GET /api/masters -->
+  <section class="section section--alt" id="mastera">
+    <div class="wrap">
+      <h2 class="h2">Наши мастера</h2>
+      <div class="masters" id="masters" aria-busy="true" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Отзывы -->
+  <section class="section" id="otzyvy">
+    <div class="wrap">
+      <h2 class="h2">Отзывы клиентов</h2>
+      <div class="grid reviews-grid">
+        <div class="card">
+          <div class="review__head">
+            <span class="avatar avatar--sm">ЕП</span>
+            <div class="review__who"><b class="review__name">Елена П.</b><span class="caption muted num">4 сентября · Маникюр с покрытием</span></div>
+          </div>
+          <span class="review__stars">✦✦✦✦✦</span>
+          <p class="prose body-m muted">Записалась вечером на следующий день, всё совпало по времени. Форма ровная, покрытие держится третью неделю.</p>
+        </div>
+        <div class="card">
+          <div class="review__head">
+            <span class="avatar avatar--sm">ОК</span>
+            <div class="review__who"><b class="review__name">Ольга К.</b><span class="caption muted num">28 августа · Педикюр с покрытием</span></div>
+          </div>
+          <span class="review__stars">✦✦✦✦✦</span>
+          <p class="prose body-m muted">Спокойно, без спешки и лишних разговоров. Понравилось, что сразу видно свободные окна в записи.</p>
+        </div>
+        <div class="card">
+          <div class="review__head">
+            <span class="avatar avatar--sm">НС</span>
+            <div class="review__who"><b class="review__name">Наталья С.</b><span class="caption muted num">22 августа · Укрепление гелем</span></div>
+          </div>
+          <span class="review__stars">✦✦✦✦</span>
+          <p class="prose body-m muted">Ногти перестали ломаться. Перенесла визит через кабинет за минуту, звонить не пришлось.</p>
+        </div>
+        <div class="card">
+          <div class="review__head">
+            <span class="avatar avatar--sm">ВМ</span>
+            <div class="review__who"><b class="review__name">Вера М.</b><span class="caption muted num">15 августа · Дизайн</span></div>
+          </div>
+          <span class="review__stars">✦✦✦✦✦</span>
+          <p class="prose body-m muted">Мастер предложила два варианта и показала, как будет смотреться. Вышла довольная.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- О салоне -->
+  <section class="section section--alt" id="o-salone">
+    <div class="wrap">
+      <h2 class="h2">О салоне</h2>
+      <div class="about__grid">
+        <div class="about__text">
+          <p class="prose">Уютная студия в тёплых тонах: мягкий свет, спокойная музыка и один клиент у мастера в моменте. К каждому подбираем уход под состояние ногтей, а не по шаблону.</p>
+          <p class="prose">Инструменты проходят полный цикл стерилизации, одноразовые материалы открываем при вас. Работаем на профессиональных материалах и показываем, чем именно покрываем ногти.</p>
+          <div class="stats">
+            <div class="stat"><p class="stat__n">7</p><p class="stat__label">лет работы</p></div>
+            <div class="stat"><p class="stat__n">3 400</p><p class="stat__label">довольных клиентов</p></div>
+            <div class="stat"><p class="stat__n" id="stat-services">18</p><p class="stat__label">услуг в прайсе</p></div>
+          </div>
+        </div>
+        <div class="about__photo">
+          <img src="assets/studio.png" alt="Рабочее место мастера и подсветка логотипа на стене" onerror="this.remove()">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Контакты -->
+  <section class="section" id="kontakty">
+    <div class="wrap">
+      <h2 class="h2">Контакты и часы работы</h2>
+      <div class="contacts__grid">
+        <div class="contacts__col">
+          <div class="contacts__list">
+            <div class="contact contact--top">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
+              <p>Москва, Большая Никитская, 12<br><span class="body-s muted">второй этаж, вход со двора</span></p>
+            </div>
+            <div class="contact">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h3l1.6 4-2 1.4a11 11 0 0 0 5.5 5.5l1.4-2 4 1.6v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3 5.7 2 2 0 0 1 5 3.5Z"></path></svg>
+              <a class="num" href="tel:+74951234567">+7 495 123-45-67</a>
+            </div>
+            <div class="contact">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m4 7 8 6 8-6"></path></svg>
+              <a href="mailto:hello@nogotochki.ru">hello@nogotochki.ru</a>
+            </div>
+            <div class="socials">
+              <a href="#kontakty">Telegram</a>
+              <a href="#kontakty">ВКонтакте</a>
+              <a href="#kontakty">WhatsApp</a>
+            </div>
+          </div>
+
+          <div class="hours">
+            <div class="hours__head">
+              <span class="overline">часы работы</span>
+              <span class="hours__badge" id="open-badge">Закрыто</span>
+            </div>
+            <div id="hours-rows"></div>
+          </div>
+        </div>
+
+        <div class="map">
+          <div class="map__note">
+            <svg class="icon--l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
+            <p class="prose">Место под скриншот карты<br>метка студии — Большая Никитская, 12</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Вопросы -->
+  <section class="section section--alt" id="voprosy">
+    <div class="faq-wrap wrap">
+      <h2 class="h2">Частые вопросы</h2>
+      <div class="faq" id="faq">
+        <div class="faq__item">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-1">
+            <span>Как записаться онлайн?</span>
+            <span class="faq__sign" aria-hidden="true"><svg class="icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5 12 15.5 18 9.5"></path></svg></span>
+          </button>
+          <p class="faq__a" id="faq-a-1" hidden>Нажмите «Записаться онлайн», выберите услуги, мастера и свободное время. Запись подтверждается сразу, звонить не нужно.</p>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-2">
+            <span>Можно ли выбрать конкретного мастера?</span>
+            <span class="faq__sign" aria-hidden="true"><svg class="icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5 12 15.5 18 9.5"></path></svg></span>
+          </button>
+          <p class="faq__a" id="faq-a-2" hidden>Да. На втором шаге выберите мастера из списка или оставьте «Любой мастер» — тогда подберём свободного на нужное время.</p>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-3">
+            <span>Как отменить или перенести запись?</span>
+            <span class="faq__sign" aria-hidden="true"><svg class="icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5 12 15.5 18 9.5"></path></svg></span>
+          </button>
+          <p class="faq__a" id="faq-a-3" hidden>В личном кабинете откройте запись и выберите отмену или другое время. Освободившийся слот сразу станет доступен другим клиентам.</p>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-4">
+            <span>Нужно ли вносить предоплату?</span>
+            <span class="faq__sign" aria-hidden="true"><svg class="icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5 12 15.5 18 9.5"></path></svg></span>
+          </button>
+          <p class="faq__a" id="faq-a-4" hidden>Нет, оплата на месте — наличными или картой в студии.</p>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-5">
+            <span>Что будет, если я опоздаю?</span>
+            <span class="faq__sign" aria-hidden="true"><svg class="icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5 12 15.5 18 9.5"></path></svg></span>
+          </button>
+          <p class="faq__a" id="faq-a-5" hidden>Позвоните нам: если следующий клиент не записан, мастер примет вас позже. Если опоздание больше 15 минут, услугу, возможно, придётся сократить.</p>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a-6">
+            <span>Как восстановить пароль от личного кабинета?</span>
+            <span class="faq__sign" aria-hidden="true"><svg class="icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5 12 15.5 18 9.5"></path></svg></span>
+          </button>
+          <p class="faq__a" id="faq-a-6" hidden>На экране входа нажмите «Забыли пароль?» и укажите e-mail — пришлём ссылку для смены пароля.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Финальный призыв -->
+  <section class="section">
+    <div class="wrap">
+      <div class="cta">
+        <h2 class="display">Свободное время есть уже сегодня</h2>
+        <p>Выберите услугу и запишитесь за минуту</p>
+        <a class="btn btn--primary" data-screen="B1" href="#">Записаться онлайн</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Подвал -->
+<footer class="footer">
+  <div class="footer__wrap">
+    <div class="footer__grid">
+      <div class="footer__col footer__about">
+        <div class="logo">
+          <svg class="logo__mark" viewBox="0 0 100 100" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <circle cx="50" cy="52" r="34"></circle>
+              <path d="M40 70 C38 56 40 44 43 36"></path>
+              <path d="M50 71 C50 56 53 44 56 37"></path>
+              <path d="M59 71 C60 58 63 49 66 43"></path>
+              <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+              <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+            </g>
+          </svg>
+          <span class="logo__word" style="font-size:var(--text-h2)">Ноготочки</span>
+        </div>
+        <p>Студия маникюра в тёплых тонах. Одна студия, запись онлайн круглосуточно.</p>
+      </div>
+      <div class="footer__col">
+        <p class="overline">разделы</p>
+        <a href="#uslugi">Услуги</a>
+        <a href="#mastera">Мастера</a>
+        <a href="#kak">Как это работает</a>
+        <a href="#otzyvy">Отзывы</a>
+        <a href="#o-salone">О салоне</a>
+        <a href="#voprosy">Вопросы</a>
+      </div>
+      <div class="footer__col">
+        <p class="overline">контакты</p>
+        <a class="num" href="tel:+74951234567">+7 495 123-45-67</a>
+        <a href="mailto:hello@nogotochki.ru">hello@nogotochki.ru</a>
+        <p class="muted">Москва, Большая Никитская, 12</p>
+        <p class="muted num">Пн–Пт 10:00–21:00<br>Сб 10:00–20:00 · Вс 11:00–18:00</p>
+      </div>
+      <div class="footer__col">
+        <p class="overline">личный кабинет</p>
+        <a data-screen="C1" href="#">Войти</a>
+        <a data-screen="C2" href="#">Регистрация</a>
+        <p class="muted">Уведомления о записях приходят в кабинет</p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 Бьюти-студия «Ноготочки»</p>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--s-4) var(--s-6)">
+        <a href="#kontakty">Политика конфиденциальности</a>
+        <a href="#kontakty">Пользовательское соглашение</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="float" id="float" hidden>
+  <a class="btn btn--primary" data-screen="B1" href="#">Записаться онлайн</a>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

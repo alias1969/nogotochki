@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Запись · шаг 1 — Услуги</title>
+<meta name="description" content="Выбор услуг для записи в бьюти-студию «Ноготочки».">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="booking.css">
+</head>
+<body>
+
+<header class="bk-header">
+  <div class="bk-header__inner">
+    <a class="back" id="back" href="#">
+      <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+      Назад
+    </a>
+    <span class="bk-header__title">Запись</span>
+    <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+      <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+      <span class="theme-toggle__label" id="theme-label">Дневная</span>
+    </button>
+  </div>
+
+  <nav class="steps" aria-label="Шаги записи">
+    <div class="steps__row" id="steps-row"></div>
+    <div class="steps__compact">
+      <div class="steps__head">
+        <b id="step-title"></b>
+        <span id="step-count"></span>
+      </div>
+      <div class="progress"><i id="step-bar"></i></div>
+    </div>
+  </nav>
+</header>
+
+<main class="bk">
+  <div class="wrap">
+    <h1>Выберите услуги</h1>
+    <p class="bk__sub">Можно выбрать несколько</p>
+
+    <label class="search" id="search">
+      <span class="search__icon">
+        <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+      </span>
+      <input type="search" id="query" placeholder="Услуга или ключевое слово" aria-label="Поиск услуги">
+    </label>
+
+    <div class="chips" id="cats" role="tablist" aria-label="Категории услуг"></div>
+
+    <div class="bk-grid services-list" id="services" aria-busy="true" aria-live="polite"></div>
+
+    <p class="nothing" id="nothing" hidden>По запросу ничего не нашлось. Попробуйте другое слово или выберите категорию</p>
+
+    <div class="state state--error" id="load-error" hidden>
+      <svg class="icon icon--l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg>
+      <p class="state__title">Не удалось загрузить услуги</p>
+      <p>Проверьте соединение и попробуйте снова</p>
+      <div class="state__actions"><button class="btn btn--outline" type="button" id="retry">Повторить</button></div>
+    </div>
+  </div>
+</main>
+
+<div class="bar">
+  <div class="bar__inner">
+    <div class="bar__left">
+      <b class="bar__sum" id="bar-sum" aria-live="polite">Услуги не выбраны</b>
+      <span class="bar__note" id="bar-note"></span>
+    </div>
+    <div class="bar__action">
+      <span class="bar__hint" id="next-hint"></span>
+      <button class="btn btn--primary" type="button" id="next" disabled>Далее</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="booking-services.js"></script>
+</body>
+</html>

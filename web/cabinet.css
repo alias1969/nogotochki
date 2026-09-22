@@ -1,0 +1,371 @@
+/* Личный кабинет клиента: предстоящие записи, история, уведомления.
+   Подключается после styles.css; цвета, шрифты и кегли — только
+   переменными из tokens.css. */
+
+:root {
+  --cab-face: calc(var(--s-8) + var(--s-2));    /* 40px — кружок в шапке */
+  --card-face: calc(var(--s-12) + var(--s-1));  /* 52px — кружок мастера в карточке */
+  --dot: calc(var(--s-2) - 1px);                /* 7px — точка «новое» */
+  --badge: calc(var(--s-4) + 1px);              /* 17px — счётчик на колокольчике */
+  --bottom-nav: calc(var(--s-12) + var(--s-1)); /* 52px — нижняя навигация */
+}
+
+/* --- шапка кабинета ----------------------------------------------------- */
+
+.cab-header {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--bg-page); border-bottom: 1px solid var(--border-default);
+}
+.cab-header__inner {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-2);
+  padding: var(--s-2) var(--layout-gutter);
+}
+
+/* Верхние вкладки помещаются только на широком экране; на телефоне
+   их роль играет нижняя навигация. */
+/* В шапке кабинета, кроме логотипа, стоят колокольчик, переключатель темы
+   и кнопка записи — на телефоне надпись логотипа в строку уже не лезет
+   и обрезается многоточием. Оставляем один знак: он и так ссылка
+   на главную, а ориентироваться помогает нижняя навигация. */
+.cab-header .logo__word { display: none; }
+
+.cab-nav { display: none; align-items: center; gap: var(--s-6); }
+.cab-nav a, .cab-nav span {
+  display: inline-flex; align-items: center; min-height: var(--tap);
+  padding: 0 var(--s-1);
+  font-size: var(--text-body-s); color: var(--text-secondary);
+}
+.cab-nav [aria-current="page"] {
+  color: var(--text-primary); font-weight: 600;
+  border-bottom: 1px solid var(--accent-brand);
+}
+
+.cab-actions { display: flex; align-items: center; gap: var(--s-2); flex: none; }
+
+.cab-user { display: none; align-items: center; gap: var(--s-2); }
+.cab-user__face {
+  width: var(--cab-face); height: var(--cab-face); flex: none;
+  border-radius: var(--r-pill); border: 1px solid var(--border-hair);
+  background: var(--sand); color: var(--bronze);
+  display: grid; place-items: center;
+  font-size: var(--text-body-s); font-weight: 600;
+}
+.cab-user__name { font-size: var(--text-body-s); font-weight: 600; }
+
+.bell {
+  position: relative; width: var(--tap); height: var(--tap); flex: none;
+  display: grid; place-items: center;
+  border: 1px solid var(--border-default); border-radius: var(--r-button);
+  background: transparent; color: var(--text-primary);
+}
+.bell:hover { border-color: var(--accent-brand); }
+.bell__count {
+  position: absolute; top: var(--s-1); right: var(--s-1);
+  min-width: var(--badge); height: var(--badge); padding: 0 var(--s-1);
+  border-radius: var(--r-pill);
+  background: var(--accent-brand); color: var(--action-on-primary-disabled);
+  font-size: var(--text-overline); line-height: 1; font-weight: 700; font-style: normal;
+  display: grid; place-items: center; font-variant-numeric: tabular-nums;
+}
+[data-theme="dark"] .bell__count { color: var(--bg-page); }
+.bell__count[hidden] { display: none; }
+
+/* --- основная часть ----------------------------------------------------- */
+
+.cab {
+  background: var(--bg-page); color: var(--text-primary);
+  padding: var(--s-6) 0 calc(var(--bottom-nav) + var(--s-8));
+}
+.cab h1 {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h1); line-height: var(--text-h1-lh); text-wrap: pretty;
+}
+.cab__sub { margin: var(--s-2) 0 0; font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+.cab__title-row { display: flex; flex-direction: column; gap: var(--s-3); }
+
+/* Вкладки «Предстоящие / История» внутри страницы. */
+.tabs { margin-top: var(--s-6); display: flex; gap: var(--s-2); }
+.tab {
+  display: inline-flex; align-items: center;
+  min-height: var(--tap); padding: 0 var(--s-4);
+  border: 1px solid var(--border-strong); border-radius: var(--r-pill);
+  font-size: var(--text-body-s); font-weight: 600; color: var(--text-primary);
+}
+.tab[aria-current="page"] {
+  border-color: var(--slot-selected-border);
+  background: var(--slot-selected-bg); color: var(--slot-selected-text);
+}
+
+.cab-list { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+
+/* --- карточка записи ---------------------------------------------------- */
+
+.ap {
+  padding: var(--s-6) var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface); box-shadow: var(--shadow-card);
+  display: grid; gap: var(--s-4);
+}
+.ap--past { background: var(--bg-subtle); box-shadow: none; }
+
+.ap__top { display: flex; gap: var(--s-3); justify-content: space-between; align-items: flex-start; }
+.ap__head { min-width: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.ap__badges { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.ap__when { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ap__range { font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+.status {
+  flex: none; display: inline-flex; align-items: center; gap: var(--s-1);
+  padding: var(--s-1) var(--s-3); border-radius: var(--r-pill);
+  font-size: var(--text-caption); line-height: var(--text-caption-lh); font-weight: 600;
+}
+.status svg { flex: none; }
+.status[data-tone="upcoming"] { background: var(--st-upcoming-bg); border: 1px solid var(--st-upcoming-border); color: var(--st-upcoming-text); }
+.status[data-tone="done"] { background: var(--st-done-bg); border: 1px solid var(--st-done-border); color: var(--st-done-text); }
+.status[data-tone="cx-user"] { background: var(--st-cx-user-bg); border: 1px solid var(--st-cx-user-border); color: var(--st-cx-user-text); }
+.status[data-tone="cx-admin"] { background: var(--st-cx-admin-bg); border: 1px solid var(--st-cx-admin-border); color: var(--st-cx-admin-text); }
+.status[data-tone="warn"] { background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); }
+
+.ap__moves {
+  flex: none; padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--border-hair); border-radius: var(--r-pill);
+  font-size: var(--text-caption); font-weight: 600;
+  color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+
+.ap__body {
+  display: grid; gap: var(--s-4);
+  padding-top: var(--s-4); border-top: 1px solid var(--border-default);
+}
+.ap__master { display: flex; gap: var(--s-3); align-items: center; min-width: 0; }
+.ap__face {
+  width: var(--card-face); height: var(--card-face); flex: none;
+  border-radius: var(--r-pill); border: 1px solid var(--border-hair);
+  background: var(--sand); color: var(--bronze);
+  display: grid; place-items: center;
+  font-size: var(--text-body-m); font-weight: 600;
+}
+.ap__master b { display: block; margin-top: 2px; font-size: var(--text-body-m); font-weight: 600; }
+.ap__services { margin-top: var(--s-2); display: grid; gap: var(--s-1); }
+.ap__services span { font-size: var(--text-body-s); line-height: var(--text-body-s-lh); }
+.ap__totals { display: block; margin-top: var(--s-2); font-size: var(--text-body-m); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.ap__foot { display: grid; gap: var(--s-3); padding-top: var(--s-4); border-top: 1px solid var(--border-default); }
+.ap__buttons { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.ap__note { font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); }
+
+/* Причина отмены — словами сервера, не нашими. */
+.ap__reason {
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-input);
+  background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text);
+  font-size: var(--text-body-s); line-height: var(--text-body-s-lh);
+}
+
+/* --- уведомления -------------------------------------------------------- */
+
+.note-list { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
+
+/* На узком экране ссылка уходит на свою строку: рядом с заголовком она
+   отнимает половину ширины, и заголовок ломается на два слова. */
+.nt {
+  display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: flex-start;
+  padding: var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface);
+}
+/* Непрочитанное выделено рамкой и подложкой, а не только точкой. */
+.nt[data-unread="true"] { border-color: var(--border-hair); background: var(--slot-selected-bg); }
+
+.nt__icon {
+  width: var(--tap); height: var(--tap); flex: none;
+  border-radius: var(--r-pill); display: grid; place-items: center;
+  border: 1px solid var(--border-hair); background: var(--bg-subtle); color: var(--accent-brand);
+}
+/* Минимальная ширина в 60% не даёт тексту ужаться в столбик по слову:
+   вместо этого на узком экране переносится ссылка. */
+.nt__body { flex: 1 1 60%; min-width: 0; display: grid; gap: var(--s-1); }
+.nt__head { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: baseline; }
+.nt__title { font-size: var(--text-body-m); font-weight: 600; }
+.nt__new {
+  display: inline-flex; align-items: center; gap: var(--s-1);
+  font-size: var(--text-caption); font-weight: 600; color: var(--text-link);
+}
+.nt__new i { width: var(--dot); height: var(--dot); border-radius: var(--r-pill); background: var(--accent-brand); box-shadow: var(--glow-soft); }
+.nt__text { margin: 0; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+.nt__date { font-size: var(--text-caption); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.nt__link {
+  display: inline-flex; align-items: center; gap: var(--s-1);
+  min-height: var(--tap); padding: 0 var(--s-3);
+  /* Своя строка во всю ширину карточки. Отступа слева нет намеренно:
+     вместе с flex-basis:100% он вылезал бы за край на свою же величину. */
+  flex: 1 0 100%;
+  justify-content: center;
+  border: 1px solid var(--border-default); border-radius: var(--r-button);
+  font-size: var(--text-body-s); font-weight: 600; color: var(--text-link);
+}
+.nt__link:hover { background: var(--bg-subtle); }
+
+.cab-note {
+  margin: var(--s-6) 0 0; display: flex; gap: var(--s-2); align-items: flex-start;
+  font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary);
+}
+.cab-note svg { color: var(--accent-brand); flex: none; }
+
+/* --- пусто: состояние списка, а не отдельная страница ------------------- */
+
+.empty {
+  margin-top: var(--s-6); padding: var(--s-12) var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface); box-shadow: var(--shadow-card); text-align: center;
+}
+.empty__art { width: calc(var(--s-16) + var(--s-6)); height: calc(var(--s-16) + var(--s-6)); margin: 0 auto var(--s-4); display: block; color: var(--accent-brand); }
+.empty__title {
+  margin: 0 0 var(--s-2);
+  font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h2); line-height: var(--text-h2-lh); text-wrap: pretty;
+}
+.empty p { margin: 0 auto; max-width: 38ch; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+.empty .btn { margin-top: var(--s-6); }
+
+/* --- нижняя навигация (телефон) ----------------------------------------- */
+
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  background: var(--bg-elevated); border-top: 1px solid var(--border-default);
+  box-shadow: var(--shadow-menu);
+}
+.bottom-nav a {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-1);
+  min-height: var(--bottom-nav); padding: var(--s-2) var(--s-1);
+  font-size: var(--text-overline); line-height: var(--text-overline-lh);
+  color: var(--text-secondary);
+}
+.bottom-nav [aria-current="page"] { color: var(--text-primary); font-weight: 600; }
+.bottom-nav [aria-current="page"] svg { color: var(--accent-brand); }
+
+/* --- сообщение об отмене ------------------------------------------------ */
+
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--bottom-nav) + var(--s-4)); z-index: 50;
+  width: calc(100% - var(--s-8)); max-width: 420px;
+  display: flex; gap: var(--s-3); align-items: center;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-card);
+  background: var(--bg-elevated); border: 1px solid var(--success-border);
+  box-shadow: var(--shadow-modal);
+}
+.toast[hidden] { display: none; }
+.toast svg { color: var(--success-text); flex: none; }
+.toast__body { flex: 1; min-width: 0; }
+.toast__body b { display: block; font-size: var(--text-body-s); font-weight: 600; }
+.toast__body span { font-size: var(--text-caption); color: var(--text-secondary); }
+.toast__close {
+  flex: none; width: var(--s-8); height: var(--s-8);
+  display: grid; place-items: center;
+  border: 0; border-radius: var(--r-input);
+  background: transparent; color: var(--text-secondary); cursor: pointer;
+}
+
+@media (min-width: 900px) {
+  .cab-header__inner { max-width: var(--layout-max); margin: 0 auto; padding: var(--s-3) var(--layout-gutter-d); gap: var(--s-6); }
+  .cab-header .logo__word { display: inline; }
+  .nt { flex-wrap: nowrap; }
+  .nt__link { flex: none; margin-left: 0; border: 0; justify-content: flex-start; }
+  .nt__link:hover { background: var(--bg-subtle); }
+  .cab-nav, .cab-user { display: flex; }
+  .bottom-nav { display: none; }
+  .cab { padding: var(--s-12) 0 var(--sec-pad); }
+  .cab h1 { font-size: var(--text-h1-d); line-height: var(--text-h1-d-lh); }
+  .cab__title-row { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: var(--s-6); }
+  .cab-list { gap: var(--s-4); }
+  .ap { padding: var(--s-6); }
+  .ap__body { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--s-6); align-items: start; }
+  .ap__foot { grid-auto-flow: column; justify-content: space-between; align-items: center; }
+  .ap__when { font-size: var(--text-h3-d); line-height: var(--text-h3-d-lh); }
+  .ap__range, .ap__services span, .ap__note, .nt__text, .empty p, .cab-note,
+  .cab__sub, .tab, .cab-nav a, .cab-nav span, .ap__reason { font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh); }
+  .ap__totals, .ap__master b, .nt__title { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+  .toast { bottom: var(--s-6); }
+}
+
+/* ======================================================================
+   K5 — профиль
+   ====================================================================== */
+
+:root { --swatch: calc(var(--s-8) + var(--s-2)); }   /* 40px — образец темы */
+
+.section {
+  margin-top: var(--s-6); padding: var(--s-6) var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface); box-shadow: var(--shadow-card);
+}
+.section h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h2); line-height: var(--text-h2-lh);
+}
+.section__hint { margin: var(--s-2) 0 0; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); }
+
+.section .form { margin-top: var(--s-4); }
+.section .confirm-actions,
+.section__actions { margin-top: var(--s-6); display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+.section__actions a { font-size: var(--text-body-s); font-weight: 600; color: var(--text-link); }
+
+/* Поле, которое здесь не меняют. Видно, что оно не ввод, а справка. */
+.field--locked .input {
+  background: var(--bg-subtle); color: var(--text-secondary);
+  border-color: var(--border-default); cursor: not-allowed;
+}
+.field__why { font-size: var(--text-caption); line-height: var(--text-caption-lh); color: var(--text-secondary); }
+
+/* --- выбор темы --------------------------------------------------------- */
+
+.themes { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
+.theme-row {
+  display: flex; gap: var(--s-3); align-items: center;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-page); cursor: pointer;
+}
+.theme-row:has(input:checked) {
+  border-color: var(--slot-selected-border);
+  background: var(--slot-selected-bg);
+  box-shadow: var(--glow-soft);
+}
+.theme-row input { width: var(--pick-box, calc(var(--s-4) + var(--s-1))); height: var(--pick-box, calc(var(--s-4) + var(--s-1))); flex: none; margin: 0; accent-color: var(--action-primary); cursor: inherit; }
+.theme-row__body { flex: 1; min-width: 0; }
+.theme-row__body b { display: block; font-size: var(--text-body-m); font-weight: 600; }
+.theme-row__body span { font-size: var(--text-body-s); color: var(--text-secondary); }
+.swatch {
+  width: var(--swatch); height: var(--swatch); flex: none;
+  border-radius: var(--r-input); border: 1px solid var(--border-strong);
+}
+/* Образцы показывают обе темы и потому не зависят от текущей. */
+.swatch--day { background: var(--cream); }
+.swatch--evening { background: var(--ink); }
+
+/* --- выход -------------------------------------------------------------- */
+
+.logout-row {
+  margin-top: var(--s-6); padding: var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-subtle);
+  display: flex; flex-wrap: wrap; gap: var(--s-4);
+  align-items: center; justify-content: space-between;
+}
+.logout-row b { display: block; font-size: var(--text-body-m); font-weight: 600; }
+.logout-row span { font-size: var(--text-body-s); color: var(--text-secondary); }
+
+.since { margin: var(--s-6) 0 0; text-align: center; font-size: var(--text-caption); color: var(--text-secondary); }
+
+@media (min-width: 900px) {
+  .section { padding: var(--s-6); }
+  .section h2 { font-size: var(--text-h2-d); line-height: var(--text-h2-d-lh); }
+  .section__hint, .theme-row__body span, .logout-row span, .field__why {
+    font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh);
+  }
+  .theme-row__body b, .logout-row b { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+  .cab--narrow .wrap { max-width: 720px; }
+}

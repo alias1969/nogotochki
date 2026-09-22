@@ -11,6 +11,7 @@ import { createServer as createHttpServer } from 'node:http';
 import { createRouter } from './router.js';
 import { createContext } from './context.js';
 import { sendJson, sendError } from './json.js';
+import { applyCors, handlePreflight } from './cors.js';
 import { registerAuthRoutes } from '../api/auth.routes.js';
 import { registerCatalogRoutes } from '../api/catalog.routes.js';
 import { registerAvailabilityRoutes } from '../api/availability.routes.js';
@@ -55,6 +56,16 @@ export function createServer() {
 
   return createHttpServer(async (req, res) => {
     try {
+      // Разрешение выписывается до маршрутизации, через setHeader: так его
+      // получают все ответы — и удачные, и 404, и 500. Ответ об ошибке
+      // без заголовков CORS браузер до страницы не донесёт, и вместо
+      // внятного кода она увидит только «сетевая ошибка».
+      applyCors(req, res);
+
+      // Предварительный запрос отвечает сам за себя: маршрута OPTIONS
+      // в роутере нет, и без этой развилки браузер получил бы на него 405.
+      if (handlePreflight(req, res)) return;
+
       const url = new URL(req.url, `http://${req.headers.host ?? 'localhost'}`);
       // Хвостовой слеш не должен плодить второй адрес для того же ресурса.
       const pathname = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') : url.pathname;

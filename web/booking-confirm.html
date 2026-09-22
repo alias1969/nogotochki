@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Запись · подтверждение</title>
+<meta name="description" content="Подтверждение записи в бьюти-студию «Ноготочки».">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="booking.css">
+</head>
+<body>
+
+<header class="bk-header">
+  <div class="bk-header__inner">
+    <a class="back" id="back" href="#">
+      <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+      Назад
+    </a>
+    <span class="bk-header__title">Запись</span>
+    <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+      <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+      <span class="theme-toggle__label" id="theme-label">Дневная</span>
+    </button>
+  </div>
+
+  <nav class="steps" aria-label="Шаги записи">
+    <div class="steps__row" id="steps-row"></div>
+    <div class="steps__compact">
+      <div class="steps__head">
+        <b id="step-title"></b>
+        <span id="step-count"></span>
+      </div>
+      <div class="progress"><i id="step-bar"></i></div>
+    </div>
+  </nav>
+
+  <div class="reserve" id="reserve" data-tone="calm" hidden>
+    <span class="reserve__text">
+      <svg class="icon icon--s" id="reserve-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>
+      <span id="reserve-text" role="timer" aria-live="off"></span>
+    </span>
+  </div>
+</header>
+
+<main class="bk">
+  <div class="wrap">
+
+    <!-- Запись создаёт вошедший: POST /api/appointments требует сессию.
+         Резерв при этом уже стоит и держится на токене браузера, поэтому
+         после входа время остаётся за человеком. -->
+    <div class="state" id="need-login" hidden>
+      <p class="state__title">Войдите, чтобы подтвердить запись</p>
+      <p id="need-login-text">Время закреплено за вами — после входа вернитесь сюда и подтвердите.</p>
+      <div class="state__actions">
+        <a class="btn btn--primary" data-screen="C1" href="#">Войти</a>
+        <a class="btn btn--outline" data-screen="C2" href="#">Создать аккаунт</a>
+      </div>
+    </div>
+
+    <div class="state" id="no-choice" hidden>
+      <p class="state__title">Не хватает выбора</p>
+      <p>Чтобы подтвердить запись, нужны услуги, мастер и время. Начните с первого шага.</p>
+      <div class="state__actions"><a class="btn btn--primary" id="go-start" href="#">Перейти к услугам</a></div>
+    </div>
+
+    <div class="state" id="expired" hidden>
+      <p class="state__title">Время больше не закреплено</p>
+      <p id="expired-text">Мы держали это окно десять минут. Проверьте, свободно ли оно ещё, или выберите другое.</p>
+      <div class="state__actions">
+        <button class="btn btn--primary" type="button" id="rehold">Проверить, свободно ли ещё</button>
+        <a class="btn btn--outline" id="expired-other" href="#">Выбрать другое время</a>
+      </div>
+    </div>
+
+    <div class="state state--error" id="fatal" hidden>
+      <p class="state__title" id="fatal-title">Не удалось закрепить время</p>
+      <p id="fatal-text"></p>
+      <div class="state__actions">
+        <button class="btn btn--outline" type="button" id="retry">Повторить</button>
+        <a class="btn btn--outline" id="fatal-other" href="#">Выбрать другое время</a>
+      </div>
+    </div>
+
+    <div id="body" hidden>
+      <h1>Проверьте и подтвердите</h1>
+      <p class="bk__sub">Запись появится в личном кабинете сразу после подтверждения</p>
+
+      <!-- Время заняли. Состояние этой же страницы: сообщение от сервера,
+           ближайшие варианты из его же ответа и выход на шаг 3. -->
+      <div class="taken" id="taken" hidden role="alert">
+        <div class="taken__head">
+          <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+          <div>
+            <b id="taken-message"></b>
+            <span id="taken-sub">Выберите одно из ближайших свободных окон</span>
+          </div>
+        </div>
+        <div class="taken__slots" id="taken-slots"></div>
+        <p class="taken__other"><a id="taken-other" href="#">Посмотреть все свободные окна</a></p>
+      </div>
+
+      <div class="notice notice--error" id="send-error" role="alert" hidden></div>
+
+      <div class="confirm-cols">
+        <section class="panel" aria-label="Ваши данные">
+          <span class="overline">вы записываетесь как</span>
+          <div class="who" id="who" style="margin-top:var(--s-3)"></div>
+
+          <label class="note-field">
+            <span class="note-field__head">
+              <span>Комментарий мастеру</span>
+              <span>необязательно</span>
+            </span>
+            <textarea id="note" rows="3" maxlength="500" placeholder="Например: ногти тонкие, нужен уход поаккуратнее"></textarea>
+          </label>
+
+          <div class="confirm-actions">
+            <button class="btn btn--primary" type="button" id="confirm">
+              <i class="spinner" hidden aria-hidden="true"></i>
+              <span class="btn__label">Подтвердить запись</span>
+            </button>
+            <a class="btn btn--outline" id="back-to-time" href="#">Назад</a>
+          </div>
+
+          <p class="foot-note" id="foot-note"></p>
+        </section>
+
+        <section class="panel" aria-label="Сводка визита">
+          <div class="sum__head">
+            <span class="sum__face" id="sum-face"></span>
+            <div style="min-width:0;flex:1">
+              <span class="overline">мастер</span>
+              <b class="sum__name" id="sum-master"></b>
+              <span class="sum__sub" id="sum-spec"></span>
+            </div>
+            <a class="sum__edit" id="edit-master" href="#">Изменить</a>
+          </div>
+
+          <div class="sum__row">
+            <div>
+              <span class="overline">услуги</span>
+              <div class="lines" id="sum-services"></div>
+            </div>
+            <a class="sum__edit" id="edit-services" href="#">Изменить</a>
+          </div>
+
+          <div class="sum__row">
+            <div>
+              <span class="overline">когда</span>
+              <b class="sum__when" id="sum-when"></b>
+              <span class="sum__sub" id="sum-ends"></span>
+            </div>
+            <a class="sum__edit" id="edit-time" href="#">Изменить</a>
+          </div>
+
+          <div class="sum__total">
+            <b id="sum-total"></b>
+            <span class="sum__pay">
+              <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg>
+              Оплата на месте: наличными или картой
+            </span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script type="module" src="booking-confirm.js"></script>
+</body>
+</html>

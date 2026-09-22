@@ -1,0 +1,661 @@
+/* Шаги записи. Подключается после styles.css и пользуется его токенами,
+   кнопками, типографикой и шкалой иконок. Ни одного цвета, шрифта
+   и кегля мимо tokens.css. */
+
+:root {
+  --step-mark: calc(var(--s-6) + var(--s-1));   /* 28px — кружок с номером шага */
+  --progress-h: var(--s-1);                     /* 4px — полоса на мобильном */
+  --pick-box: calc(var(--s-4) + var(--s-1));    /* 20px — флажок и радио */
+  --m-avatar: calc(var(--s-16) + var(--s-2));   /* 72px — фото мастера */
+}
+
+/* --- шапка записи ------------------------------------------------------- */
+
+.bk-header {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--bg-page); border-bottom: 1px solid var(--border-default);
+}
+
+.bk-header__inner {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+}
+
+.bk-header__title {
+  font-family: var(--font-script);
+  font-size: var(--text-h2); line-height: var(--text-h2-lh);
+  color: var(--text-primary);
+}
+
+/* --- индикатор шагов ---------------------------------------------------- */
+
+.steps { padding: var(--s-1) var(--layout-gutter) var(--s-3); border-top: 1px solid var(--border-default); }
+
+/* Полная лента шагов — только там, где она помещается. */
+.steps__row { display: none; align-items: center; gap: var(--s-3); }
+.steps__line { flex: 1; min-width: var(--s-6); height: 1px; background: var(--border-default); }
+
+.step {
+  display: flex; align-items: center; gap: var(--s-2);
+  font-size: var(--text-body-s); color: var(--text-disabled);
+  white-space: nowrap;
+}
+.step__mark {
+  width: var(--step-mark); height: var(--step-mark); flex: none;
+  border-radius: var(--r-pill); border: 1px solid var(--border-default);
+  display: grid; place-items: center;
+  font-size: var(--text-caption); font-style: normal;
+}
+
+/* Пройденный шаг — ссылка: по нему можно вернуться и поправить выбор. */
+.step--done { color: var(--text-primary); }
+.step--done .step__mark {
+  border-color: var(--success-border); background: var(--success-bg); color: var(--success-text);
+}
+a.step--done:hover .step__mark { border-color: var(--accent-brand); }
+
+.step--now { color: var(--text-primary); font-weight: 600; }
+.step--now .step__mark {
+  border-color: var(--accent-brand); color: var(--text-primary);
+  font-weight: 600; box-shadow: var(--glow-soft);
+}
+
+/* Будущий шаг приглушён и не кликается: туда ещё нечего нести. */
+.step--next { color: var(--text-disabled); }
+
+/* Узкая полоса вместо ленты. */
+.steps__compact { display: block; }
+.steps__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+.steps__head b { font-size: var(--text-body-m); }
+.steps__head span { font-size: var(--text-caption); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.progress {
+  margin-top: var(--s-2); height: var(--progress-h);
+  border-radius: var(--r-pill); background: var(--bg-subtle); overflow: hidden;
+}
+.progress i { display: block; height: 100%; background: var(--accent-brand); }
+
+/* --- основная часть ----------------------------------------------------- */
+
+.bk { background: var(--bg-page); color: var(--text-primary); padding: var(--s-6) 0 var(--s-8); }
+
+.bk h1 {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h1); line-height: var(--text-h1-lh); text-wrap: pretty;
+}
+.bk__sub { margin: var(--s-2) 0 0; font-size: var(--text-body-m); color: var(--text-secondary); }
+
+.bk-grid { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+
+/* --- поиск и категории -------------------------------------------------- */
+
+.search { margin-top: var(--s-6); position: relative; display: block; }
+.search__icon {
+  position: absolute; left: var(--s-3); top: 50%; transform: translateY(-50%);
+  color: var(--text-secondary); pointer-events: none;
+}
+.search input {
+  width: 100%; min-height: var(--tap);
+  padding: var(--s-3) var(--s-3) var(--s-3) calc(var(--s-8) + var(--s-1));
+  border: 1px solid var(--border-strong); border-radius: var(--r-input);
+  background: var(--bg-surface); color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-body-m); line-height: var(--text-body-m-lh);
+}
+.search input::placeholder { color: var(--text-disabled); }
+
+/* --- карточка услуги ---------------------------------------------------- */
+
+.pick {
+  display: block; cursor: pointer;
+  padding: var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface); box-shadow: var(--shadow-card);
+}
+.pick:has(input:checked) {
+  border-color: var(--accent-brand);
+  background: var(--slot-selected-bg);
+  box-shadow: var(--glow-soft);
+}
+.pick:has(input:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* Выключенная карточка не притворяется доступной. */
+.pick:has(input:disabled) {
+  cursor: not-allowed; opacity: .72;
+  background: var(--bg-subtle); box-shadow: none;
+}
+
+.pick input[type="checkbox"], .pick input[type="radio"] {
+  width: var(--pick-box); height: var(--pick-box); flex: none; margin: 0;
+  accent-color: var(--action-primary); cursor: inherit;
+}
+
+.pick__row { display: flex; gap: var(--s-3); align-items: flex-start; }
+.pick__body { flex: 1; display: grid; gap: var(--s-2); min-width: 0; }
+.pick__head { display: flex; justify-content: space-between; gap: var(--s-3); align-items: baseline; }
+.pick__name { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; }
+.pick__price { font-size: var(--text-body-m); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pick__dur {
+  display: flex; align-items: center; gap: var(--s-1);
+  font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.pick__desc { margin: 0; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+
+/* --- карточка мастера --------------------------------------------------- */
+
+.m-avatar {
+  width: var(--m-avatar); height: var(--m-avatar); flex: none;
+  border-radius: var(--r-pill); border: 1px solid var(--border-hair);
+  background: var(--sand); color: var(--bronze);
+  display: grid; place-items: center; overflow: hidden;
+  font-size: var(--text-h3); font-weight: 600;
+}
+.m-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.m-avatar--any {
+  background: transparent; border-style: dashed; border-color: var(--border-strong);
+  color: var(--accent-brand);
+}
+
+.m-name { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; }
+.m-line { font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); }
+.m-bio { margin: 0; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+
+/* Почему мастер недоступен — не догадка, а перечень того, чего он не делает. */
+.m-why {
+  margin-top: var(--s-1); align-self: start;
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-pill);
+  background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text);
+  font-size: var(--text-caption); line-height: var(--text-caption-lh); font-weight: 600;
+  text-wrap: pretty;
+}
+.m-why svg { flex: none; }
+
+/* --- выбранные услуги на шаге 2 ----------------------------------------- */
+
+.chosen {
+  display: flex; gap: var(--s-4); align-items: flex-start; justify-content: space-between;
+  padding: var(--s-4);
+  border: 1px solid var(--border-hair); border-radius: var(--r-card);
+  background: var(--bg-subtle);
+}
+.chosen__body { min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+.chosen__names { margin: 0; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); text-wrap: pretty; }
+.chosen__totals { font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.chosen__edit {
+  flex: none; display: inline-flex; align-items: center;
+  min-height: var(--tap); padding: 0 var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-button);
+  font-size: var(--text-body-s); font-weight: 600; color: var(--text-primary);
+}
+.chosen__edit:hover { border-color: var(--accent-brand); }
+
+/* --- панель итога ------------------------------------------------------- */
+
+.bar {
+  position: sticky; bottom: 0; z-index: 20;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border-default);
+  box-shadow: var(--shadow-menu);
+}
+.bar__inner {
+  display: flex; justify-content: space-between;
+  flex-direction: column; align-items: stretch; gap: var(--s-3);
+  padding: var(--s-3) var(--layout-gutter) var(--s-4);
+}
+.bar__sum { font-weight: 600; font-variant-numeric: tabular-nums; font-size: var(--text-body-m); }
+.bar__note { display: flex; align-items: center; gap: var(--s-2); font-size: var(--text-body-s); color: var(--text-secondary); }
+.bar__left { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
+.bar__action { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-2); }
+
+/* Чего не хватает для «Далее» — рядом с самой кнопкой. */
+.bar__hint { font-size: var(--text-caption); color: var(--text-secondary); text-align: center; }
+.bar__hint[hidden] { display: none; }
+
+.bk-grid[hidden], .search[hidden] { display: none; }
+
+/* --- десктоп ------------------------------------------------------------ */
+
+@media (min-width: 900px) {
+  .bk-header__inner {
+    max-width: var(--layout-max); margin: 0 auto;
+    padding: var(--s-3) var(--layout-gutter-d); gap: var(--s-6);
+  }
+  .bk-header__title { font-size: var(--text-h2-d); line-height: var(--text-h2-d-lh); }
+
+  .steps {
+    max-width: var(--layout-max); margin: 0 auto;
+    padding: var(--s-1) var(--layout-gutter-d) var(--s-4);
+  }
+  .steps__row { display: flex; }
+  .steps__compact { display: none; }
+
+  .bk { padding: var(--s-12) 0 var(--sec-pad); }
+  .bk h1 { font-size: var(--text-h1-d); line-height: var(--text-h1-d-lh); }
+  .bk__sub, .search input { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+  .pick__name, .m-name { font-size: var(--text-h3-d); line-height: var(--text-h3-d-lh); }
+  .pick__price, .bar__sum { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+  .step, .pick__dur, .pick__desc, .m-line, .m-bio, .bar__note,
+  .chosen__names, .chosen__totals, .chosen__edit, .state p, .nothing {
+    font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh);
+  }
+
+  .bk-grid { margin-top: var(--s-8); gap: var(--s-4); }
+  .services-list { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+  .masters-list { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
+
+  .pick { padding: var(--s-6); }
+
+  .bar__inner {
+    max-width: var(--layout-max); margin: 0 auto;
+    padding: var(--s-4) var(--layout-gutter-d);
+    flex-direction: row; align-items: center; gap: var(--s-6);
+  }
+  .bar__action { flex-direction: row; align-items: center; gap: var(--s-4); }
+  .bar__hint { text-align: right; }
+
+  .state__actions { flex-direction: row; justify-content: center; }
+}
+
+/* ======================================================================
+   Шаг 3 — дата и время
+   ====================================================================== */
+
+:root {
+  --cell: var(--tap);                             /* клетка календаря */
+  --slot-w: calc(var(--s-16) + var(--s-6));       /* 88px — ширина окна */
+  --legend-mark: calc(var(--s-3) + 2px);          /* 14px — образец в легенде */
+}
+
+.bk-cols { margin-top: var(--s-6); display: grid; gap: var(--s-4); }
+
+.panel {
+  padding: var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface); box-shadow: var(--shadow-card);
+}
+
+/* --- календарь ---------------------------------------------------------- */
+
+.cal__nav { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+.cal__title { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; }
+
+.cal__arrow {
+  width: var(--tap); height: var(--tap); flex: none;
+  display: grid; place-items: center;
+  border: 1px solid var(--border-default); border-radius: var(--r-button);
+  background: transparent; color: var(--text-primary); cursor: pointer;
+}
+.cal__arrow:hover:not(:disabled) { border-color: var(--accent-brand); }
+.cal__arrow:disabled { color: var(--text-disabled); cursor: not-allowed; }
+
+.cal__grid {
+  margin-top: var(--s-4);
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--s-1);
+}
+.cal__wd {
+  text-align: center; padding-bottom: var(--s-1);
+  font-size: var(--text-overline); line-height: var(--text-overline-lh);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase; color: var(--text-secondary); font-weight: 600;
+}
+
+/* Клетка дня. Четыре состояния, и все четыре видны:
+   свободно, занято, прошло, выбрано. */
+.day {
+  min-height: var(--cell);
+  display: grid; place-items: center;
+  border-radius: var(--r-input);
+  border: 1px solid var(--slot-free-border);
+  background: var(--slot-free-bg); color: var(--slot-free-text);
+  font-family: inherit;
+  font-size: var(--text-body-s); font-weight: 600; font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.day:hover:not(:disabled) { border-color: var(--slot-hover-border); background: var(--slot-hover-bg); }
+
+/* Свободных окон нет. День видно, что занят, но нажать можно:
+   панель окон объяснит, когда у мастера ближайшее время. */
+.day[data-state="full"] {
+  border-color: var(--slot-busy-border); background: var(--slot-busy-bg);
+  color: var(--slot-busy-text);
+}
+.day[data-state="full"]:hover { border-color: var(--border-strong); }
+/* Прошедший день — виден бледным, без заливки. */
+.day[data-state="past"] {
+  border-color: var(--slot-past-border); background: var(--slot-past-bg);
+  color: var(--slot-past-text); cursor: not-allowed;
+}
+.day[data-state="empty"] { border: 0; background: transparent; cursor: default; }
+
+/* Клетка до ответа сервера: видно, что месяц ещё считается. */
+.day--skeleton {
+  border-color: var(--border-default); background: var(--bg-subtle);
+  cursor: default; animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.day[aria-pressed="true"] {
+  border: 1px solid var(--slot-selected-border);
+  background: var(--slot-selected-bg); color: var(--slot-selected-text);
+  box-shadow: var(--glow-soft);
+}
+.day[data-today="true"]:not([aria-pressed="true"]) { border-color: var(--accent-brand); }
+
+.legend {
+  margin-top: var(--s-4); padding-top: var(--s-4);
+  border-top: 1px solid var(--border-default);
+  display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4);
+}
+.legend span {
+  display: flex; align-items: center; gap: var(--s-2);
+  font-size: var(--text-caption); line-height: var(--text-caption-lh); color: var(--text-secondary);
+}
+.legend i {
+  width: var(--legend-mark); height: var(--legend-mark); flex: none;
+  border-radius: var(--r-input);
+}
+.legend__free { border: 1px solid var(--slot-free-border); background: var(--slot-free-bg); }
+.legend__full { border: 1px solid var(--slot-busy-border); background: var(--slot-busy-bg); }
+.legend__past { border: 1px solid var(--slot-past-border); }
+.legend__today { border: 1px solid var(--accent-brand); }
+
+.cal__note { margin: var(--s-3) 0 0; font-size: var(--text-caption); color: var(--text-secondary); }
+
+/* --- окна --------------------------------------------------------------- */
+
+.slots__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+.slots__day { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; }
+.slots__count { font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+.groups { margin-top: var(--s-4); display: grid; gap: var(--s-6); }
+.group { display: grid; gap: var(--s-2); }
+.group__row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+/* Часть дня без свободных окон не исчезает: её название остаётся,
+   а под ним сказано, что там занято. Какие именно часы заняты,
+   сервер не сообщает — и намеренно. */
+.group__empty { font-size: var(--text-body-s); color: var(--text-secondary); }
+
+.slot {
+  min-height: var(--tap); min-width: var(--slot-w);
+  padding: 0 var(--s-4);
+  border: 1px solid var(--slot-free-border); border-radius: var(--r-pill);
+  background: var(--slot-free-bg); color: var(--slot-free-text);
+  font-family: inherit;
+  font-size: var(--text-body-m); font-weight: 600; font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.slot:hover:not(:disabled) { border-color: var(--slot-hover-border); background: var(--slot-hover-bg); }
+.slot[aria-pressed="true"] {
+  border-color: var(--slot-selected-border);
+  background: var(--slot-selected-bg); color: var(--slot-selected-text);
+  box-shadow: var(--glow-soft);
+}
+
+/* Во сколько закончится визит — под сеткой, как в прототипе. */
+.end-hint {
+  margin: var(--s-6) 0 0; padding-top: var(--s-4);
+  border-top: 1px solid var(--border-default);
+  font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.end-hint b { color: var(--text-primary); }
+
+/* --- заглушки сетки ----------------------------------------------------- */
+
+.sk-groups { margin-top: var(--s-4); display: grid; gap: var(--s-6); }
+.sk-group { display: grid; gap: var(--s-2); }
+.sk-row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.sk-slot {
+  min-height: var(--tap); min-width: var(--slot-w);
+  border-radius: var(--r-pill); border: 1px solid var(--border-default);
+  background: var(--bg-subtle);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+.sk-label {
+  height: var(--s-3); width: calc(var(--s-16) + var(--s-6));
+  border-radius: var(--r-input); background: var(--bg-subtle);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+/* --- день без окон ------------------------------------------------------ */
+
+.day-full {
+  margin-top: var(--s-4); padding: var(--s-8) var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-subtle); text-align: center;
+}
+.day-full svg { color: var(--accent-brand); margin: 0 auto var(--s-3); display: block; }
+.day-full__title {
+  margin: 0 0 var(--s-2);
+  font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h2); line-height: var(--text-h2-lh);
+}
+.day-full p { margin: 0 auto; max-width: 40ch; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+.day-full__tips {
+  margin: var(--s-4) auto 0; padding: 0; max-width: 40ch;
+  list-style: none; display: grid; gap: var(--s-2);
+  text-align: left;
+}
+.day-full__tips li {
+  display: flex; gap: var(--s-2); align-items: flex-start;
+  font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary);
+}
+.day-full__tips svg { margin: 0; flex: none; }
+.day-full__actions { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+
+@media (min-width: 900px) {
+  .bk-cols { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: var(--s-6); align-items: start; margin-top: var(--s-8); }
+  .panel { padding: var(--s-6); }
+  .cal__title, .slots__day { font-size: var(--text-h3-d); line-height: var(--text-h3-d-lh); }
+  .slot { font-size: var(--text-body-m-d); }
+  .slots__count, .group__empty, .end-hint, .day-full p, .day-full__tips li { font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh); }
+  .day-full__actions { grid-auto-flow: column; justify-content: center; }
+}
+
+/* ======================================================================
+   Шаг 5 — подтверждение, и экран результата
+   ====================================================================== */
+
+:root {
+  --m-face: calc(var(--s-12) + var(--s-2));   /* 56px — кружок мастера в сводке */
+  --done-mark: calc(var(--s-16) + var(--s-8));/* 96px — знак на экране успеха */
+}
+
+/* --- полоса резерва ----------------------------------------------------- */
+
+/* Экран результата пользуется той же шапкой, но липкой ей быть незачем:
+   прокручивать под ней нечего, а место она занимает. */
+.bk-header--plain { position: static; }
+
+.reserve {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+  padding: var(--s-2) var(--layout-gutter);
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-subtle);
+}
+.reserve__text {
+  display: flex; align-items: center; gap: var(--s-2); min-width: 0;
+  font-size: var(--text-body-s); line-height: var(--text-body-s-lh);
+  color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.reserve__text svg { color: var(--accent-brand); flex: none; }
+
+/* Меньше минуты — полоса меняет вид: цвет, вес и значок. */
+.reserve[data-tone="warn"] { background: var(--warning-bg); border-top-color: var(--warning-border); }
+.reserve[data-tone="warn"] .reserve__text { color: var(--warning-text); font-weight: 600; }
+.reserve[data-tone="warn"] .reserve__text svg { color: var(--warning-text); }
+
+/* --- две колонки: слева форма, справа сводка ---------------------------- */
+
+.confirm-cols { margin-top: var(--s-6); display: grid; gap: var(--s-4); align-items: start; }
+
+.sum__head {
+  display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center;
+  padding-bottom: var(--s-4); border-bottom: 1px solid var(--border-default);
+}
+
+/* Счётчик переносов на узком экране уходит под имя: рядом с длинным
+   именем мастера он ломает его на три строки. */
+.sum__head .ap__moves { flex: 1 0 100%; text-align: center; }
+
+/* Две колонки карточки переноса на телефоне встают друг под друга. */
+.sum__row--split { flex-direction: column; gap: var(--s-4); }
+.sum__face {
+  width: var(--m-face); height: var(--m-face); flex: none;
+  border-radius: var(--r-pill); border: 1px solid var(--border-hair);
+  background: var(--sand); color: var(--bronze);
+  display: grid; place-items: center; overflow: hidden;
+  font-size: var(--text-h3); font-weight: 600;
+}
+.sum__face img { width: 100%; height: 100%; object-fit: cover; }
+
+.sum__row {
+  display: flex; gap: var(--s-4); justify-content: space-between; align-items: flex-start;
+  padding: var(--s-4) 0; border-bottom: 1px solid var(--border-default);
+}
+.sum__row > div { min-width: 0; flex: 1; }
+.sum__edit {
+  flex: none; display: inline-flex; align-items: center;
+  min-height: var(--tap); padding: 0 var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-button);
+  font-size: var(--text-body-s); font-weight: 600; color: var(--text-primary);
+}
+.sum__edit:hover { border-color: var(--accent-brand); }
+
+.sum__name { display: block; margin-top: var(--s-1); font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; }
+.sum__sub { font-size: var(--text-body-s); color: var(--text-secondary); }
+/* «Было / станет» при переносе. */
+.move-line { display: flex; gap: var(--s-2); align-items: baseline; }
+.move-line + .move-line { margin-top: var(--s-2); }
+.move-tag {
+  flex: none; padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--border-default); border-radius: var(--r-pill);
+  background: var(--bg-subtle); color: var(--text-secondary);
+  font-size: var(--text-caption); font-weight: 600;
+}
+.move-tag--new {
+  border-color: var(--slot-selected-border);
+  background: var(--slot-selected-bg); color: var(--slot-selected-text);
+}
+.move-old { color: var(--text-secondary); font-weight: 400; }
+
+.sum__when { display: block; margin-top: var(--s-2); font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.lines { margin-top: var(--s-3); display: grid; gap: var(--s-2); }
+.line { display: flex; justify-content: space-between; gap: var(--s-4); align-items: baseline; }
+.line__name { font-size: var(--text-body-m); }
+.line__right { flex: none; display: flex; gap: var(--s-4); align-items: baseline; }
+.line__dur { font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.line__price { font-size: var(--text-body-m); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.sum__total { padding-top: var(--s-4); display: flex; flex-direction: column; gap: var(--s-1); }
+.sum__total b { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; font-variant-numeric: tabular-nums; }
+.sum__pay { display: flex; align-items: center; gap: var(--s-2); font-size: var(--text-body-s); color: var(--text-secondary); }
+.sum__pay svg { flex: none; }
+
+/* --- форма клиента ------------------------------------------------------ */
+
+.who { display: grid; gap: var(--s-3); }
+.who__item { display: flex; justify-content: space-between; gap: var(--s-4); align-items: baseline; }
+.who__label { font-size: var(--text-body-s); color: var(--text-secondary); }
+.who__value { font-size: var(--text-body-m); font-weight: 600; text-align: right; min-width: 0; word-break: break-word; }
+
+.note-field { margin-top: var(--s-6); display: grid; gap: var(--s-2); }
+.note-field__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+.note-field__head span:first-child { font-size: var(--text-body-s); font-weight: 600; }
+.note-field__head span:last-child { font-size: var(--text-caption); color: var(--text-secondary); }
+.note-field textarea {
+  width: 100%; min-height: calc(var(--s-16) + var(--s-8));
+  padding: var(--s-3);
+  border: 1px solid var(--border-strong); border-radius: var(--r-input);
+  background: var(--bg-surface); color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-body-m); line-height: var(--text-body-m-lh);
+  resize: vertical;
+}
+
+.confirm-actions { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+.foot-note { margin: var(--s-4) 0 0; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+
+/* --- «время заняли» ----------------------------------------------------- */
+
+.taken {
+  margin-top: var(--s-6); padding: var(--s-4);
+  border: 1px solid var(--warning-border); border-radius: var(--r-card);
+  background: var(--warning-bg);
+}
+.taken__head { display: flex; gap: var(--s-3); align-items: flex-start; }
+.taken__head svg { color: var(--warning-text); flex: none; }
+.taken__head b { display: block; font-size: var(--text-body-m); font-weight: 600; color: var(--warning-text); }
+.taken__head span { font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--warning-text); }
+.taken__slots { margin-top: var(--s-4); display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.taken__slot {
+  display: grid; gap: 2px; justify-items: center;
+  min-height: var(--tap); padding: var(--s-2) var(--s-4);
+  border: 1px solid var(--border-strong); border-radius: var(--r-button);
+  background: var(--bg-surface); color: var(--text-primary);
+  font-family: inherit; cursor: pointer;
+}
+.taken__slot:hover { border-color: var(--accent-brand); background: var(--slot-hover-bg); }
+.taken__slot span { font-size: var(--text-caption); color: var(--text-secondary); }
+.taken__slot b { font-size: var(--text-body-m); font-weight: 600; font-variant-numeric: tabular-nums; }
+.taken__other { margin: var(--s-4) 0 0; font-size: var(--text-body-s); }
+.taken__other a { color: var(--warning-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* --- экран результата --------------------------------------------------- */
+
+.done { background: var(--bg-page); color: var(--text-primary); padding: var(--s-12) 0 var(--sec-pad); }
+.done__top { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.done__mark {
+  width: var(--done-mark); height: var(--done-mark);
+  display: grid; place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--bg-surface); border: 1px solid var(--border-hair);
+  box-shadow: var(--glow-soft); color: var(--accent-brand);
+}
+.done__mark svg { width: calc(var(--done-mark) * .6); height: calc(var(--done-mark) * .6); }
+.done h1 {
+  margin: var(--s-4) 0 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h1); line-height: var(--text-h1-lh); text-wrap: pretty;
+}
+.done__sub { margin: var(--s-3) 0 0; font-size: var(--text-body-l); line-height: var(--text-body-l-lh); color: var(--text-secondary); }
+
+.status-pill {
+  flex: none; padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-pill);
+  background: var(--st-upcoming-bg); border: 1px solid var(--st-upcoming-border); color: var(--st-upcoming-text);
+  font-size: var(--text-caption); font-weight: 600;
+}
+
+.notes-grid { margin-top: var(--s-4); display: grid; gap: var(--s-3); }
+.note-card {
+  display: flex; gap: var(--s-3); align-items: flex-start;
+  padding: var(--s-4);
+  border: 1px solid var(--border-hair); border-radius: var(--r-card);
+  background: var(--bg-subtle);
+}
+.note-card svg { color: var(--accent-brand); flex: none; }
+.note-card p { margin: 0; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+
+.done__actions { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+
+@media (min-width: 900px) {
+  .reserve { max-width: var(--layout-max); margin: 0 auto; padding: var(--s-2) var(--layout-gutter-d); }
+  .reserve__text { font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh); }
+
+  .confirm-cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: var(--s-6); margin-top: var(--s-8); }
+
+  .sum__head .ap__moves { flex: none; text-align: left; }
+  .sum__row--split { flex-direction: row; gap: var(--s-6); }
+  .sum__name, .sum__when, .sum__total b { font-size: var(--text-h3-d); line-height: var(--text-h3-d-lh); }
+  .line__name, .line__price, .who__value, .note-field textarea { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+  .sum__sub, .line__dur, .sum__pay, .sum__edit, .who__label, .foot-note,
+  .taken__head span, .taken__other, .note-card p { font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh); }
+
+  .confirm-actions { grid-auto-flow: column; justify-content: start; }
+  .done h1 { font-size: var(--text-display-d); line-height: var(--text-display-d-lh); }
+  .done__sub { font-size: var(--text-body-l-d); line-height: var(--text-body-l-d-lh); }
+  .notes-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .done__actions { grid-auto-flow: column; justify-content: center; }
+  .done__wrap { max-width: 760px; margin: 0 auto; }
+}

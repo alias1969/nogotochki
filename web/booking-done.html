@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Запись подтверждена — Ноготочки</title>
+<meta name="description" content="Запись в бьюти-студию «Ноготочки» подтверждена.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="booking.css">
+</head>
+<body>
+
+<header class="bk-header bk-header--plain">
+  <div class="bk-header__inner">
+    <a class="logo" data-screen="L1" href="#" aria-label="Ноготочки, на главную">
+      <svg class="logo__mark" viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <circle cx="50" cy="52" r="34"></circle>
+          <path d="M40 70 C38 56 40 44 43 36"></path>
+          <path d="M50 71 C50 56 53 44 56 37"></path>
+          <path d="M59 71 C60 58 63 49 66 43"></path>
+          <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+          <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+        </g>
+      </svg>
+      <span class="logo__word">Ноготочки</span>
+    </a>
+    <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+      <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+      <span class="theme-toggle__label" id="theme-label">Дневная</span>
+    </button>
+  </div>
+</header>
+
+<main class="done">
+  <div class="wrap done__wrap">
+
+    <div class="state" id="loading">
+      <p class="state__title">Открываем запись…</p>
+    </div>
+
+    <div class="state state--error" id="error" hidden>
+      <p class="state__title" id="error-title">Не удалось открыть запись</p>
+      <p id="error-text"></p>
+      <div class="state__actions">
+        <a class="btn btn--primary" data-screen="K1" href="#">Мои записи</a>
+        <a class="btn btn--outline" data-screen="L1" href="#">На главную</a>
+      </div>
+    </div>
+
+    <div id="body" hidden>
+      <div class="done__top">
+        <span class="done__mark">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 7" opacity=".7"></circle>
+            <path d="M34 51 L45 62 L67 39" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M50 8 L52.6 17.4 L62 20 L52.6 22.6 L50 32 L47.4 22.6 L38 20 L47.4 17.4 Z" fill="currentColor"></path>
+          </svg>
+        </span>
+        <h1>Запись подтверждена</h1>
+        <p class="done__sub" id="done-sub"></p>
+      </div>
+
+      <div class="panel" style="margin-top:var(--s-8)">
+        <div class="sum__head">
+          <span class="sum__face" id="sum-face"></span>
+          <div style="min-width:0;flex:1">
+            <span class="overline">мастер</span>
+            <b class="sum__name" id="sum-master"></b>
+            <span class="sum__sub" id="sum-spec"></span>
+          </div>
+          <span class="status-pill" id="status-pill">Предстоит</span>
+        </div>
+
+        <div class="sum__row">
+          <div>
+            <span class="overline">услуги</span>
+            <div class="lines" id="sum-services"></div>
+          </div>
+        </div>
+
+        <div class="sum__row">
+          <div>
+            <span class="overline">когда</span>
+            <b class="sum__when" id="sum-when"></b>
+            <span class="sum__sub" id="sum-range"></span>
+          </div>
+        </div>
+
+        <div class="sum__row" id="note-row" hidden>
+          <div>
+            <span class="overline">комментарий мастеру</span>
+            <p class="sum__sub" id="sum-note" style="margin-top:var(--s-2)"></p>
+          </div>
+        </div>
+
+        <div class="sum__row">
+          <div>
+            <span class="overline">где</span>
+            <p style="margin:var(--s-2) 0 0;font-size:var(--text-body-m);line-height:var(--text-body-m-lh)">Москва, Большая Никитская, 12<br><span class="sum__sub">второй этаж, вход со двора</span></p>
+            <a class="sum__edit num" href="tel:+74951234567" style="margin-top:var(--s-2)">+7 495 123-45-67</a>
+          </div>
+        </div>
+
+        <div class="sum__total">
+          <b id="sum-total"></b>
+          <span class="sum__pay">
+            <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg>
+            Наличными или картой
+          </span>
+        </div>
+      </div>
+
+      <div class="notes-grid">
+        <div class="note-card">
+          <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>
+          <p>Приходите за 5 минут до начала</p>
+        </div>
+        <div class="note-card">
+          <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="3"></rect><path d="M2.5 10.5h19"></path></svg>
+          <p>Оплата на месте</p>
+        </div>
+        <div class="note-card">
+          <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2"></path><path d="M3 4.5v4h4"></path></svg>
+          <p id="cancel-note">Отменить или перенести можно в личном кабинете</p>
+        </div>
+      </div>
+
+      <div class="done__actions">
+        <a class="btn btn--primary" data-screen="K1" href="#">Мои записи</a>
+        <a class="btn btn--outline" data-screen="L1" href="#">На главную</a>
+      </div>
+
+      <p class="foot-note" style="text-align:center" id="foot-note"></p>
+    </div>
+  </div>
+</main>
+
+<script type="module" src="booking-done.js"></script>
+</body>
+</html>

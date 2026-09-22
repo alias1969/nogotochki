@@ -64,10 +64,32 @@ function number(name, fallback) {
 const nodeEnv = optional('NODE_ENV', 'development');
 const databaseFile = optional('DATABASE_FILE', 'data/nogotochki.db');
 
+/**
+ * Откуда странице разрешено обращаться к API (CORS).
+ *
+ * Список через запятую, адреса целиком: `https://nogotochki.ru`,
+ * `http://localhost:5173`. Схема и порт — часть адреса, для браузера
+ * `http://localhost:5173` и `http://localhost:3000` разные origin.
+ *
+ * В разработке по умолчанию открыт порт раздатчика статики: иначе
+ * лендинг не заработает сразу после `git clone`. В продакшене
+ * умолчания нет — пустой список означает «межсайтовых запросов нет»,
+ * и это правильное значение, когда статику и API отдаёт один домен.
+ * Разрешить чужой странице ходить в API — решение того, кто
+ * разворачивает сервис, а не строка, приехавшая вместе с кодом.
+ */
+const webOrigins = optional('WEB_ORIGINS', nodeEnv === 'production' ? '' : 'http://localhost:5173,http://127.0.0.1:5173')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+
 export const env = {
   nodeEnv,
   isProduction: nodeEnv === 'production',
   port: number('PORT', 3000),
+
+  /** Разрешённые источники межсайтовых запросов. Разбор — выше. */
+  webOrigins,
 
   /** Абсолютный путь к файлу базы: относительный достраивается от папки server/. */
   databaseFile: isAbsolute(databaseFile) ? databaseFile : join(serverRoot, databaseFile),

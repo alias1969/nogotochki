@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вход — Ноготочки</title>
+<meta name="description" content="Вход в личный кабинет бьюти-студии «Ноготочки».">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<header class="auth-header">
+  <div class="auth-header__inner">
+    <a class="back" data-screen="L1" href="#">
+      <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+      Назад
+    </a>
+    <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+      <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+      <span class="theme-toggle__label" id="theme-label">Дневная</span>
+    </button>
+  </div>
+</header>
+
+<main class="auth">
+  <div class="auth__col">
+    <div class="auth-card">
+      <div class="auth-brand">
+          <svg class="icon--xl" viewBox="0 0 100 100" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="50" cy="52" r="34"></circle>
+              <path d="M40 70 C38 56 40 44 43 36"></path>
+              <path d="M50 71 C50 56 53 44 56 37"></path>
+              <path d="M59 71 C60 58 63 49 66 43"></path>
+              <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+              <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+            </g>
+          </svg>
+          <span class="auth-brand__word">Ноготочки</span>
+        </div>
+
+      <div class="auth-head">
+        <h1>С возвращением</h1>
+        <p>Войдите, чтобы управлять своими записями</p>
+      </div>
+
+      <form class="form" id="form" autocomplete="on">
+        <label class="field">
+          <span class="field__label">E-mail</span>
+          <input class="input" type="email" name="email" placeholder="anna@mail.ru"
+                 autocomplete="email" inputmode="email" aria-describedby="hint-email">
+          <span class="field__hint" id="hint-email" hidden></span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Пароль</span>
+          <span class="pass">
+            <input class="input" type="password" name="password"
+                   autocomplete="current-password" aria-describedby="hint-password">
+            <button class="pass__toggle" type="button"></button>
+          </span>
+          <span class="field__hint" id="hint-password" hidden></span>
+        </label>
+
+        <div class="field__row">
+          <a data-screen="C3" href="#">Забыли пароль?</a>
+        </div>
+
+        <div class="notice notice--error" id="form-error" role="alert" hidden></div>
+
+        <button class="btn btn--primary btn--wide" type="submit">
+          <i class="spinner" hidden aria-hidden="true"></i>
+          <span class="btn__label">Войти</span>
+        </button>
+      </form>
+
+      <div class="auth-divider"><i></i><span class="overline">или</span><i></i></div>
+      <p class="auth-foot">Нет аккаунта? <a data-screen="C2" href="#">Зарегистрироваться</a></p>
+    </div>
+
+    <p class="auth-note">Уведомления о записях приходят в личный кабинет. Оплата услуг — на месте, в студии.</p>
+  </div>
+
+  <div class="auth__photo">
+    <img src="assets/studio.png" alt="Интерьер студии «Ноготочки» в тёплом вечернем свете" onerror="this.remove()">
+  </div>
+</main>
+
+<script type="module" src="login.js"></script>
+</body>
+</html>

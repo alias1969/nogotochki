@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Перенос записи — Ноготочки</title>
+<meta name="description" content="Перенос записи в бьюти-студии «Ноготочки».">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="booking.css">
+</head>
+<body>
+
+<header class="bk-header">
+  <div class="bk-header__inner">
+    <a class="back" id="back" href="#">
+      <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+      Назад
+    </a>
+    <span class="bk-header__title">Перенос</span>
+    <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+      <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+      <span class="theme-toggle__label" id="theme-label">Дневная</span>
+    </button>
+  </div>
+
+</header>
+
+<main class="bk">
+  <div class="wrap">
+    <div class="panel" id="current" hidden>
+      <div class="sum__head">
+        <span class="sum__face" id="sum-face"></span>
+        <div style="min-width:0;flex:1">
+          <span class="overline">мастер</span>
+          <b class="sum__name" id="sum-master"></b>
+        </div>
+        <span class="ap__moves" id="moves-left"></span>
+      </div>
+      <div class="sum__row sum__row--split" style="border-bottom:0">
+        <div>
+          <span class="overline">услуги</span>
+          <p class="chosen__names" id="sum-services" style="margin-top:var(--s-2)"></p>
+          <span class="chosen__totals" id="sum-totals"></span>
+        </div>
+        <div>
+          <span class="overline">текущее время</span>
+          <b class="sum__when" id="sum-when"></b>
+          <span class="sum__sub" id="sum-ends"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice notice--warning" id="last-move" hidden style="margin-top:var(--s-4)">
+      <span><svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 2.6 17.1A1.6 1.6 0 0 0 4 19.5h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z"></path><path d="M12 9v4M12 16.5h.01"></path></svg></span>
+      <p><b>Это последний доступный перенос.</b> Дальше изменить время можно только через студию.</p>
+    </div>
+
+    <div class="state" id="cant-move" hidden>
+      <p class="state__title" id="cant-title">Перенести онлайн нельзя</p>
+      <p id="cant-text"></p>
+      <div class="state__actions">
+        <a class="btn btn--primary" data-screen="K1" href="#">Вернуться к записям</a>
+        <a class="btn btn--outline" href="tel:+74951234567">Позвонить в студию</a>
+      </div>
+    </div>
+
+    <h1 style="margin-top:var(--s-6)" id="pick-title" hidden>Выберите новое время</h1>
+
+    <div class="state" id="no-choice" hidden>
+      <p class="state__title" id="no-choice-title">Запись не найдена</p>
+      <p id="no-choice-text">Возможно, она уже отменена или принадлежит другому аккаунту.</p>
+      <div class="state__actions"><a class="btn btn--primary" data-screen="K1" href="#">Вернуться к записям</a></div>
+    </div>
+
+    <div class="bk-cols" id="cols">
+      <section class="panel" aria-label="Календарь">
+        <div class="cal__nav">
+          <button class="cal__arrow" type="button" id="prev" aria-label="Предыдущий месяц">
+            <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+          </button>
+          <b class="cal__title" id="month-title" aria-live="polite"></b>
+          <button class="cal__arrow" type="button" id="next-month" aria-label="Следующий месяц">
+            <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+          </button>
+        </div>
+
+        <div class="cal__grid" id="cal" aria-busy="true"></div>
+
+        <div class="legend">
+          <span><i class="legend__free"></i>есть время</span>
+          <span><i class="legend__full"></i>нет свободных окон</span>
+          <span><i class="legend__past"></i>уже прошло</span>
+          <span><i class="legend__today"></i>сегодня</span>
+        </div>
+        <p class="cal__note" id="horizon-note"></p>
+      </section>
+
+      <section class="panel" aria-label="Свободное время">
+        <div class="slots__head">
+          <b class="slots__day" id="day-title">Выберите день</b>
+          <span class="slots__count" id="slots-count"></span>
+        </div>
+
+        <!-- Загрузка: сетка-заглушка. Пустая сетка и «всё занято» —
+             разные вещи, и выглядеть одинаково они не должны. -->
+        <div class="sk-groups" id="slots-loading" hidden aria-hidden="true">
+          <div class="sk-group"><i class="sk-label"></i><div class="sk-row"><i class="sk-slot"></i><i class="sk-slot"></i><i class="sk-slot"></i><i class="sk-slot"></i><i class="sk-slot"></i></div></div>
+          <div class="sk-group"><i class="sk-label"></i><div class="sk-row"><i class="sk-slot"></i><i class="sk-slot"></i><i class="sk-slot"></i><i class="sk-slot"></i></div></div>
+          <div class="sk-group"><i class="sk-label"></i><div class="sk-row"><i class="sk-slot"></i><i class="sk-slot"></i><i class="sk-slot"></i></div></div>
+        </div>
+
+        <div class="groups" id="groups" hidden aria-live="polite"></div>
+        <p class="end-hint" id="end-hint" hidden></p>
+
+        <div class="day-full" id="day-full" hidden>
+          <svg class="icon icon--l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>
+          <p class="day-full__title">На эту дату свободных окон нет</p>
+          <p id="nearest-text">Ищем ближайшее свободное время…</p>
+          <ul class="day-full__tips">
+            <li><svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path><rect x="3" y="4.5" width="18" height="17" rx="3"></rect></svg><span>Посмотрите соседние дни — светлые клетки в календаре свободны</span></li>
+            <li><svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.4"></circle><path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path></svg><span>Выберите другого мастера — у каждого своё расписание</span></li>
+            <li><svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h6M4 7h10M4 17h13"></path></svg><span>Уберите одну услугу — короткий визит помещается чаще</span></li>
+          </ul>
+          <div class="day-full__actions">
+            <button class="btn btn--outline" type="button" id="jump" hidden>Ближайшее свободное время</button>
+            <a class="btn btn--outline" id="change-master" href="#">Другой мастер</a>
+            <a class="btn btn--outline" id="change-services" href="#">Изменить услуги</a>
+          </div>
+        </div>
+
+        <div class="state state--error" id="slots-error" hidden>
+          <p class="state__title">Не удалось загрузить время</p>
+          <p>Проверьте соединение и попробуйте снова</p>
+          <div class="state__actions"><button class="btn btn--outline" type="button" id="retry">Повторить</button></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="bar">
+  <div class="bar__inner">
+    <div class="bar__left">
+      <b class="bar__sum" id="bar-sum" aria-live="polite">Новое время не выбрано</b>
+      <span class="bar__note" id="bar-note">Прежнее время освободится только после подтверждения переноса</span>
+    </div>
+    <div class="bar__action">
+      <span class="bar__hint" id="next-hint"></span>
+      <a class="btn btn--outline" data-screen="K1" href="#">Отмена</a>
+      <button class="btn btn--primary" type="button" id="next" disabled>Далее</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="booking-reschedule.js"></script>
+</body>
+</html>

@@ -1,0 +1,886 @@
+/* Лендинг «Ноготочки».
+   Подключается после tokens.css. Ни одного цвета, шрифта и размера
+   текста литералом: всё — переменные из tokens.css или арифметика на них.
+
+   Раскладка (ширина колонки, число колонок в сетке, высоты фото) —
+   единственное, что задано числами: в дизайн-токенах таких величин нет,
+   и собраны они здесь, в --layout-*, а не по месту. */
+
+:root {
+  --layout-max: 1240px;
+  --layout-gutter: var(--s-4);                        /* 16px на мобильном */
+  --layout-gutter-d: calc(var(--s-8) + var(--s-2));   /* 40px на десктопе */
+  --sec-pad: calc(var(--s-12) + var(--s-2));          /* 56px */
+  --sec-pad-d: calc(var(--s-16) + var(--s-8));        /* 96px */
+
+  /* Цель нажатия и высоты кнопок. В tokens.css своих величин для них нет,
+     поэтому каждая собрана из шагов сетки отступов, а не вписана числом. */
+  --tap: calc(var(--s-8) + var(--s-3));               /* 44px */
+  --btn-h: calc(var(--s-12) + var(--s-1));            /* 52px */
+  --faq-h: calc(var(--s-12) + var(--s-3));            /* 60px */
+
+  /* Высота липкой шапки: цель нажатия плюс её отступы и нижняя линия.
+     От неё считается scroll-padding, иначе якорь уезжает под шапку. */
+  --header-h: calc(var(--tap) + var(--s-4) + 1px);
+  --header-h-d: calc(var(--tap) + var(--s-6) + 1px);
+
+  /* Размеры иконок. Своей шкалы для них в tokens.css тоже нет, и три
+     значения набраны шагами отступов: у SVG есть viewBox, поэтому
+     размер задаётся снаружи и в разметке ему делать нечего. */
+  --icon-s: var(--s-4);                               /* 16px */
+  --icon-m: calc(var(--s-4) + var(--s-1));            /* 20px */
+  --icon-l: var(--s-8);                               /* 32px */
+  --icon-xl: calc(var(--s-16) - var(--s-4));          /* 48px — знак на экранах входа */
+
+  /* Кружок с фотографией или инициалами мастера. */
+  --avatar: calc(var(--s-16) + var(--s-6));           /* 88px */
+}
+
+/* Иконка. Размер только отсюда: атрибуты width/height в разметке
+   обошли бы и токены, и тему. */
+.icon { width: var(--icon-m); height: var(--icon-m); flex: none; }
+.icon--s { width: var(--icon-s); height: var(--icon-s); }
+.icon--l { width: var(--icon-l); height: var(--icon-l); }
+.icon--xl { width: var(--icon-xl); height: var(--icon-xl); }
+
+/* --- основа ------------------------------------------------------------ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  /* Шапка липкая: якорь не должен уезжать под неё. */
+  scroll-padding-top: calc(var(--header-h) + var(--s-2));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-body-m);
+  line-height: var(--text-body-m-lh);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--r-input);
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* --- типографика -------------------------------------------------------- */
+
+.display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  /* Разрядки нет: в tokens.css для крупного начертания она не задана,
+     а прототипные -.01em были бы единственным кеглем мимо токенов. */
+  font-size: var(--text-display);
+  line-height: var(--text-display-lh);
+  text-wrap: pretty;
+}
+
+.h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-h1);
+  line-height: var(--text-h1-lh);
+  text-wrap: pretty;
+}
+
+.h3 {
+  font-size: var(--text-h3);
+  line-height: var(--text-h3-lh);
+  font-weight: 600;
+}
+
+.overline {
+  margin: 0;
+  font-size: var(--text-overline);
+  line-height: var(--text-overline-lh);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.body-l { font-size: var(--text-body-l); line-height: var(--text-body-l-lh); }
+.body-m { font-size: var(--text-body-m); line-height: var(--text-body-m-lh); }
+.body-s { font-size: var(--text-body-s); line-height: var(--text-body-s-lh); }
+.caption { font-size: var(--text-caption); line-height: var(--text-caption-lh); }
+.muted { color: var(--text-secondary); }
+.num { font-variant-numeric: tabular-nums; }
+.prose { margin: 0; text-wrap: pretty; }
+
+/* --- сетка страницы ----------------------------------------------------- */
+
+.wrap { padding: 0 var(--layout-gutter); }
+
+.section { padding: var(--sec-pad) 0; background: var(--bg-page); }
+.section--alt { background: var(--bg-subtle); }
+
+.grid { display: grid; gap: var(--s-3); margin-top: var(--s-6); }
+
+/* --- кнопки ------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--btn-h);
+  padding: 0 var(--s-6);
+  border: 0;
+  border-radius: var(--r-button);
+  font-family: inherit;
+  font-size: var(--text-body-m);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s ease, border-color .15s ease;
+}
+
+.btn--primary { background: var(--action-primary); color: var(--action-on-primary); }
+.btn--primary:hover { background: var(--action-primary-hover); }
+.btn--primary:active { background: var(--action-primary-pressed); }
+
+.btn--outline { border: 1px solid var(--accent-brand); background: transparent; color: var(--text-primary); }
+.btn--outline:hover { background: var(--slot-hover-bg); }
+
+.btn--block { display: flex; width: 100%; min-height: var(--tap); font-size: var(--text-body-s); }
+
+.btn--sm { min-height: var(--tap); padding: 0 var(--s-4); font-size: var(--text-body-s); }
+
+/* --- шапка -------------------------------------------------------------- */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg-page);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  min-width: 0;
+}
+
+/* На узком экране логотип, кнопка записи и бургер вместе шире строки.
+   Ужимается надпись логотипа — она единственная, у кого есть запас:
+   у кнопки и бургера отнимать нечего, а уехавший за край бургер
+   оставил бы мобильное меню без способа открыться. */
+.logo { display: flex; align-items: center; gap: var(--s-2); flex: 0 1 auto; min-width: 0; }
+.logo__mark { width: var(--icon-l); height: var(--icon-l); flex: none; color: var(--accent-brand); }
+.logo__word {
+  font-family: var(--font-script);
+  font-size: var(--text-h2);
+  line-height: var(--text-h2-lh);
+  color: var(--text-primary);
+  text-shadow: 0 0 var(--s-4) var(--focus-ring-halo);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#header-cta { min-width: 0; padding: 0 var(--s-3); }
+
+/* На 375px — самой частой ширине телефона — надпись логотипа помещается
+   целиком, и порог стоит ниже неё. Уже 370px строка шапки переполняется,
+   а обрезанное «Ногото…» читается хуже, чем один знак: там от логотипа
+   остаётся рука со звёздочкой, ссылка на начало страницы никуда не девается. */
+@media (max-width: 369px) {
+  .logo__word { display: none; }
+}
+
+.nav { display: none; }
+.nav a { color: var(--text-secondary); font-size: var(--text-body-s); }
+.nav a:hover { color: var(--text-primary); }
+
+.header__actions { display: flex; align-items: center; gap: var(--s-2); flex: none; }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: 0 var(--s-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--text-body-s);
+  font-weight: 600;
+  cursor: pointer;
+}
+.theme-toggle__icon { color: var(--accent-brand); display: inline-flex; }
+.theme-toggle__label { display: none; }
+
+.header__login {
+  display: none;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--s-2);
+  font-size: var(--text-body-s);
+  font-weight: 600;
+  color: var(--text-link);
+}
+
+/* На узком экране в шапке помещается короткая подпись, на широком — полная.
+   Так же было в прототипе: headerCtaLabel менялся вместе с шириной. */
+.cta-long { display: none; }
+
+/* Имя вошедшего в шапке лендинга. Показывается вместо ссылки «Войти»
+   и прячется по тому же правилу ширины, что и она: в узкой шапке
+   для него нет места. */
+.user-chip { display: none; align-items: center; gap: var(--s-2); flex: none; }
+.user-chip__face {
+  width: calc(var(--s-8) + var(--s-2)); height: calc(var(--s-8) + var(--s-2)); flex: none;
+  border-radius: var(--r-pill); border: 1px solid var(--border-hair);
+  background: var(--sand); color: var(--bronze);
+  display: grid; place-items: center;
+  font-size: var(--text-body-s); font-weight: 600;
+}
+.user-chip__name { font-size: var(--text-body-s); font-weight: 600; color: var(--text-primary); }
+.user-chip:hover .user-chip__name { color: var(--text-link); }
+
+.burger {
+  display: inline-grid;
+  width: var(--tap);
+  height: var(--tap);
+  place-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-button);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.menu {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-2) var(--s-4) var(--s-4);
+  background: var(--bg-page);
+  border-top: 1px solid var(--border-default);
+  box-shadow: var(--shadow-menu);
+}
+.menu[hidden] { display: none; }
+.menu a {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: var(--s-3) var(--s-1);
+  color: var(--text-primary);
+  font-size: var(--text-body-m);
+  border-bottom: 1px solid var(--border-default);
+}
+.menu a:last-child { border-bottom: 0; }
+.menu__login { margin-top: var(--s-1); color: var(--text-link) !important; font-weight: 600; }
+
+/* --- главный экран ------------------------------------------------------ */
+
+.hero { padding: var(--s-8) 0 var(--s-12); background: var(--bg-page); }
+.hero__grid { display: grid; gap: var(--s-8); }
+.hero__sub {
+  margin: var(--s-4) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-body-l);
+  line-height: var(--text-body-l-lh);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+.hero__cta { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-8); }
+.hero__photo {
+  border-radius: var(--r-photo);
+  overflow: hidden;
+  box-shadow: var(--glow-soft);
+  height: 240px;
+  background: var(--bg-subtle);
+}
+.hero__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.trust { margin-top: var(--s-8); display: flex; flex-direction: column; gap: var(--s-3); }
+.trust__item { display: flex; align-items: center; gap: var(--s-2); }
+.trust__item svg { color: var(--accent-brand); flex: none; }
+.trust__item span { font-size: var(--text-body-s); color: var(--text-secondary); }
+
+/* --- карточки ----------------------------------------------------------- */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-6) var(--s-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-card);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.card--flat { background: var(--bg-subtle); border-color: var(--border-hair); box-shadow: none; }
+
+/* --- услуги ------------------------------------------------------------- */
+
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-6) 0; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--text-body-s);
+  font-weight: 600;
+  cursor: pointer;
+}
+.chip[aria-selected="true"] {
+  border-color: var(--slot-selected-border);
+  background: var(--slot-selected-bg);
+  color: var(--slot-selected-text);
+}
+
+.chip--skeleton {
+  border-color: var(--border-default);
+  background: var(--bg-subtle);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  cursor: default;
+}
+
+.service__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+.service__name { font-size: var(--text-h3); line-height: var(--text-h3-lh); font-weight: 600; }
+.service__price { font-size: var(--text-body-m); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.service__dur {
+  display: flex; align-items: center; gap: var(--s-1);
+  font-size: var(--text-body-s); color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.service .btn--block { margin-top: auto; }
+
+.pay-note {
+  margin: var(--s-6) 0 0;
+  display: flex; align-items: center; gap: var(--s-2);
+  font-size: var(--text-body-s); color: var(--text-secondary);
+}
+.pay-note svg { color: var(--accent-brand); flex: none; }
+
+/* --- как это работает / преимущества ------------------------------------ */
+
+.step__head { display: flex; align-items: center; gap: var(--s-3); }
+.step__icon {
+  width: var(--s-12); height: var(--s-12);
+  border-radius: 50%; border: 1px solid var(--border-hair);
+  display: grid; place-items: center; color: var(--accent-brand); flex: none;
+}
+/* «шаг 1» — это надстрочная подпись, и берёт она весь набор overline
+   из токенов целиком: кегль, интерлиньяж и разрядку. */
+.step__n {
+  font-size: var(--text-overline); line-height: var(--text-overline-lh);
+  letter-spacing: var(--text-overline-tracking); text-transform: uppercase;
+  font-weight: 600; color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.perk__icon { color: var(--accent-brand); display: inline-flex; }
+
+/* --- мастера ------------------------------------------------------------ */
+
+.masters {
+  margin-top: var(--s-6);
+  margin-right: calc(var(--layout-gutter) * -1);
+  padding-right: var(--layout-gutter);
+  display: flex;
+  gap: var(--s-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+.masters > * { flex: none; width: 262px; scroll-snap-align: start; }
+
+.avatar {
+  width: var(--avatar); height: var(--avatar); flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--border-hair);
+  background: var(--sand);
+  color: var(--bronze);
+  display: grid; place-items: center;
+  font-size: var(--text-h2); font-weight: 600;
+  overflow: hidden;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar--sm { width: var(--tap); height: var(--tap); font-size: var(--text-body-m); }
+
+.master__id { display: flex; flex-direction: column; gap: var(--s-1); }
+.master .btn--block { margin-top: auto; }
+
+/* --- отзывы ------------------------------------------------------------- */
+
+.review__head { display: flex; align-items: center; gap: var(--s-3); }
+.review__who { display: flex; flex-direction: column; gap: var(--s-1); }
+.review__name { font-size: var(--text-body-m); line-height: var(--text-body-m-lh); font-weight: 600; }
+.review__stars { font-size: var(--text-body-s); letter-spacing: var(--text-overline-tracking); color: var(--accent-brand); }
+
+/* --- о салоне ----------------------------------------------------------- */
+
+.about__grid { display: grid; gap: var(--s-6); margin-top: var(--s-6); }
+.about__text { display: flex; flex-direction: column; gap: var(--s-4); }
+.about__text p { font-size: var(--text-body-l); line-height: var(--text-body-l-lh); color: var(--text-secondary); }
+.about__photo {
+  border-radius: var(--r-photo); overflow: hidden;
+  box-shadow: var(--shadow-card); height: 220px; background: var(--bg-subtle);
+}
+.about__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.stats { margin-top: var(--s-2); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+.stat { padding: var(--s-4); border: 1px solid var(--border-default); border-radius: var(--r-card); background: var(--bg-surface); }
+.stat__n {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-display); line-height: var(--text-display-lh); font-variant-numeric: tabular-nums;
+}
+.stat__label { margin: var(--s-1) 0 0; font-size: var(--text-body-s); color: var(--text-secondary); }
+
+/* --- контакты ----------------------------------------------------------- */
+
+.contacts__grid { display: grid; gap: var(--s-6); margin-top: var(--s-6); }
+.contacts__col { display: flex; flex-direction: column; gap: var(--s-6); }
+.contacts__list { display: flex; flex-direction: column; gap: var(--s-3); }
+.contact { display: flex; gap: var(--s-3); align-items: center; }
+.contact--top { align-items: flex-start; }
+.contact svg { color: var(--accent-brand); flex: none; }
+.contact p, .contact a { margin: 0; font-size: var(--text-body-m); line-height: var(--text-body-m-lh); }
+.contact a { font-weight: 600; }
+
+.socials { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-1); }
+.socials a {
+  display: inline-flex; align-items: center;
+  min-height: var(--tap); padding: 0 var(--s-4);
+  border: 1px solid var(--border-default); border-radius: var(--r-pill);
+  font-size: var(--text-body-s); color: var(--text-primary);
+}
+.socials a:hover { border-color: var(--accent-brand); }
+
+.hours { border: 1px solid var(--border-default); border-radius: var(--r-card); background: var(--bg-surface); overflow: hidden; }
+.hours__head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+  padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--border-default);
+}
+.hours__badge {
+  display: inline-flex; align-items: center; gap: var(--s-1);
+  padding: var(--s-1) var(--s-3); border-radius: var(--r-pill);
+  font-size: var(--text-body-s); font-weight: 600;
+  background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text);
+}
+.hours__badge[data-open="true"] { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+.hours__row {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  padding: var(--s-3) var(--s-4); border-top: 1px solid var(--border-default);
+  font-size: var(--text-body-s);
+}
+.hours__row span:last-child { font-variant-numeric: tabular-nums; }
+.hours__row[data-today="true"] { background: var(--st-upcoming-bg); font-weight: 600; }
+
+.map {
+  position: relative; height: 220px;
+  border: 1px dashed var(--border-strong); border-radius: var(--r-photo); background: var(--bg-subtle);
+}
+.map__note {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-2);
+  color: var(--text-secondary); text-align: center; padding: var(--s-6);
+  font-size: var(--text-body-s);
+}
+.map__note svg { color: var(--accent-brand); }
+
+/* --- вопросы ------------------------------------------------------------ */
+
+.faq { margin-top: var(--s-6); border-top: 1px solid var(--border-default); }
+.faq__item { border-bottom: 1px solid var(--border-default); }
+.faq__q {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  min-height: var(--faq-h); padding: var(--s-4) var(--s-1);
+  background: transparent; border: 0;
+  color: var(--text-primary); font-family: inherit;
+  font-size: var(--text-body-m); font-weight: 600; text-align: left; cursor: pointer;
+}
+.faq__sign { flex: none; display: inline-flex; color: var(--accent-brand); transition: transform .18s ease; }
+.faq__q[aria-expanded="true"] .faq__sign { transform: rotate(180deg); }
+.faq__a {
+  margin: 0; padding: 0 var(--s-1) var(--s-6); max-width: 70ch;
+  font-size: var(--text-body-m); line-height: var(--text-body-m-lh);
+  color: var(--text-secondary); text-wrap: pretty;
+}
+.faq__a[hidden] { display: none; }
+
+/* --- финальный призыв --------------------------------------------------- */
+
+.cta {
+  padding: var(--s-8) var(--s-6);
+  border: 1px solid var(--border-hair); border-radius: var(--r-card);
+  background: var(--bg-surface); box-shadow: var(--glow-soft); text-align: center;
+}
+.cta p { margin: var(--s-3) 0 0; font-size: var(--text-body-l); line-height: var(--text-body-l-lh); color: var(--text-secondary); }
+.cta .btn { margin-top: var(--s-6); }
+
+/* --- подвал ------------------------------------------------------------- */
+
+.footer { background: var(--bg-subtle); color: var(--text-primary); border-top: 1px solid var(--border-default); }
+.footer__wrap { padding: var(--s-12) var(--layout-gutter) var(--s-6); }
+.footer__grid { display: grid; gap: var(--s-8); }
+.footer__col { display: flex; flex-direction: column; gap: var(--s-2); }
+.footer__col a, .footer__col p { font-size: var(--text-body-s); line-height: var(--text-body-s-lh); margin: 0; }
+.footer__col a { color: var(--text-primary); }
+.footer__col a:hover { color: var(--text-link); }
+.footer__about { display: flex; flex-direction: column; gap: var(--s-3); }
+.footer__about p { color: var(--text-secondary); max-width: 32ch; }
+.footer__bottom {
+  margin-top: var(--s-8); padding-top: var(--s-6);
+  border-top: 1px solid var(--border-default);
+  display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-6);
+  align-items: center; justify-content: space-between;
+}
+.footer__bottom p, .footer__bottom a { margin: 0; font-size: var(--text-body-s); color: var(--text-secondary); }
+
+/* --- плавающая кнопка записи (мобильный) -------------------------------- */
+
+.float {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; z-index: 50;
+  width: 390px; max-width: calc(100% - var(--s-6));
+  padding: var(--s-3) var(--s-4) var(--s-4);
+  background: linear-gradient(to top, var(--bg-page) 62%, transparent);
+}
+.float .btn { width: 100%; box-shadow: var(--shadow-menu); }
+.float[hidden] { display: none; }
+
+/* --- заглушки, пока данные едут с сервера ------------------------------- */
+
+.skeleton { pointer-events: none; }
+
+.skeleton__line,
+.skeleton__circle {
+  display: block;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-input);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+.skeleton__circle { width: var(--avatar); height: var(--avatar); border-radius: 50%; }
+.skeleton__line { height: var(--s-3); }
+.skeleton__line--title { height: var(--s-4); width: 62%; }
+.skeleton__line--short { width: 38%; }
+.skeleton__line--btn { height: var(--tap); border-radius: var(--r-button); margin-top: auto; }
+.skeleton__line:nth-child(odd) { animation-delay: .12s; }
+
+@keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+/* Ошибка загрузки — на месте списка, а не всплывашкой поверх страницы. */
+.load-error {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--error-border); border-radius: var(--r-card);
+  background: var(--error-bg); color: var(--error-text);
+  font-size: var(--text-body-s);
+}
+.load-error .btn--sm { border-color: var(--error-border); color: var(--error-text); }
+
+/* --- десктоп ------------------------------------------------------------ */
+
+@media (min-width: 900px) {
+  :root { --layout-gutter: var(--layout-gutter-d); }
+
+  html { scroll-padding-top: calc(var(--header-h-d) + var(--s-2)); }
+
+  body { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+
+  .display { font-size: var(--text-display-d); line-height: var(--text-display-d-lh); }
+  .h2 { font-size: var(--text-h1-d); line-height: var(--text-h1-d-lh); }
+  .h3, .service__name { font-size: var(--text-h3-d); line-height: var(--text-h3-d-lh); }
+  .body-l, .hero__sub, .about__text p, .cta p { font-size: var(--text-body-l-d); line-height: var(--text-body-l-d-lh); }
+  .body-m, .review__name, .service__price, .faq__q, .faq__a, .contact p, .contact a { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+  .body-s, .nav a, .chip, .service__dur, .trust__item span,
+  .hours__row, .socials a, .footer__col a, .footer__col p,
+  .footer__bottom p, .footer__bottom a, .map__note, .pay-note,
+  .theme-toggle, .header__login, .menu a, .btn--block, .btn--sm,
+  .review__stars, .stat__label, .load-error { font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh); }
+
+  .wrap { max-width: var(--layout-max); margin: 0 auto; }
+  .section { padding: var(--sec-pad-d) 0; }
+  .grid { gap: var(--s-4); margin-top: calc(var(--s-8) + var(--s-1)); }
+
+  .header__inner { max-width: var(--layout-max); margin: 0 auto; padding: var(--s-3) var(--layout-gutter-d); gap: var(--s-6); }
+  .logo__word { font-size: var(--text-h2-d); line-height: var(--text-h2-d-lh); }
+  .logo { flex: none; }
+  /* Плавающая кнопка — приём для телефона: на планшете и шире кнопка
+     записи и так видна в липкой шапке. */
+  .float { display: none !important; }
+
+  .hero { padding: var(--s-16) 0 var(--sec-pad-d); }
+  .hero__grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: calc(var(--s-16) - var(--s-2)); align-items: center; }
+  .hero__photo { height: 460px; }
+  .trust { flex-direction: row; flex-wrap: wrap; gap: var(--s-3) var(--s-8); }
+
+  .card { padding: var(--s-6); }
+
+  .services-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 380px)); justify-content: start; }
+  .steps-grid, .perks-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .reviews-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+  /* Ширина колонки задана диапазоном, а не «ровно четыре в ряд»:
+     сколько у студии мастеров — решает админ-панель, и на двоих
+     жёсткая сетка из четырёх колонок растягивает пустоту. */
+  .masters {
+    margin-right: 0; padding-right: 0; overflow: visible;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 290px));
+    justify-content: start;
+    gap: var(--s-4); margin-top: calc(var(--s-8) + var(--s-1));
+  }
+  .masters > * { width: auto; }
+
+  .about__grid, .contacts__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: calc(var(--s-16) - var(--s-2));
+    margin-top: calc(var(--s-8) + var(--s-1));
+    align-items: start;
+  }
+  .contacts__grid { gap: calc(var(--s-8) + var(--s-2)); }
+  .stats { gap: var(--s-4); }
+  .about__photo { height: 420px; }
+  .map { height: 100%; min-height: 420px; }
+
+  .faq-wrap { max-width: 900px; margin: 0 auto; padding: 0 var(--layout-gutter-d); }
+
+  .cta { padding: var(--s-16) var(--layout-gutter-d); }
+
+  .footer__wrap { max-width: var(--layout-max); margin: 0 auto; padding: var(--s-16) var(--layout-gutter-d) var(--s-8); }
+  .footer__grid { grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: var(--s-8); }
+  .footer__bottom { margin-top: var(--s-12); }
+}
+
+/* --- широкий экран: раскрывается верхнее меню --------------------------- */
+
+/* Семь пунктов меню, логотип, переключатель темы, «Войти» и кнопка записи
+   встают в одну строку только начиная с этой ширины — прототип и рисовал
+   шапку на 1280. Ниже вместо меню остаётся бургер: иначе строка
+   переполняется и страница едет вбок. */
+@media (min-width: 1180px) {
+  .nav { display: flex; align-items: center; gap: var(--s-4); white-space: nowrap; }
+  .theme-toggle__label { display: inline; }
+  .cta-short { display: none; }
+  .cta-long { display: inline; }
+  .header__login { display: inline-flex; }
+  .user-chip:not([hidden]) { display: inline-flex; }
+  .user-chip__name { font-size: var(--text-body-s-d); }
+  .burger, .menu { display: none !important; }
+}
+
+/* --- общие состояния списка ---------------------------------------------
+   Пусто, ошибка загрузки, «ничего не нашлось». Живут здесь, а не в стилях
+   конкретного экрана: одни и те же состояния нужны и шагам записи,
+   и кабинету, и разъезжаться двум копиям нельзя. */
+
+/* hidden должен побеждать display из классов вроде .cab-list{display:grid}:
+   иначе спрятанная заглушка остаётся на экране рядом с настоящим списком. */
+[hidden] { display: none !important; }
+
+/* --- состояния списка --------------------------------------------------- */
+
+.state {
+  margin-top: var(--s-6); padding: var(--s-8) var(--s-6);
+  border: 1px solid var(--border-default); border-radius: var(--r-card);
+  background: var(--bg-surface); text-align: center;
+}
+.state[hidden] { display: none; }
+.state__title {
+  margin: 0 0 var(--s-2);
+  font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h2); line-height: var(--text-h2-lh); text-wrap: pretty;
+}
+.state p { margin: 0 auto; max-width: 44ch; font-size: var(--text-body-s); line-height: var(--text-body-s-lh); color: var(--text-secondary); text-wrap: pretty; }
+.state__actions { margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-3); }
+.state--error { border-color: var(--error-border); background: var(--error-bg); }
+.state--error .state__title, .state--error p { color: var(--error-text); }
+.state--error svg { color: var(--error-text); }
+.state svg { color: var(--accent-brand); margin: 0 auto var(--s-3); display: block; }
+
+/* Крупный рисунок пустого состояния. Размер здесь, а не атрибутами
+   в разметке: у SVG есть viewBox, и вписанный размер обошёл бы шкалу. */
+.state__art {
+  width: calc(var(--s-16) + var(--s-2));
+  height: calc(var(--s-16) + var(--s-2));
+}
+
+.nothing {
+  margin: var(--s-6) 0 0; padding: var(--s-6);
+  border: 1px dashed var(--border-strong); border-radius: var(--r-card);
+  text-align: center; font-size: var(--text-body-s); color: var(--text-secondary);
+}
+.nothing[hidden] { display: none; }
+
+@media (min-width: 900px) {
+  .state p, .nothing { font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh); }
+  .state__title { font-size: var(--text-h2-d); line-height: var(--text-h2-d-lh); }
+  .state__actions { flex-direction: row; justify-content: center; }
+}
+
+/* ======================================================================
+   Набор форм
+   ======================================================================
+   Поля, подписи, правила пароля, сообщения и кнопка отправки. Живут
+   здесь, а не в стилях экранов входа: те же формы стоят на экране
+   профиля и на подтверждении записи, и третья копия этих правил
+   разъехалась бы с первыми двумя. */
+
+:root {
+  --pass-btn: calc(var(--s-8) + var(--s-1));   /* 36px — глазок в поле пароля */
+}
+
+/* --- поля -------------------------------------------------------------- */
+
+.form { margin-top: var(--s-6); display: grid; gap: var(--s-4); }
+
+.field { display: grid; gap: var(--s-1); }
+.field__label { font-size: var(--text-body-s); font-weight: 600; }
+
+.input {
+  width: 100%; min-height: var(--tap);
+  padding: var(--s-3); 
+  border: 1px solid var(--border-strong); border-radius: var(--r-input);
+  background: var(--bg-page); color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-body-m); line-height: var(--text-body-m-lh);
+}
+.input::placeholder { color: var(--text-disabled); }
+.input:focus-visible { border-color: var(--accent-brand); }
+.input:disabled { background: var(--bg-subtle); color: var(--text-disabled); border-color: var(--border-default); }
+
+/* Подсветка поля, на которое указал сервер или проверка на форме. */
+.input[aria-invalid="true"] { border-color: var(--error); background: var(--error-bg); }
+
+/* Поле с паролем: в правый край вписана кнопка «показать». */
+.pass { position: relative; display: block; }
+.pass .input { padding-right: calc(var(--pass-btn) + var(--s-3)); }
+.pass__toggle {
+  position: absolute; right: var(--s-1); top: 50%; transform: translateY(-50%);
+  width: var(--pass-btn); height: var(--pass-btn);
+  display: grid; place-items: center;
+  border: 0; border-radius: var(--r-input);
+  background: transparent; color: var(--text-secondary); cursor: pointer;
+}
+
+/* Подпись под полем. Скрыта, пока ошибки нет. */
+.field__hint {
+  display: flex; align-items: center; gap: var(--s-1);
+  font-size: var(--text-caption); line-height: var(--text-caption-lh);
+  color: var(--error-text);
+}
+.field__hint[hidden] { display: none; }
+
+.field__row { display: flex; justify-content: flex-end; }
+.field__row a {
+  display: inline-flex; align-items: center; min-height: var(--s-8);
+  font-size: var(--text-body-s); font-weight: 600; color: var(--text-link);
+}
+
+/* --- требования к паролю ------------------------------------------------ */
+
+.rules {
+  margin-top: var(--s-1); padding: var(--s-4);
+  border: 1px solid var(--border-hair); border-radius: var(--r-input);
+  background: var(--bg-subtle); display: grid; gap: var(--s-2);
+}
+.rule {
+  display: flex; align-items: center; gap: var(--s-2);
+  font-size: var(--text-body-s); line-height: var(--text-body-s-lh);
+  color: var(--text-secondary);
+}
+.rule__mark {
+  width: var(--icon-s); height: var(--icon-s); flex: none;
+  display: grid; place-items: center; border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong); background: transparent;
+  font-size: var(--text-caption); font-style: normal;
+}
+.rule[data-ok="true"] { color: var(--success-text); }
+.rule[data-ok="true"] .rule__mark {
+  border-color: var(--success-border); background: var(--success-bg); color: var(--success-text);
+}
+
+/* --- согласие ----------------------------------------------------------- */
+
+.consent { display: flex; gap: var(--s-3); align-items: flex-start; }
+.consent input {
+  width: var(--s-6); height: var(--s-6); flex: none; margin: 0;
+  accent-color: var(--accent-brand); cursor: pointer;
+}
+.consent span { font-size: var(--text-body-s); line-height: var(--text-body-s-lh); }
+.consent a { color: var(--text-link); font-weight: 600; }
+
+/* --- сообщения ---------------------------------------------------------- */
+
+.notice {
+  display: flex; gap: var(--s-3); align-items: flex-start;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-input);
+  font-size: var(--text-body-s); line-height: var(--text-body-s-lh);
+}
+.notice[hidden] { display: none; }
+.notice svg { flex: none; }
+.notice p { margin: 0; }
+.notice a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; color: inherit; }
+
+.notice--error { background: var(--error-bg); border: 1px solid var(--error-border); color: var(--error-text); }
+.notice--warning { background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); }
+.notice--info { background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text); }
+.notice--success { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text); }
+
+/* --- кнопка отправки ---------------------------------------------------- */
+
+.btn--wide { width: 100%; }
+.btn[aria-disabled="true"], .btn:disabled {
+  background: var(--action-primary-disabled); color: var(--action-on-primary-disabled);
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: var(--icon-s); height: var(--icon-s); flex: none;
+  margin-right: var(--s-2);
+  border: 2px solid currentColor; border-top-color: transparent;
+  border-radius: var(--r-pill);
+  display: inline-block; animation: spin .8s linear infinite;
+}
+.spinner[hidden] { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; border-top-color: currentColor; opacity: .5; }
+}
+
+@media (min-width: 900px) {
+  .input { font-size: var(--text-body-m-d); line-height: var(--text-body-m-d-lh); }
+  .field__label, .field__row a, .consent span, .notice, .rule {
+    font-size: var(--text-body-s-d); line-height: var(--text-body-s-d-lh);
+  }
+}
+

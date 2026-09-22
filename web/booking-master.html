@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Запись · шаг 2 — Мастер</title>
+<meta name="description" content="Выбор мастера для записи в бьюти-студию «Ноготочки».">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="booking.css">
+</head>
+<body>
+
+<header class="bk-header">
+  <div class="bk-header__inner">
+    <a class="back" id="back" href="#">
+      <svg class="icon icon--s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+      Назад
+    </a>
+    <span class="bk-header__title">Запись</span>
+    <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+      <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+      <span class="theme-toggle__label" id="theme-label">Дневная</span>
+    </button>
+  </div>
+
+  <nav class="steps" aria-label="Шаги записи">
+    <div class="steps__row" id="steps-row"></div>
+    <div class="steps__compact">
+      <div class="steps__head">
+        <b id="step-title"></b>
+        <span id="step-count"></span>
+      </div>
+      <div class="progress"><i id="step-bar"></i></div>
+    </div>
+  </nav>
+</header>
+
+<main class="bk">
+  <div class="wrap">
+    <div class="chosen">
+      <div class="chosen__body">
+        <span class="overline">выбранные услуги</span>
+        <p class="chosen__names" id="chosen-names">—</p>
+        <span class="chosen__totals" id="chosen-totals"></span>
+      </div>
+      <a class="chosen__edit" id="edit-services" href="#">Изменить</a>
+    </div>
+
+    <h1 style="margin-top:var(--s-6)">Выберите мастера</h1>
+    <p class="bk__sub">Показываем тех, кто делает все выбранные услуги</p>
+
+    <div class="bk-grid masters-list" id="masters" aria-busy="true" aria-live="polite"></div>
+
+    <div class="state" id="none-fit" hidden>
+      <svg class="state__art" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <circle cx="38" cy="38" r="14"></circle>
+        <path d="M16 78a22 22 0 0 1 44 0"></path>
+        <circle cx="72" cy="58" r="16" stroke-dasharray="4 6"></circle>
+        <path d="M66 52l12 12M78 52l-12 12"></path>
+      </svg>
+      <p class="state__title">Все выбранные услуги вместе не делает ни один мастер</p>
+      <p>Уберите одну услугу или запишитесь двумя визитами — так мастера подберутся под каждый набор.</p>
+      <div class="state__actions">
+        <a class="btn btn--primary" id="fix-services" href="#">Изменить услуги</a>
+      </div>
+    </div>
+
+    <div class="state" id="no-services" hidden>
+      <p class="state__title">Сначала выберите услуги</p>
+      <p>Мастера подбираются под выбранный набор, поэтому шаг 2 открывается после шага 1.</p>
+      <div class="state__actions">
+        <a class="btn btn--primary" id="go-services" href="#">Перейти к услугам</a>
+      </div>
+    </div>
+
+    <div class="state state--error" id="load-error" hidden>
+      <svg class="icon icon--l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg>
+      <p class="state__title">Не удалось загрузить мастеров</p>
+      <p>Проверьте соединение и попробуйте снова</p>
+      <div class="state__actions"><button class="btn btn--outline" type="button" id="retry">Повторить</button></div>
+    </div>
+  </div>
+</main>
+
+<div class="bar">
+  <div class="bar__inner">
+    <div class="bar__left">
+      <b class="bar__sum" id="bar-sum" aria-live="polite">Услуги не выбраны</b>
+      <span class="bar__note" id="bar-note"></span>
+    </div>
+    <div class="bar__action">
+      <span class="bar__hint" id="next-hint"></span>
+      <button class="btn btn--primary" type="button" id="next" disabled>Далее</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="booking-master.js"></script>
+</body>
+</html>
