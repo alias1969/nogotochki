@@ -25,7 +25,7 @@ export function createRouter() {
   const routes = [];
 
   const add = (method, pattern, handler) => {
-    routes.push({ method, ...compile(pattern), handler });
+    routes.push({ method, pattern, ...compile(pattern), handler });
   };
 
   return {
@@ -36,6 +36,17 @@ export function createRouter() {
     put: (pattern, handler) => add('PUT', pattern, handler),
     patch: (pattern, handler) => add('PATCH', pattern, handler),
     delete: (pattern, handler) => add('DELETE', pattern, handler),
+
+    /**
+     * Все зарегистрированные маршруты — метод и шаблон пути.
+     *
+     * Нужен проверке доступа (tests/roles.test.mjs): она обходит
+     * эндпоинты по списку, а не по написанному руками перечню, —
+     * иначе новый эндпоинт просто не попал бы в проверку.
+     */
+    list() {
+      return routes.map(({ method, pattern }) => ({ method, pattern }));
+    },
 
     /**
      * Ищет обработчик. Если путь есть, но метод другой, отвечаем 405

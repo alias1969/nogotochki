@@ -4,6 +4,10 @@
  * Токен сессии уходит и в HttpOnly-cookie, и в теле ответа: cookie нужна
  * браузеру, поле token — мобильному клиенту и curl на отладке. В базе
  * ни того, ни другого нет — только хеш.
+ *
+ * Токен живёт ограниченное время. Срок возвращается вместе с ним —
+ * expires_in в секундах и expires_at временем студии, — чтобы клиент
+ * не выяснял его первым отказом на середине записи.
  */
 import * as v from '../lib/validate.js';
 import * as views from '../api/views.js';
@@ -13,13 +17,54 @@ import { buildResetLink, deliverResetLink, mayExposeLink } from '../services/del
 import { attachHoldsToUser } from '../services/holds.js';
 import { SESSION_COOKIE, GUEST_COOKIE, serializeCookie, clearCookie } from '../http/cookies.js';
 import { env } from '../config/env.js';
-import { unauthorized } from '../lib/http-error.js';
+import { createLimiter, clientAddress } from '../lib/rate-limit.js';
+
+/**
+ * Ограничение частоты входа.
+ *
+ * Два ключа на одну попытку, и они ловят разные атаки:
+ *   адрес  — перебор паролей к разным аккаунтам с одной машины;
+ *   e-mail — перебор одного аккаунта с разных машин.
+ *
+ * Считаются только **неудачные** попытки: успешный вход обнуляет счётчик
+ * по e-mail. Иначе администратор, который за утро заходит с трёх
+ * устройств, блокировал бы сам себя, и защиту первым делом отключили бы.
+ */
+const loginLimit = createLimiter({
+  name: 'login',
+  max: env.loginMaxAttempts,
+  windowMs: env.loginWindowMinutes * 60_000,
+});
+
+/**
+ * Ограничение частоты регистрации — по адресу.
+ *
+ * Здесь считаются все попытки, а не только неудачные: массовое заведение
+ * аккаунтов и есть то, что нужно остановить, и каждая такая попытка
+ * «успешна».
+ */
+const registerLimit = createLimiter({
+  name: 'register',
+  max: env.registerMaxAttempts,
+  windowMs: env.registerWindowMinutes * 60_000,
+});
+
+const addressOf = (ctx) => clientAddress(ctx.req, { trustProxy: env.trustProxy });
 
 function sessionCookie(session) {
   return serializeCookie(SESSION_COOKIE, session.token, {
     maxAge: session.expiresInSeconds,
     secure: env.isProduction,
   });
+}
+
+/** Выданный токен и его срок — одинаково после регистрации и после входа. */
+function sessionView(session, settings) {
+  return {
+    token: session.token,
+    expires_in: session.expiresInSeconds,
+    expires_at: views.moment(session.expiresAt, settings),
+  };
 }
 
 export function registerAuthRoutes(router) {
@@ -31,6 +76,19 @@ export function registerAuthRoutes(router) {
    * на шаге B3 не должен теряться из-за шага B4.
    */
   router.post('/api/auth/register', async (ctx) => {
+    ctx.allowPublic('регистрация — до неё человек по определению не вошёл');
+
+    // Проверка до разбора тела: исчерпавшему лимит незачем добираться
+    // ни до базы, ни до хеширования пароля — scrypt намеренно медленный,
+    // и считать его для перебора значит помогать перебору.
+    //
+    // Счётчик у регистрации свой. Со счётчиком входа он намеренно
+    // не связан: человек, трижды забывший пароль, не должен лишаться
+    // возможности завести аккаунт заново.
+    const address = addressOf(ctx);
+    registerLimit.check(address);
+    registerLimit.hit(address);
+
     const body = v.object(await ctx.body());
     const data = {
       email: v.email(body.email),
@@ -43,22 +101,46 @@ export function registerAuthRoutes(router) {
     const { user, session } = register(data);
     attachHoldsToUser(ctx.guestTokenHash, user.id);
 
-    return ctx.json(201, { user: views.user(user), token: session.token }, {
+    return ctx.json(201, { user: views.user(user), ...sessionView(session, ctx.settings) }, {
       'Set-Cookie': sessionCookie(session),
     });
   });
 
   /** POST /api/auth/login — вход. Ответ не различает неверный e-mail и неверный пароль. */
   router.post('/api/auth/login', async (ctx) => {
+    ctx.allowPublic('вход');
+
+    const address = addressOf(ctx);
+    loginLimit.check(address);
+
     const body = v.object(await ctx.body());
-    const { user, session } = login({
-      email: v.email(body.email),
-      password: v.password(body.password),
-      userAgent: ctx.req.headers['user-agent'],
-    });
+    const email = v.email(body.email);
+    const password = v.password(body.password);
+
+    // Ключ по e-mail — после проверки формы: считать попытки по строке,
+    // которая даже не похожа на адрес, незачем.
+    const emailKey = `email:${email}`;
+    loginLimit.check(emailKey);
+
+    let result;
+    try {
+      result = login({ email, password, userAgent: ctx.req.headers['user-agent'] });
+    } catch (error) {
+      // Неудача — и только она — идёт в счётчик.
+      loginLimit.hit(address);
+      loginLimit.hit(emailKey);
+      throw error;
+    }
+
+    // Успех снимает подозрение с этого аккаунта; счётчик по адресу
+    // остаётся — с одной машины могли перебирать чужие аккаунты, а потом
+    // честно зайти в свой.
+    loginLimit.forget(emailKey);
+
+    const { user, session } = result;
     attachHoldsToUser(ctx.guestTokenHash, user.id);
 
-    return ctx.json(200, { user: views.user(user), token: session.token }, {
+    return ctx.json(200, { user: views.user(user), ...sessionView(session, ctx.settings) }, {
       'Set-Cookie': sessionCookie(session),
     });
   });
@@ -70,6 +152,9 @@ export function registerAuthRoutes(router) {
    * стёртой cookie мало: украденный токен продолжал бы работать.
    */
   router.post('/api/auth/logout', async (ctx) => {
+    // Без входа не ошибка: выход из несуществующей сессии — не беда,
+    // а нормальный ответ на повторное нажатие кнопки.
+    ctx.allowPublic('выход; гасит ровно ту сессию, токен которой предъявлен');
     logout(ctx.token);
     return ctx.json(200, { ok: true }, {
       'Set-Cookie': clearCookie(SESSION_COOKIE, { secure: env.isProduction }),
@@ -94,6 +179,7 @@ export function registerAuthRoutes(router) {
    * было пройти целиком. В проде она не возвращается никогда.
    */
   router.post('/api/auth/forgot-password', async (ctx) => {
+    ctx.allowPublic('восстановление пароля — человек как раз не может войти');
     const body = v.object(await ctx.body());
     const email = v.email(body.email);
 
@@ -120,6 +206,7 @@ export function registerAuthRoutes(router) {
    * и в строке запроса он осел бы в журналах сервера и в истории браузера.
    */
   router.post('/api/auth/reset-password/check', async (ctx) => {
+    ctx.allowPublic('проверка ссылки из письма; доступ даёт сам одноразовый токен');
     const body = v.object(await ctx.body());
     const token = v.string(body.token, 'token', { max: 200 });
     const state = checkResetToken(token);
@@ -142,6 +229,7 @@ export function registerAuthRoutes(router) {
    * подтвердить, что помнит новый пароль, пока он ещё под рукой.
    */
   router.post('/api/auth/reset-password', async (ctx) => {
+    ctx.allowPublic('смена пароля по ссылке; доступ даёт сам одноразовый токен');
     const body = v.object(await ctx.body());
     const token = v.string(body.token, 'token', { max: 200 });
     const password = v.password(body.password);
@@ -181,8 +269,8 @@ export function registerAuthRoutes(router) {
 
   /** GET /api/auth/me — профиль текущей сессии; заодно способ проверить, жива ли она. */
   router.get('/api/auth/me', async (ctx) => {
-    if (!ctx.user) throw unauthorized();
-    return ctx.json(200, { user: views.user(ctx.user), studio: views.studio(ctx.settings) });
+    const user = ctx.requireUser();
+    return ctx.json(200, { user: views.user(user), studio: views.studio(ctx.settings) });
   });
 }
 

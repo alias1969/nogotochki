@@ -27,9 +27,22 @@ SELECT r.id, r.master_id, r.message, r.desired_from, r.desired_to, r.status,
   LEFT JOIN users mu ON mu.id = m.user_id
 `;
 
-/** Кому уходит уведомление о новой заявке: всем действующим администраторам. */
+/**
+ * Кому уходит уведомление о новой заявке: всем действующим администраторам.
+ *
+ * «У кого роль admin есть», а не «чья роль равна admin»: мастер, которому
+ * выдали ещё и права администратора, заявки тоже разбирает и пропустить
+ * их не должен.
+ */
 function activeAdmins(db) {
-  return db.prepare("SELECT id FROM users WHERE role = 'admin' AND is_active = 1").all();
+  return db
+    .prepare(
+      `SELECT u.id FROM users u
+        WHERE u.is_active = 1
+          AND EXISTS (SELECT 1 FROM user_roles ur
+                       WHERE ur.user_id = u.id AND ur.role = 'admin')`,
+    )
+    .all();
 }
 
 /**

@@ -19,27 +19,13 @@
  *
  * Запуск: npm run seed
  */
-import { scryptSync, randomBytes } from 'node:crypto';
-
 import { env } from '../config/env.js';
+import { hashPassword } from '../lib/secrets.js';
 import { getDb, closeDb, transaction } from './connection.js';
 import { runMigrations } from './migrate.js';
 
 /** Метка тестовых записей: по ней они находятся и пересоздаются. */
 const SEED_MARK = 'seed';
-
-/**
- * Хеш пароля для тестовых данных.
- *
- * Настоящая проверка входа появится в коде авторизации; здесь ровно столько,
- * сколько нужно, чтобы в базе не оказалось пароля в открытом виде.
- * Формат: scrypt$<соль>$<хеш>, перец подмешивается из окружения.
- */
-function hashPassword(password) {
-  const salt = randomBytes(16).toString('hex');
-  const hash = scryptSync(password + env.passwordPepper, salt, 64).toString('hex');
-  return `scrypt$${salt}$${hash}`;
-}
 
 // --------------------------------------------------------------------------
 // Справочные данные
@@ -82,15 +68,50 @@ const SERVICES = [
   [5, 2, 'СПА-уход за руками', 'Скраб, массаж и питательная маска', 45, 180000, 5],
 ];
 
-/** id, e-mail, пароль, имя, телефон, роль, тема */
+/**
+ * id, e-mail, пароль, имя, телефон, роли, тема.
+ *
+ * Роли — список: у одного аккаунта их может быть несколько. В тестовых
+ * данных у каждого по одной, чтобы набор оставался простым и предсказуемым;
+ * многоролевые случаи заводит тест ролей (tests/roles.test.mjs).
+ *
+ * Паролей в этом файле нет. Они приходят из .env (SEED_*_PASSWORD),
+ * и сгенерировать их умеет `npm run env:init`. Пароль, записанный
+ * в исходниках, остаётся рабочим паролем к аккаунту администратора
+ * на каждой машине, где эту команду когда-нибудь выполняли, — а команду
+ * выполняют и на демонстрационном стенде, и на сервере разработчика.
+ */
 const USERS = [
-  [1, env.seedAdminEmail, env.seedAdminPassword, 'Елена Администратор', '+79000000001', 'admin', 'day'],
-  [2, 'olga@nogotochki.local', 'master12345', 'Ольга Петровна Смирнова', '+79000000002', 'master', 'evening'],
-  [3, 'irina@nogotochki.local', 'master12345', 'Ирина Андреевна Волкова', '+79000000003', 'master', 'day'],
-  [4, 'anna@example.com', 'client12345', 'Анна Королёва', '+79000000004', 'user', 'day'],
+  [1, env.seedAdminEmail, env.seedAdminPassword, 'Елена Администратор', '+79000000001', ['admin'], 'day'],
+  [2, 'olga@nogotochki.local', env.seedMasterPassword, 'Ольга Петровна Смирнова', '+79000000002', ['master'], 'evening'],
+  [3, 'irina@nogotochki.local', env.seedMasterPassword, 'Ирина Андреевна Волкова', '+79000000003', ['master'], 'day'],
+  [4, 'anna@example.com', env.seedClientPassword, 'Анна Королёва', '+79000000004', ['user'], 'day'],
   // Клиент, заведённый администратором вручную: аккаунт есть, входа ещё нет.
-  [5, 'walkin@example.com', null, 'Мария Ковалёва', '+79000000005', 'user', 'day'],
+  [5, 'walkin@example.com', null, 'Мария Ковалёва', '+79000000005', ['user'], 'day'],
 ];
+
+/**
+ * Проверка, что пароли демонстрационных аккаунтов заданы.
+ *
+ * Отдельной проверкой, а не через required() в env.js: обычному запуску
+ * сервиса они не нужны, и падать из-за них при `npm start` было бы
+ * неправильно. Нужны они ровно здесь.
+ */
+function assertSeedPasswords() {
+  const missing = [
+    ['SEED_ADMIN_PASSWORD', env.seedAdminPassword],
+    ['SEED_MASTER_PASSWORD', env.seedMasterPassword],
+    ['SEED_CLIENT_PASSWORD', env.seedClientPassword],
+  ].filter(([, value]) => !value).map(([name]) => name);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Не заданы пароли демонстрационных аккаунтов: ${missing.join(', ')}. ` +
+        'Выполните `npm run env:init` — она сгенерирует их в .env, — ' +
+        'или впишите значения вручную.',
+    );
+  }
+}
 
 /** id, user_id, псевдоним, специализация, о себе, порядок */
 const MASTERS = [
@@ -215,16 +236,25 @@ function seedReferenceData(db) {
   // password_hash намеренно не в списке обновляемых полей: у существующего
   // аккаунта пароль остаётся прежним, и повторный запуск его не трогает.
   const user = db.prepare(
-    `INSERT INTO users(id, email, password_hash, full_name, phone, role, theme)
-       VALUES (?, ?, ?, ?, ?, ?, ?)
+    `INSERT INTO users(id, email, password_hash, full_name, phone, theme)
+       VALUES (?, ?, ?, ?, ?, ?)
        ON CONFLICT(id) DO UPDATE SET email = excluded.email,
                                      full_name = excluded.full_name,
                                      phone = excluded.phone,
-                                     role = excluded.role,
                                      theme = excluded.theme`,
   );
-  for (const [id, email, password, fullName, phone, role, theme] of USERS) {
-    user.run(id, email, password === null ? null : hashPassword(password), fullName, phone, role, theme);
+  // Роли лежат отдельной таблицей. Набор задаётся ровно тем, что написано
+  // в USERS: лишние роли, выданные руками на отладке, повторный запуск
+  // убирает, иначе тестовые данные переставали бы быть предсказуемыми.
+  const dropRoles = db.prepare('DELETE FROM user_roles WHERE user_id = ? AND role NOT IN (SELECT value FROM json_each(?))');
+  const addRole = db.prepare(
+    `INSERT INTO user_roles(user_id, role) VALUES (?, ?)
+       ON CONFLICT(user_id, role) DO NOTHING`,
+  );
+  for (const [id, email, password, fullName, phone, roles, theme] of USERS) {
+    user.run(id, email, password === null ? null : hashPassword(password), fullName, phone, theme);
+    dropRoles.run(id, JSON.stringify(roles));
+    for (const role of roles) addRole.run(id, role);
   }
 
   // Закрытие студии ссылается на администратора, поэтому идёт после users.
@@ -320,6 +350,7 @@ export function seed({ silent = false } = {}) {
   if (env.isProduction) {
     throw new Error('Тестовые данные нельзя заливать в продакшен (NODE_ENV=production).');
   }
+  assertSeedPasswords();
 
   runMigrations({ silent: true });
   const db = getDb();
@@ -345,11 +376,13 @@ function report(db, appointments) {
 
   console.log('\nПользователи');
   for (const row of db.prepare(
-    `SELECT id, role, full_name, email,
-            CASE WHEN password_hash IS NULL THEN 'входа нет'
-                 ELSE substr(password_hash, 1, 7) || '…' END AS pwd
-       FROM users ORDER BY id`).all()) {
-    console.log(`  ${row.role.padEnd(6)} ${row.full_name.padEnd(26)} ${row.email.padEnd(28)} ${row.pwd}`);
+    `SELECT u.id, u.full_name, u.email,
+            (SELECT group_concat(role) FROM (SELECT role FROM user_roles
+                                              WHERE user_id = u.id ORDER BY role)) AS roles,
+            CASE WHEN u.password_hash IS NULL THEN 'входа нет'
+                 ELSE substr(u.password_hash, 1, 7) || '…' END AS pwd
+       FROM users u ORDER BY u.id`).all()) {
+    console.log(`  ${(row.roles ?? '—').padEnd(13)} ${row.full_name.padEnd(26)} ${row.email.padEnd(28)} ${row.pwd}`);
   }
 
   console.log('\nМастера');
@@ -387,10 +420,13 @@ function report(db, appointments) {
     console.log(`  ${local}  ${row.master.padEnd(26)} ${row.client.padEnd(18)} ${row.status.padEnd(10)} ${money(row.total).padStart(10)}  ${row.services}`);
   }
 
-  console.log('\nВход');
-  console.log(`  администратор  ${env.seedAdminEmail} / ${env.seedAdminPassword}`);
-  console.log('  мастера        olga@nogotochki.local, irina@nogotochki.local / master12345');
-  console.log('  клиент         anna@example.com / client12345');
+  // Пароли печатаются именами переменных, а не значениями: вывод команды
+  // попадает в историю терминала и в логи CI, а .env лежит на расстоянии
+  // одной команды.
+  console.log('\nВход (пароли — в .env)');
+  console.log(`  администратор  ${env.seedAdminEmail}  →  SEED_ADMIN_PASSWORD`);
+  console.log('  мастера        olga@nogotochki.local, irina@nogotochki.local  →  SEED_MASTER_PASSWORD');
+  console.log('  клиент         anna@example.com  →  SEED_CLIENT_PASSWORD');
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

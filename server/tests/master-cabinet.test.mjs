@@ -10,9 +10,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:master
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA as OLGA_ACCOUNT, IRINA as IRINA_ACCOUNT, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -31,9 +32,9 @@ const db = new DatabaseSync(DB_FILE);
 db.exec('PRAGMA foreign_keys = ON');
 
 const login = async (email, password) => (await call('POST', '/api/auth/login', { body: { email, password } })).body.token;
-const AT = await login('admin@nogotochki.local', 'admin12345');
-const OLGA = await login('olga@nogotochki.local', 'master12345');   // мастер 1
-const IRINA = await login('irina@nogotochki.local', 'master12345'); // мастер 2
+const AT = await login(ADMIN.email, ADMIN.password);
+const OLGA = await login(OLGA_ACCOUNT.email, MASTER_PASSWORD);   // мастер 1
+const IRINA = await login(IRINA_ACCOUNT.email, MASTER_PASSWORD); // мастер 2
 
 const client = await (async () => {
   const r = await call('POST', '/api/auth/register', {
@@ -77,8 +78,9 @@ const orphan = await (async () => {
   const email = `orphan-${Date.now()}@example.com`;
   const res = await call('POST', '/api/auth/register', {
     body: { email, password: 'secret12345', full_name: 'Без Карточки', phone: '+79005550000' } });
-  db.prepare("UPDATE users SET role = 'master' WHERE id = ?").run(res.body.user.id);
-  db.prepare("UPDATE sessions SET role_at_login = 'master' WHERE user_id = ?").run(res.body.user.id);
+  // Роль выдаём в user_roles: роль клиента при этом остаётся — так
+  // и бывает у настоящего мастера, который сам ходит в свою студию.
+  db.prepare("INSERT INTO user_roles(user_id, role) VALUES (?, 'master')").run(res.body.user.id);
   return { id: res.body.user.id, token: await login(email, 'secret12345') };
 })();
 r = await call('GET', '/api/master/me', { token: orphan.token });

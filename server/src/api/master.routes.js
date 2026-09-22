@@ -200,7 +200,7 @@ export function registerMasterRoutes(router) {
     const body = v.object(await ctx.body());
     const kind = body.kind === undefined
       ? 'time_block'
-      : v.oneOf(body.kind, 'kind', allowedExceptionKinds('master'));
+      : v.oneOf(body.kind, 'kind', allowedExceptionKinds(ctx.user));
 
     const result = createException({
       actor: ctx.user,

@@ -10,6 +10,7 @@
  * HttpError 400 с именем поля — клиенту есть что подсветить в форме.
  */
 import { badRequest } from './http-error.js';
+import { ROLES } from './roles.js';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const INSTANT_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
@@ -134,6 +135,26 @@ export function oneOf(value, field, allowed) {
   const result = string(value, field, { max: 50 });
   if (!allowed.includes(result)) throw fail(field, `Допустимые значения: ${allowed.join(', ')}`);
   return result;
+}
+
+/**
+ * Список ролей.
+ *
+ * Роли всегда приходят списком, даже если она одна: у человека их может
+ * быть несколько, и форма запроса должна об этом напоминать, а не делать
+ * список исключением из правила.
+ *
+ * Пустой список отклоняется здесь, а не в сервисе: «снять все роли» —
+ * это не правка, а поломка аккаунта, и разговаривать о ней нужно
+ * на языке проверки формы.
+ */
+export function roleList(value, field = 'roles') {
+  if (!Array.isArray(value)) throw fail(field, 'Ожидается список ролей');
+  if (value.length === 0) throw fail(field, 'Нужна хотя бы одна роль');
+  if (value.length > ROLES.length) throw fail(field, `Не более ${ROLES.length} ролей`);
+  const result = value.map((item, index) => oneOf(item, `${field}[${index}]`, ROLES));
+  if (new Set(result).size !== result.length) throw fail(field, 'Повторяющиеся роли');
+  return [...result].sort();
 }
 
 /**

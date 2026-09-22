@@ -19,6 +19,8 @@
  * Проверка пишет в базу: гоняйте её на базе для разработки, не на рабочей.
  * Адрес сервиса берётся из API_URL, по умолчанию http://localhost:3000.
  */
+import { DB_FILE, ADMIN } from './env.mjs';
+
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
 let pass = 0, fail = 0;
 
@@ -162,8 +164,8 @@ check('отменённая осталась в истории', r.body.appointm
 console.log('\n8. Админ-панель');
 r = await call('GET', '/api/admin/appointments', { token });
 check('клиент в админку → 403', r.status === 403, r.status);
-const admin = await call('POST', '/api/auth/login', { body: { email: 'admin@nogotochki.local', password: 'admin12345' } });
-check('вход администратора', admin.status === 200 && admin.body.user.role === 'admin', JSON.stringify(admin.body).slice(0,200));
+const admin = await call('POST', '/api/auth/login', { body: { email: ADMIN.email, password: ADMIN.password } });
+check('вход администратора', admin.status === 200 && admin.body.user.roles.includes('admin'), JSON.stringify(admin.body).slice(0,200));
 const at = admin.body.token;
 r = await call('GET', `/api/admin/appointments?date=${day}`, { token: at });
 check('все записи на день', r.status === 200 && Array.isArray(r.body.appointments));
@@ -272,7 +274,7 @@ r=await call('GET',`/api/appointments/${apptId}`,{token});
 check('отмена за 2 часа уже недоступна',r.body.appointment.can_cancel===false,JSON.stringify(r.body.appointment).slice(0,200));
 r=await call('POST',`/api/appointments/${apptId}/cancel`,{token,body:{}});
 check('позднюю отмену сервер не пропускает → 422',r.status===422,r.status);
-const admin=await call('POST','/api/auth/login',{body:{email:'admin@nogotochki.local',password:'admin12345'}});
+const admin=await call('POST','/api/auth/login',{body:{email:ADMIN.email,password:ADMIN.password}});
 r=await call('POST',`/api/appointments/${apptId}/cancel`,{token:admin.body.token,body:{}});
 check('администратору без причины → 422',r.status===422,r.status);
 r=await call('POST',`/api/appointments/${apptId}/cancel`,{token:admin.body.token,body:{reason:'Мастер заболел'}});
@@ -289,7 +291,7 @@ check('клиенту ушло уведомление в кабинет',!!note)
 // для проверки — мусор, который копится с каждым запуском.
 {
   const { DatabaseSync } = await import('node:sqlite');
-  const cleanup = new DatabaseSync(process.env.DATABASE_FILE ?? 'data/nogotochki.db');
+  const cleanup = new DatabaseSync(DB_FILE);
   cleanup.exec('PRAGMA foreign_keys = ON');
   for (const [table, id] of [['services', sid], ['masters', mid]]) {
     // Удаляются только те строки, на которые никто не сослался: если

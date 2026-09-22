@@ -16,7 +16,7 @@ import { env } from '../config/env.js';
 import { conflict, unauthorized, unprocessable } from '../lib/http-error.js';
 import { hashPassword, verifyPassword, newToken, hashToken } from '../lib/secrets.js';
 import { now, addMinutes } from '../lib/time.js';
-import { writeAudit, notify } from './journal.js';
+import { writeAudit, notify, actorRoleOf } from './journal.js';
 
 /**
  * Не чаще одной ссылки в минуту на аккаунт.
@@ -193,7 +193,7 @@ export function changePassword({ user, sessionId, currentPassword, newPassword }
 
     writeAudit(db, {
       actorUserId: user.id,
-      actorRole: user.role === 'user' ? 'client' : user.role,
+      actorRole: actorRoleOf(user),
       action: 'password_change',
       entityType: 'user',
       entityId: user.id,

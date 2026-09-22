@@ -8,9 +8,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:profile
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA, IRINA, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -35,6 +36,8 @@ const me = (await call('POST', '/api/auth/register', {
 const TOKEN = me.token;
 const ID = me.user.id;
 const row = () => db.prepare('SELECT * FROM users WHERE id = ?').get(ID);
+const rolesOf = (id) => db.prepare('SELECT role FROM user_roles WHERE user_id = ? ORDER BY role')
+  .all(id).map((r) => r.role);
 
 // =====================================================================
 console.log('\n1. Чтение');
@@ -85,18 +88,18 @@ await bad({ phone: '+7900' }, 'слишком короткий телефон');
 await bad({ theme: 'ночная' }, 'несуществующая тема');
 await bad({}, 'пустое тело');
 
-r = await call('PATCH', '/api/profile', { token: TOKEN, body: { role: 'admin' } });
-check('одна роль в теле — нечего менять → 400', r.status === 400, r.status);
-check('роль не изменилась', row().role === 'user', row().role);
+r = await call('PATCH', '/api/profile', { token: TOKEN, body: { roles: ['admin'] } });
+check('одни роли в теле — нечего менять → 400', r.status === 400, r.status);
+check('роли не изменились', rolesOf(ID).join(',') === 'user', rolesOf(ID));
 
 r = await call('PATCH', '/api/profile', {
   token: TOKEN,
-  body: { full_name: 'Иван Первый', role: 'admin', is_active: 0, email: 'hacker@example.com',
-          password_hash: 'x', id: 1 },
+  body: { full_name: 'Иван Первый', roles: ['admin'], role: 'admin', is_active: 0,
+          email: 'hacker@example.com', password_hash: 'x', id: 1 },
 });
 check('запрос с лишними полями принят', r.status === 200, JSON.stringify(r.body).slice(0, 150));
 const after = row();
-check('роль осталась user', after.role === 'user', after.role);
+check('роли остались прежними', rolesOf(ID).join(',') === 'user', rolesOf(ID));
 check('аккаунт остался активным', after.is_active === 1);
 check('e-mail не изменился', after.email === EMAIL, after.email);
 check('хеш пароля не тронут', after.password_hash?.startsWith('scrypt$'));
@@ -120,9 +123,9 @@ check('эндпоинта чужого профиля нет вовсе → 404'
 
 // Мастер и администратор правят свой профиль тем же путём.
 const MT = (await call('POST', '/api/auth/login', {
-  body: { email: 'olga@nogotochki.local', password: 'master12345' } })).body.token;
+  body: { email: OLGA.email, password: MASTER_PASSWORD } })).body.token;
 r = await call('PATCH', '/api/profile', { token: MT, body: { theme: 'day' } });
-check('мастер правит свой профиль', r.status === 200 && r.body.profile.role === 'master', JSON.stringify(r.body).slice(0, 120));
+check('мастер правит свой профиль', r.status === 200 && r.body.profile.roles.includes('master'), JSON.stringify(r.body).slice(0, 120));
 check('его карточка мастера при этом не тронута',
   db.prepare('SELECT display_name FROM masters WHERE user_id = 2').get().display_name === 'Ольга');
 await call('PATCH', '/api/profile', { token: MT, body: { theme: 'evening' } });

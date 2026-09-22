@@ -9,51 +9,109 @@ import { getDb, transaction } from '../db/connection.js';
 import { env } from '../config/env.js';
 import { conflict, unauthorized } from '../lib/http-error.js';
 import { hashPassword, verifyPassword, newToken, hashToken } from '../lib/secrets.js';
+import { serialize } from '../lib/roles.js';
 import { now, addMinutes } from '../lib/time.js';
 
 /** Поля пользователя, которые нужны коду. password_hash берётся только при входе. */
-const USER_FIELDS = 'id, email, full_name, phone, role, theme, is_active';
+const USER_FIELDS = 'id, email, full_name, phone, theme, is_active';
+
+/**
+ * Роли человека — из базы, и только из базы.
+ *
+ * Ни тело запроса, ни заголовок, ни cookie на этот список не влияют:
+ * роль, присланная клиентом, — это не проверка прав, а просьба
+ * к злоумышленнику назвать себя честно. Список отсортирован, чтобы
+ * его можно было сравнивать со снимком в сессии как строку.
+ */
+export function rolesOf(userId, db = getDb()) {
+  return db
+    .prepare('SELECT role FROM user_roles WHERE user_id = ? ORDER BY role')
+    .all(userId)
+    .map((row) => row.role);
+}
+
+/** Пользователь вместе со своим списком ролей. Ниже по коду роли есть всегда. */
+function withRoles(row, db = getDb()) {
+  if (!row) return null;
+  return { ...row, roles: rolesOf(row.id, db) };
+}
 
 export function findUserById(userId) {
-  return getDb().prepare(`SELECT ${USER_FIELDS} FROM users WHERE id = ?`).get(userId) ?? null;
+  return withRoles(getDb().prepare(`SELECT ${USER_FIELDS} FROM users WHERE id = ?`).get(userId));
 }
 
 function findByEmail(email) {
-  return getDb()
-    .prepare(`SELECT ${USER_FIELDS}, password_hash FROM users WHERE email_normalized = ?`)
-    .get(email.toLowerCase().trim()) ?? null;
+  return withRoles(
+    getDb()
+      .prepare(`SELECT ${USER_FIELDS}, password_hash FROM users WHERE email_normalized = ?`)
+      .get(email.toLowerCase().trim()),
+  );
+}
+
+/**
+ * Удаляет истёкшие сессии.
+ *
+ * Доступа такая строка не даёт и без уборки — authenticate берёт только
+ * сессии с expires_at > now. Уборка нужна, чтобы таблица не росла вечно:
+ * в мёртвой строке лежат хеш токена и строка браузера, а у активного
+ * клиента новая сессия появляется на каждое устройство и каждый вход.
+ *
+ * Вызывается при открытии новой сессии — там, где таблица и так пишется;
+ * так же устроен sweepExpiredHolds у резервов. На проверке сессии уборку
+ * не делаем: она идёт на каждом запросе сервиса, и запись в базу там
+ * обошлась бы дороже, чем те несколько строк, которые она убирает.
+ *
+ * Отозванные сессии (выход, смена пароля, смена роли) отдельного правила
+ * не требуют: revoked_at прекращает доступ сразу, а строка уходит вместе
+ * с остальными, когда дойдёт до своего исходного срока.
+ */
+export function sweepExpiredSessions(db = getDb()) {
+  return db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(now()).changes;
 }
 
 /**
  * Открывает сессию и возвращает токен.
  *
- * Токен виден ровно один раз — здесь; в базу уходит только его хеш.
- * role_at_login фиксирует роль на момент входа: если администратор поменяет
- * роль позже, старая сессия не получит новые права молча, а закроется
- * при ближайшей проверке.
+ * Токен виден ровно один раз — здесь; в базу уходит только его хеш
+ * (HMAC с ключом из окружения, см. lib/secrets.js). По украденной базе
+ * нельзя ни восстановить токен, ни проверить догадку о нём.
+ *
+ * Срок жизни ограничен: expires_at = время входа + SESSION_TTL_HOURS,
+ * и он проставляется здесь, а не рассчитывается при проверке. Вечных
+ * токенов в сервисе нет — даже незамеченная кража перестаёт работать сама.
+ * Клиент узнаёт этот срок из ответа и может заранее предложить войти снова.
+ *
+ * roles_at_login фиксирует список ролей на момент входа: если администратор
+ * поменяет роли позже, старая сессия не получит новые права молча,
+ * а закроется при ближайшей проверке. Сравнивается список целиком —
+ * и выдача роли, и снятие одинаково закрывают сессию.
  */
 function openSession(db, user, userAgent) {
+  sweepExpiredSessions(db);
+
   const token = newToken();
   const createdAt = now();
+  const expiresAt = addMinutes(createdAt, env.sessionTtlHours * 60);
   db.prepare(
-    `INSERT INTO sessions(user_id, token_hash, role_at_login, user_agent, created_at, last_seen_at, expires_at)
-     VALUES (:user_id, :token_hash, :role, :agent, :created, :created, :expires)`,
+    `INSERT INTO sessions(user_id, token_hash, roles_at_login, user_agent, created_at, last_seen_at, expires_at)
+     VALUES (:user_id, :token_hash, :roles, :agent, :created, :created, :expires)`,
   ).run({
     user_id: user.id,
     token_hash: hashToken(token),
-    role: user.role,
+    roles: serialize(user.roles),
     agent: userAgent ? userAgent.slice(0, 300) : null,
     created: createdAt,
-    expires: addMinutes(createdAt, env.sessionTtlHours * 60),
+    expires: expiresAt,
   });
-  return { token, expiresInSeconds: env.sessionTtlHours * 3600 };
+  return { token, expiresAt, expiresInSeconds: env.sessionTtlHours * 3600 };
 }
 
 /**
  * Регистрация клиента.
  *
- * Роль всегда 'user': роли master и admin назначает администратор, иначе
- * любой желающий получил бы админ-панель, передав role в теле запроса.
+ * Роль всегда одна и всегда 'user': роли master и admin назначает
+ * администратор. Тело запроса на список ролей не влияет никак — иначе
+ * любой желающий получил бы админ-панель, дописав роль в форму регистрации.
  */
 export function register({ email, password, fullName, phone, userAgent }) {
   return transaction((db) => {
@@ -64,14 +122,15 @@ export function register({ email, password, fullName, phone, userAgent }) {
 
     const inserted = db
       .prepare(
-        `INSERT INTO users(email, password_hash, full_name, phone, role)
-         VALUES (:email, :hash, :full_name, :phone, 'user')`,
+        `INSERT INTO users(email, password_hash, full_name, phone)
+         VALUES (:email, :hash, :full_name, :phone)`,
       )
       .run({ email, hash: hashPassword(password), full_name: fullName, phone });
 
-    const user = db
-      .prepare(`SELECT ${USER_FIELDS} FROM users WHERE id = ?`)
-      .get(inserted.lastInsertRowid);
+    const id = Number(inserted.lastInsertRowid);
+    db.prepare("INSERT INTO user_roles(user_id, role) VALUES (?, 'user')").run(id);
+
+    const user = withRoles(db.prepare(`SELECT ${USER_FIELDS} FROM users WHERE id = ?`).get(id), db);
     return { user, session: openSession(db, user, userAgent) };
   });
 }
@@ -114,7 +173,7 @@ export function authenticate(token) {
   const tokenHash = hashToken(token);
   const session = db
     .prepare(
-      `SELECT s.id, s.user_id, s.role_at_login, s.expires_at
+      `SELECT s.id, s.user_id, s.roles_at_login, s.expires_at
          FROM sessions s
         WHERE s.token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > ?`,
     )
@@ -124,8 +183,10 @@ export function authenticate(token) {
   const user = findUserById(session.user_id);
   if (!user || user.is_active !== 1) return null;
 
-  // Роль изменилась после входа — сессия закрывается, нужен повторный вход.
-  if (user.role !== session.role_at_login) {
+  // Список ролей изменился после входа — сессия закрывается, нужен
+  // повторный вход. Сравниваются оба списка целиком: и выданная роль,
+  // и снятая одинаково делают снимок недействительным.
+  if (serialize(user.roles) !== session.roles_at_login) {
     db.prepare('UPDATE sessions SET revoked_at = ? WHERE id = ?').run(now(), session.id);
     return null;
   }

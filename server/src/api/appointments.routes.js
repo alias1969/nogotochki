@@ -20,6 +20,7 @@ import {
   OUTCOME_STATUSES,
 } from '../services/appointments.js';
 import { findOwnedHold } from '../services/holds.js';
+import { strongest } from '../lib/roles.js';
 import { forbidden } from '../lib/http-error.js';
 
 /**
@@ -44,14 +45,21 @@ export function findRescheduleTarget(appointmentId, ctx) {
  * другие основания и другие ограничения, поэтому им эти поля не уходят
  * вовсе. Показать чужие правила хуже, чем не показать никаких:
  * по ним нарисовали бы кнопки, которые сервер потом не пропустит.
+ *
+ * Ролей у человека может быть несколько, поэтому оба вопроса решаются
+ * по сильнейшей из них — той самой, в которой он и будет действовать
+ * (см. pickPolicy в lib/roles.js). Мастер, записавшийся к коллеге,
+ * видит свой визит глазами мастера и правил клиента не получает:
+ * переносить его он будет по правилам мастера, без срока и без лимита.
  */
 function present(row, ctx) {
-  const isClient = ctx.user?.role === 'user';
+  const role = strongest(ctx.user);
+  const actsAsClient = role === 'user' && row.client_id === ctx.user.id;
   return views.appointment(row, loadAppointmentServices(row.id), ctx.settings, {
     // Роль смотрящего и решает, что он увидит: клиент — свой визит,
     // мастер — плюс контакты клиента, администратор — плюс служебное.
-    audience: isClient ? 'client' : ctx.user.role,
-    abilities: isClient ? clientAbilities(row, ctx.settings, ctx.now) : null,
+    audience: role === 'user' ? 'client' : role,
+    abilities: actsAsClient ? clientAbilities(row, ctx.settings, ctx.now) : null,
   });
 }
 

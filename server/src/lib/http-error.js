@@ -29,4 +29,20 @@ export const unauthorized = (message = 'Требуется вход в акка�
 export const forbidden = (message = 'Недостаточно прав') => new HttpError(403, 'forbidden', message);
 export const notFound = (message = 'Объект не найден') => new HttpError(404, 'not_found', message);
 export const conflict = (code, message, details) => new HttpError(409, code, message, details);
+
+/**
+ * 429 — слишком часто.
+ *
+ * Retry-After уходит заголовком, как того требует HTTP, и дублируется
+ * в теле: клиент на странице входа читает JSON, а не заголовки.
+ * Сколько именно попыток осталось и по какому признаку сработал лимит —
+ * не сообщается: это подсказка тому, кто перебирает.
+ */
+export function tooManyRequests(message, retryAfterSeconds) {
+  const error = new HttpError(429, 'too_many_requests', message, {
+    retry_after_seconds: retryAfterSeconds,
+  });
+  error.headers = { 'Retry-After': String(retryAfterSeconds) };
+  return error;
+}
 export const unprocessable = (code, message, details) => new HttpError(422, code, message, details);

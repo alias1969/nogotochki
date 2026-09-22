@@ -11,9 +11,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:master-actions
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA as OLGA_ACCOUNT, IRINA as IRINA_ACCOUNT, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -32,9 +33,9 @@ const db = new DatabaseSync(DB_FILE);
 db.exec('PRAGMA foreign_keys = ON');
 
 const login = async (email, password) => (await call('POST', '/api/auth/login', { body: { email, password } })).body.token;
-const AT = await login('admin@nogotochki.local', 'admin12345');
-const OLGA = await login('olga@nogotochki.local', 'master12345');   // мастер 1, аккаунт 2
-const IRINA = await login('irina@nogotochki.local', 'master12345'); // мастер 2, аккаунт 3
+const AT = await login(ADMIN.email, ADMIN.password);
+const OLGA = await login(OLGA_ACCOUNT.email, MASTER_PASSWORD);   // мастер 1, аккаунт 2
+const IRINA = await login(IRINA_ACCOUNT.email, MASTER_PASSWORD); // мастер 2, аккаунт 3
 
 const client = await (async () => {
   const r = await call('POST', '/api/auth/register', {

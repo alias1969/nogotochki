@@ -9,9 +9,10 @@
  * Запуск: npm start в соседнем окне, затем npm run test:passwords
  */
 import { DatabaseSync } from 'node:sqlite';
+import { DB_FILE, ADMIN, OLGA, IRINA, ANNA, MASTER_PASSWORD } from './env.mjs';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -146,7 +147,7 @@ check('вторая работает', r.status === 200, JSON.stringify(r.body).
 // =====================================================================
 console.log('\n5. Аккаунт, заведённый администратором вручную');
 const AT = (await call('POST', '/api/auth/login', {
-  body: { email: 'admin@nogotochki.local', password: 'admin12345' } })).body.token;
+  body: { email: ADMIN.email, password: ADMIN.password } })).body.token;
 const walkin = db.prepare("SELECT id, email, password_hash FROM users WHERE email = 'walkin@example.com'").get();
 check('у такого аккаунта пароля нет', walkin.password_hash === null, walkin.password_hash);
 r = await call('POST', '/api/auth/login', { body: { email: walkin.email, password: PASSWORD } });

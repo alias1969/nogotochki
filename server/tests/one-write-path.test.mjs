@@ -14,11 +14,12 @@
  * Запуск: npm start в соседнем окне, затем npm run test:one-write-path
  */
 import { readFileSync, readdirSync } from 'node:fs';
+import { DB_FILE, ADMIN, OLGA, IRINA, ANNA, MASTER_PASSWORD } from './env.mjs';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 
 const BASE = process.env.API_URL ?? 'http://localhost:3000';
-const DB_FILE = process.env.DATABASE_FILE ?? 'data/nogotochki.db';
+
 
 let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => {
@@ -102,9 +103,9 @@ check('админский маршрут зовёт ту же функцию', a
 console.log('\nРоли');
 
 const login = async (email, password) => (await call('POST', '/api/auth/login', { body: { email, password } })).body.token;
-const AT = await login('admin@nogotochki.local', 'admin12345');
-const MT = await login('olga@nogotochki.local', 'master12345');      // мастер 1
-const MT2 = await login('irina@nogotochki.local', 'master12345');    // мастер 2
+const AT = await login(ADMIN.email, ADMIN.password);
+const MT = await login(OLGA.email, MASTER_PASSWORD);      // мастер 1
+const MT2 = await login(IRINA.email, MASTER_PASSWORD);    // мастер 2
 
 async function newClient(tag) {
   const r = await call('POST', '/api/auth/register', {

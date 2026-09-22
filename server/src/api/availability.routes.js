@@ -45,6 +45,7 @@ export function registerAvailabilityRoutes(router) {
    * «время + длительность», а не времени самого по себе.
    */
   router.get('/api/availability', async (ctx) => {
+    ctx.allowPublic('свободное время — экран B3, виден до входа');
     const masterId = v.id(ctx.query.master_id, 'master_id');
     const date = v.date(ctx.query.date, 'date');
     const rescheduleOf = ctx.query.reschedule_of
@@ -78,6 +79,7 @@ export function registerAvailabilityRoutes(router) {
    * за запрос — расчёт идёт по каждому дню отдельно.
    */
   router.get('/api/availability/days', async (ctx) => {
+    ctx.allowPublic('календарь занятости на месяц — экран B3');
     const masterId = v.id(ctx.query.master_id, 'master_id');
     const from = v.date(ctx.query.from, 'from');
     const to = ctx.query.to ? v.date(ctx.query.to, 'to') : utcDate(addDays(`${from}T00:00:00Z`, 30));
