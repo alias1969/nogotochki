@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Записи — админ-панель «Ноготочки»</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+<style>
+  /* Своего файла для А4 не заводим — общих компонентов для выпадающего
+     списка поиска клиента (фильтр и форма создания) в admin.css ещё нет.
+     Только переменные из tokens.css, как и в остальной панели. */
+  .adm-search-wrap { position: relative; }
+  .adm-suggest {
+    position: absolute; left: 0; right: 0; top: calc(100% + var(--s-1)); z-index: 30;
+    max-height: 260px; overflow-y: auto;
+    border: 1px solid var(--border-default); border-radius: var(--r-input);
+    background: var(--bg-surface); box-shadow: var(--shadow-menu);
+  }
+  .adm-suggest[hidden] { display: none; }
+  .adm-suggest__item {
+    display: flex; width: 100%; align-items: center; gap: var(--s-2);
+    padding: var(--s-2) var(--s-3); border: 0; border-bottom: 1px solid var(--border-default);
+    background: transparent; text-align: left; cursor: pointer; font-family: inherit;
+  }
+  .adm-suggest__item:last-child { border-bottom: 0; }
+  .adm-suggest__item:hover { background: var(--bg-subtle); }
+  .adm-suggest__name { font-size: var(--text-body-s); font-weight: 600; color: var(--text-primary); }
+  .adm-suggest__sub { display: block; font-size: var(--text-caption); color: var(--text-secondary); }
+  .adm-suggest__empty { padding: var(--s-3); font-size: var(--text-body-s); color: var(--text-secondary); }
+  .adm-picked {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    margin-top: var(--s-2); padding: var(--s-1) var(--s-3); border-radius: var(--r-pill);
+    background: var(--slot-selected-bg); border: 1px solid var(--slot-selected-border); color: var(--slot-selected-text);
+    font-size: var(--text-body-s); font-weight: 600; width: max-content;
+  }
+  .adm-picked__clear {
+    border: 0; background: transparent; color: inherit; cursor: pointer; display: inline-flex; padding: 0;
+  }
+  .adm-check__meta { display: block; font-size: var(--text-caption); color: var(--text-secondary); }
+  .adm-overlap-warn { margin-top: var(--s-3); }
+  .adm-modal .adm-select { width: 100%; min-height: var(--tap); }
+</style>
+</head>
+<body>
+
+<div class="adm" id="admin-shell" hidden>
+  <aside class="adm-side">
+    <div class="adm-side__brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <circle cx="50" cy="52" r="34"></circle>
+          <path d="M40 70 C38 56 40 44 43 36"></path>
+          <path d="M50 71 C50 56 53 44 56 37"></path>
+          <path d="M59 71 C60 58 63 49 66 43"></path>
+          <path d="M37 68 C37 77 42 83 50 83 C58 83 63 77 63 68"></path>
+          <path d="M50 20 L52 27.5 L59.5 29.5 L52 31.5 L50 39 L48 31.5 L40.5 29.5 L48 27.5 Z" fill="currentColor" stroke="none"></path>
+        </g>
+      </svg>
+      <span class="adm-side__brand-text">
+        <span class="adm-side__brand-word">Ноготочки</span>
+        <span class="adm-side__brand-sub">админ-панель</span>
+      </span>
+    </div>
+
+    <nav class="adm-nav" aria-label="Разделы админ-панели">
+      <a data-screen="A2" data-nav="A2" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 2"></path></svg>
+        <span class="adm-nav__label">Сегодня</span>
+      </a>
+      <a data-screen="A4" data-nav="A4" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+        <span class="adm-nav__label">Записи</span>
+      </a>
+      <a data-screen="A5" data-nav="A5" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>
+        <span class="adm-nav__label">Услуги</span>
+      </a>
+      <a data-screen="A6" data-nav="A6" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.5" r="3.4"></circle><path d="M2.6 19.5a6.6 6.6 0 0 1 12.8 0"></path><path d="M16.5 5.2a3.4 3.4 0 0 1 0 6.6M19 19.2a5.8 5.8 0 0 0-2.2-4"></path></svg>
+        <span class="adm-nav__label">Мастера</span>
+      </a>
+      <a data-screen="A7" data-nav="A7" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4M8.5 14h3"></path></svg>
+        <span class="adm-nav__label">Графики</span>
+        <span class="adm-nav__badge" id="nav-badge-schedules" hidden></span>
+      </a>
+      <a data-screen="A8" data-nav="A8" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"></circle><path d="M4.8 20.2a7.4 7.4 0 0 1 14.4 0"></path></svg>
+        <span class="adm-nav__label">Клиенты</span>
+      </a>
+      <a data-screen="A10" data-nav="A10" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9v-5l7-3Z"></path><path d="M9.5 12l1.8 1.8L15 10"></path></svg>
+        <span class="adm-nav__label">Роли и доступы</span>
+      </a>
+      <a data-screen="A11" data-nav="A11" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4"></path></svg>
+        <span class="adm-nav__label">Настройки</span>
+      </a>
+    </nav>
+
+    <div class="adm-side__foot">
+      <button class="adm-logout" type="button" id="adm-logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5H7.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"></path><path d="M17 8.5l3.5 3.5L17 15.5M20 12h-9"></path></svg>
+        Выйти
+      </button>
+    </div>
+  </aside>
+
+  <div class="adm-col">
+    <header class="adm-header">
+      <div class="adm-header__inner">
+        <div class="adm-header__meta">
+          <span class="adm-chip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="17" rx="3"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg>
+            <span id="adm-today-date">—</span>
+          </span>
+          <span class="body-s muted" id="adm-today-hours"></span>
+        </div>
+        <div class="adm-header__actions">
+          <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Переключить тему">
+            <span class="theme-toggle__icon" id="theme-icon" aria-hidden="true"></span>
+            <span class="theme-toggle__label" id="theme-label">Дневная</span>
+          </button>
+          <span class="adm-user">
+            <span class="adm-user__face" id="adm-user-face"></span>
+            <span class="adm-user__body">
+              <b class="adm-user__name" id="adm-user-name"></b>
+              <span class="adm-user__role">администратор</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main class="adm-main">
+      <div class="adm-main__wrap">
+
+        <div class="adm-title-row">
+          <div>
+            <p class="overline">записи</p>
+            <h1>Все записи</h1>
+            <p class="adm-title-row__sub">Визиты студии — прошедшие и предстоящие</p>
+          </div>
+          <div class="adm-title-row__actions">
+            <button class="btn btn--primary" type="button" id="appts-create-open">Создать запись</button>
+          </div>
+        </div>
+
+        <div class="adm-filters">
+          <label class="field" style="min-width:0">
+            <span class="field__label">Дата</span>
+            <input class="input" type="date" id="filter-date">
+          </label>
+          <label class="field" style="min-width:0">
+            <span class="field__label">Статус</span>
+            <select class="adm-select" id="filter-status">
+              <option value="">Все статусы</option>
+              <option value="booked">Предстоит</option>
+              <option value="completed">Завершена</option>
+              <option value="no_show">Не пришли</option>
+              <option value="cancelled">Отменена</option>
+            </select>
+          </label>
+          <div class="field adm-search-wrap" style="flex:1 1 260px; min-width:220px">
+            <span class="field__label">Клиент</span>
+            <span class="adm-search" id="filter-client-search-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+              <input class="input" type="search" id="filter-client-input" placeholder="Имя, e-mail или телефон">
+            </span>
+            <div class="adm-suggest" id="filter-client-suggest" hidden></div>
+            <span class="adm-picked" id="filter-client-picked" hidden>
+              <span id="filter-client-picked-name"></span>
+              <button class="adm-picked__clear" type="button" id="filter-client-clear" aria-label="Сбросить клиента">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+              </button>
+            </span>
+          </div>
+          <button class="btn btn--outline btn--sm" type="button" id="filter-reset">Сбросить фильтры</button>
+        </div>
+
+        <div class="state state--error" id="appts-error" hidden>
+          <svg class="icon icon--l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg>
+          <p class="state__title">Не удалось загрузить записи</p>
+          <p>Проверьте соединение и попробуйте снова.</p>
+          <div class="state__actions"><button class="btn btn--outline btn--sm" type="button" id="appts-retry">Повторить</button></div>
+        </div>
+
+        <div id="appts-body">
+          <section class="adm-panel">
+            <div class="adm-panel__body--flush">
+              <table class="adm-table">
+                <thead>
+                  <tr>
+                    <th>Время</th>
+                    <th>Клиент</th>
+                    <th>Мастер</th>
+                    <th>Услуги</th>
+                    <th>Статус</th>
+                    <th class="num">Сумма</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody id="appts-tbody"></tbody>
+              </table>
+            </div>
+          </section>
+          <p class="nothing" id="appts-empty" hidden>Записей по этим фильтрам не найдено</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="adm-forbidden" id="admin-forbidden" hidden>
+  <div class="state state--error adm-forbidden__box">
+    <svg class="icon icon--l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg>
+    <p class="state__title">Этот раздел только для администраторов</p>
+    <p>У вашей учётной записи нет роли администратора. Если это ошибка, обратитесь к владельцу студии.</p>
+    <div class="state__actions">
+      <a class="btn btn--outline" data-screen="L1" href="#">На главную</a>
+      <a class="btn btn--primary" data-screen="K1" href="#">В личный кабинет</a>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка «Создать запись» -->
+<div class="adm-modal-backdrop" id="create-backdrop" hidden>
+  <div class="adm-modal adm-modal--wide" role="dialog" aria-modal="true" aria-labelledby="create-title">
+    <div class="adm-modal__head">
+      <h2 id="create-title">Создать запись</h2>
+      <button class="adm-modal__close" type="button" id="create-close" aria-label="Закрыть">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+
+    <div class="notice notice--error" id="create-error" hidden style="margin-top:var(--s-4)"><p></p></div>
+
+    <div class="field" style="margin-top:var(--s-4)">
+      <span class="field__label">Клиент</span>
+      <div class="adm-search-wrap">
+        <span class="adm-search" id="create-client-search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+          <input class="input" type="search" id="create-client-input" placeholder="Начните вводить имя, e-mail или телефон">
+        </span>
+        <div class="adm-suggest" id="create-client-suggest" hidden></div>
+      </div>
+      <span class="adm-picked" id="create-client-picked" hidden>
+        <span id="create-client-picked-name"></span>
+        <button class="adm-picked__clear" type="button" id="create-client-clear" aria-label="Сбросить клиента">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+      </span>
+      <p class="body-s muted" id="create-client-hint" style="margin:var(--s-1) 0 0">Клиент ищется по базе — новых клиентов пока заводит регистрация в личном кабинете.</p>
+    </div>
+
+    <div class="field" style="margin-top:var(--s-4)">
+      <span class="field__label">Услуги</span>
+      <div class="adm-check-grid" id="create-services-grid"></div>
+    </div>
+
+    <div class="adm-field-row" style="margin-top:var(--s-4)">
+      <label class="field">
+        <span class="field__label">Мастер</span>
+        <select class="adm-select" id="create-master"></select>
+      </label>
+      <div class="adm-field-row" style="grid-template-columns: 1fr 1fr">
+        <label class="field">
+          <span class="field__label">Дата</span>
+          <input class="input" type="date" id="create-date">
+        </label>
+        <label class="field">
+          <span class="field__label">Время</span>
+          <input class="input" type="time" id="create-time">
+        </label>
+      </div>
+    </div>
+
+    <div class="adm-field-row" style="margin-top:var(--s-4)">
+      <label class="field">
+        <span class="field__label">Комментарий клиента <span class="body-s muted">необязательно</span></span>
+        <textarea class="input" id="create-client-note" rows="2" placeholder="Например: клиент придёт с подругой"></textarea>
+      </label>
+      <label class="field">
+        <span class="field__label">Заметка администратора <span class="body-s muted">необязательно</span></span>
+        <textarea class="input" id="create-admin-note" rows="2" placeholder="Видна только персоналу студии"></textarea>
+      </label>
+    </div>
+
+    <div style="margin-top:var(--s-4)">
+      <label class="adm-check" style="width:max-content">
+        <input type="checkbox" id="create-overlap">
+        <span>Разрешить наложение поверх занятого времени мастера</span>
+      </label>
+      <div class="notice notice--warning adm-overlap-warn" id="create-overlap-warning" hidden>
+        <p>Мастер уже может быть занят в это время. Предупредите оба визита вручную.</p>
+      </div>
+    </div>
+
+    <div class="adm-modal__actions">
+      <button class="btn btn--outline" type="button" id="create-cancel">Отмена</button>
+      <button class="btn btn--primary" type="button" id="create-submit">Создать запись</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка «Отменить запись» -->
+<div class="adm-modal-backdrop" id="cancel-backdrop" hidden>
+  <div class="adm-modal" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+    <div class="adm-modal__head">
+      <h2 id="cancel-title">Отменить запись</h2>
+      <button class="adm-modal__close" type="button" id="cancel-close" aria-label="Закрыть">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+    <p class="body-s muted" id="cancel-subject" style="margin-top:var(--s-2)"></p>
+    <div class="field" style="margin-top:var(--s-4)">
+      <label class="field__label" for="cancel-reason">Причина отмены</label>
+      <textarea class="input" id="cancel-reason" rows="3" placeholder="Клиент увидит эту причину в личном кабинете"></textarea>
+    </div>
+    <div class="notice notice--error" id="cancel-error" hidden><p></p></div>
+    <div class="adm-modal__actions">
+      <button class="btn btn--outline" type="button" id="cancel-back">Назад</button>
+      <button class="btn btn--primary" type="button" id="cancel-confirm">Отменить запись</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка «Перенести запись» -->
+<div class="adm-modal-backdrop" id="resched-backdrop" hidden>
+  <div class="adm-modal" role="dialog" aria-modal="true" aria-labelledby="resched-title">
+    <div class="adm-modal__head">
+      <h2 id="resched-title">Перенести запись</h2>
+      <button class="adm-modal__close" type="button" id="resched-close" aria-label="Закрыть">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+    <p class="body-s muted" id="resched-subject" style="margin-top:var(--s-2)"></p>
+    <p class="caption muted" style="margin-top:var(--s-1)">Мастер остаётся тем же — перенос действует только на дату и время.</p>
+
+    <div class="field" style="margin-top:var(--s-4)">
+      <label class="field__label" for="resched-date">Новая дата</label>
+      <input class="input" type="date" id="resched-date">
+    </div>
+
+    <div class="field" style="margin-top:var(--s-4)">
+      <span class="field__label">Свободное время</span>
+      <div class="chips" id="resched-slots" role="radiogroup" aria-label="Свободное время" style="margin:var(--s-2) 0 0"></div>
+      <p class="nothing" id="resched-slots-empty" hidden>На эту дату свободного времени у мастера нет</p>
+      <p class="caption muted" id="resched-slots-loading" hidden>Ищем свободное время…</p>
+    </div>
+
+    <div class="field" style="margin-top:var(--s-4)">
+      <label class="field__label" for="resched-reason">Причина переноса</label>
+      <textarea class="input" id="resched-reason" rows="3" placeholder="Клиент увидит эту причину в личном кабинете"></textarea>
+    </div>
+
+    <div class="notice notice--error" id="resched-error" hidden><p></p></div>
+    <div class="adm-modal__actions">
+      <button class="btn btn--outline" type="button" id="resched-back">Назад</button>
+      <button class="btn btn--primary" type="button" id="resched-confirm">Перенести запись</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="admin-appointments.js"></script>
+</body>
+</html>

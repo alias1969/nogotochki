@@ -5,12 +5,14 @@
  * приходит Set-Cookie с HttpOnly-токеном, и это всё, что нужно.
  * Поле `token` из тела ответа здесь не читается и никуда не кладётся.
  *
- * По карте связей успешный вход ведёт на K1 «Личный кабинет —
- * Предстоящие записи».
+ * По карте связей успешный вход клиента ведёт на K1 «Личный кабинет —
+ * Предстоящие записи». Форма при этом одна на всех: администратор входит
+ * тем же полем и той же кнопкой, а куда его вести — решает роль из ответа
+ * сервера (`user.roles`), а не отдельный адрес для входа в админ-панель.
  */
 import { wireScreenLinks, setupTheme } from './shared.js';
 import { wireForm, rules, backTarget, setupPasswordToggles } from './auth.js';
-import { AFTER_AUTH } from './routes.js';
+import { afterAuthHref } from './routes.js';
 
 wireScreenLinks();
 setupTheme();
@@ -35,10 +37,12 @@ wireForm(document.getElementById('form'), {
 
   build: (v) => ({ email: v.email.trim(), password: v.password }),
 
-  onSuccess: () => {
-    // Ответ намеренно не разбирается: ничего из него странице не нужно.
+  onSuccess: (data) => {
     // `?back=` возвращает туда, откуда пришли, — например на шаг
-    // подтверждения записи, где резерв уже идёт.
-    location.href = backTarget(AFTER_AUTH);
+    // подтверждения записи, где резерв уже идёт. Без него запасной адрес
+    // зависит от роли: администратора он ведёт в /admin, остальных — в K1.
+    // Роль проверяется поиском в списке (data.user.roles.includes('admin')),
+    // а не сравнением — как и на сервере.
+    location.href = backTarget(afterAuthHref(data.user?.roles));
   },
 });

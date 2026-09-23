@@ -74,6 +74,14 @@ async function setupSession() {
   $('#menu-login').hidden = true;
   $('#menu-profile').hidden = false;
   $('#menu-logout').hidden = false;
+
+  // Пункт «Админ-панель» — только у роли admin, проверенной вхождением
+  // в список (roles.includes), а не сравнением. Он не единственная защита
+  // раздела: /admin и каждый /api/admin/* эндпоинт сами отвечают 403
+  // тому, у кого этой роли нет, даже если он наберёт адрес руками.
+  const isAdmin = Array.isArray(me.roles) && me.roles.includes('admin');
+  $('#header-admin').hidden = !isAdmin;
+  $('#menu-admin').hidden = !isAdmin;
   $('#user-face').textContent = initials(me.full_name);
   $('#user-name').textContent = (me.full_name ?? '').split(/\s+/)[0] ?? '';
   $('#user-chip').hidden = false;

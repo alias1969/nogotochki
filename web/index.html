@@ -46,6 +46,12 @@
         <span class="theme-toggle__label" id="theme-label">Дневная</span>
       </button>
       <a class="header__login" id="header-login" data-screen="C1" href="#">Войти</a>
+      <!-- Видно только администратору — роль проверяет app.js после
+           GET /api/auth/me, вопросом «есть ли admin в списке ролей».
+           Настоящая защита раздела — на сервере (403 у /api/admin/*
+           и у самого /admin для не-администратора); скрытый пункт меню
+           сам по себе защитой не считается. -->
+      <a class="header__login" id="header-admin" data-screen="A2" href="#" hidden>Админ-панель</a>
       <a class="user-chip" id="user-chip" data-screen="K5" href="#" hidden>
         <span class="user-chip__face" id="user-face"></span>
         <span class="user-chip__name" id="user-name"></span>
@@ -71,6 +77,7 @@
          не помещается, и без этих пунктов на телефоне до кабинета
          было бы не добраться. -->
     <a class="menu__login" id="menu-profile" data-screen="K5" href="#" hidden>Личный кабинет</a>
+    <a class="menu__login" id="menu-admin" data-screen="A2" href="#" hidden>Админ-панель</a>
     <button class="menu__logout" id="menu-logout" type="button" hidden>Выйти из аккаунта</button>
   </div>
 </header>

@@ -46,8 +46,15 @@ createServer((req, res) => {
     return;
   }
 
+  // Раздел администратора открывается по чистому адресу /admin, а не
+  // по имени файла — так его попросили сделать (см. web/routes.js,
+  // SCREENS.A2). Здесь это тот же приём, что и для «/» → index.html.
+  const pathname = url.pathname === '/admin' || url.pathname === '/admin/'
+    ? '/admin.html'
+    : url.pathname === '/' ? '/index.html' : url.pathname;
+
   // normalize срезает ../ до join: иначе адресом можно было бы выйти из web/.
-  const rel = normalize(url.pathname === '/' ? '/index.html' : url.pathname).replace(/^(\.\.[/\\])+/, '');
+  const rel = normalize(pathname).replace(/^(\.\.[/\\])+/, '');
   const file = join(ROOT, rel);
 
   readFile(file).then(
