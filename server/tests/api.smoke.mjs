@@ -37,7 +37,36 @@ function check(name, cond, extra='') {
   else { fail++; console.log('  FAIL', name, extra); }
 }
 
-const day = new Date(Date.now() + 3*86400000).toISOString().slice(0,10);
+/**
+ * Рабочий день, общий для обоих мастеров.
+ *
+ * Раньше здесь стояло «сегодня плюс три дня». Это работало через раз:
+ * у Ольги рабочие дни пн–пт, у Ирины вт–сб, и по средам и четвергам
+ * такой расчёт попадал на субботу или воскресенье — свободных окон
+ * не находилось, и набор падал не из-за кода, а из-за дня недели,
+ * в который его запустили.
+ *
+ * Дату спрашиваем у сервера: он один знает графики мастеров, часы
+ * студии, закрытия и горизонт записи.
+ *
+ * Поиск начинается с «плюс двое суток», а не с завтра: раздел 6 переносит
+ * и раздел 7 отменяет запись на этот день от лица клиента, а клиенту это
+ * разрешено не позднее чем за cancel_deadline_hours (по умолчанию 24 ч)
+ * до визита. День, начатый с «завтра», мог оказаться ближе этого срока
+ * в зависимости от времени суток запуска — набор падал не из-за кода,
+ * а из-за часа, в который его запустили.
+ */
+const day = await (async () => {
+  const from = new Date(Date.now() + 2*86400000).toISOString().slice(0,10);
+  const ask = async (masterId, services) =>
+    ((await call('GET', `/api/availability/days?master_id=${masterId}&from=${from}&service_ids=${services}`))
+      .body.days ?? []).map((d) => d.date);
+  const forOlga = await ask(1, '1,2');
+  const forIrina = new Set(await ask(2, '2'));
+  const both = forOlga.find((date) => forIrina.has(date));
+  if (!both) throw new Error('Не нашлось дня, в который работают оба мастера — база засорена или графики пусты');
+  return both;
+})();
 
 // --- 1. auth ---
 console.log('\n1. Регистрация, вход, выход');
@@ -46,6 +75,8 @@ let r = await call('POST', '/api/auth/register', { body: { email, password: 'sec
 check('регистрация 201', r.status === 201, JSON.stringify(r.body));
 check('нет password_hash', !JSON.stringify(r.body).includes('password_hash'));
 const token = r.body.token;
+// Что завела проверка — чтобы убрать за собой в конце.
+const made = { users: [r.body.user.id], appointments: [] };
 
 r = await call('POST', '/api/auth/register', { body: { email, password: 'secret12345', full_name: 'Дубль', phone: '+79001112233' } });
 check('повторный e-mail → 409', r.status === 409, r.status);
@@ -97,6 +128,7 @@ r = await call('GET', `/api/availability?master_id=1&date=${day}&service_ids=1,2
 check('удержанный слот исчез из свободных', !r.body.slots.some(s => s.starts_at === slot90));
 
 const other = await call('POST', '/api/auth/register', { body: { email: `other${Date.now()}@example.com`, password: 'secret12345', full_name: 'Другой Клиент', phone: '+79004445566' } });
+made.users.push(other.body.user.id);
 r = await call('POST', '/api/holds', { token: other.body.token, body: { master_id: 1, starts_at: slot90, service_ids: [1,2] } });
 check('второй клиент на тот же слот → 409', r.status === 409, r.status);
 check('409 содержит свободные альтернативы', Array.isArray(r.body.error.details?.free_slots));
@@ -112,6 +144,7 @@ check('создание без входа → 401', r.status === 401, r.status);
 r = await call('POST', '/api/appointments', { token, body: { hold_id: hold.id, client_note: 'Первый визит' } });
 check('запись создана 201', r.status === 201, JSON.stringify(r.body).slice(0,300));
 const appt = r.body.appointment;
+made.appointments.push(appt.id);
 check('статус booked', appt.status === 'booked');
 check('время в UTC и местное', appt.starts_at.utc === slot90 && appt.starts_at.local.includes('+03:00'), JSON.stringify(appt.starts_at));
 check('нет чужих персональных данных', !('client' in appt) && !('admin_note' in appt));
@@ -240,15 +273,21 @@ const email=`guest${Date.now()}@example.com`;
 r=await call('POST','/api/auth/register',{cookie,body:{email,password:'secret12345',full_name:'Гость Гостев',phone:'+79007778899'}});
 check('регистрация из потока записи',r.status===201);
 const token=r.body.token;
+made.users.push(r.body.user.id);
 r=await call('GET',`/api/holds/${holdId}`,{token});
 check('резерв пережил регистрацию',r.status===200&&r.body.hold.id===holdId,JSON.stringify(r.body).slice(0,200));
 r=await call('POST','/api/appointments',{token,body:{hold_id:holdId}});
 check('запись создана после входа',r.status===201,JSON.stringify(r.body).slice(0,200));
 const apptId=r.body.appointment.id;
+made.appointments.push(apptId);
 
 console.log('\nИстечение резерва');
 const { DatabaseSync }=await import('node:sqlite');
-const db=new DatabaseSync('data/nogotochki.db');
+// Путь — из env.mjs, как в уборке ниже. Вписанный сюда руками,
+// он уводил проверку в основную базу, даже когда сервис работал
+// с другой: DATABASE_FILE переставлял сервер, а эта строка — нет,
+// и семь проверок истечения резерва отваливались без объяснения.
+const db=new DatabaseSync(DB_FILE);
 r=await call('GET',`/api/availability?master_id=2&date=${day}&service_ids=2`);
 const free=r.body.slots.filter(s=>new Date(s.starts_at)-new Date(slot)>=120*60000);
 const s2=free[0].starts_at;
@@ -305,6 +344,29 @@ check('клиенту ушло уведомление в кабинет',!!note)
     } catch {
       // Строка кому-то нужна — оставляем как есть.
     }
+  }
+
+  // Записи и аккаунты проверки. Раньше не убирались вовсе: за прогон
+  // в базе оседали две отменённые записи и три клиента, и так каждый
+  // раз. Отменённая запись слот не держит, но база от этого растёт
+  // и перестаёт быть похожей на настоящую.
+  for (const id of made.appointments) {
+    try {
+      cleanup.prepare('DELETE FROM appointment_services WHERE appointment_id = ?').run(id);
+      cleanup.prepare('DELETE FROM notifications WHERE appointment_id = ?').run(id);
+      cleanup.prepare('DELETE FROM slot_holds WHERE appointment_id = ? OR reschedule_of_id = ?').run(id, id);
+      cleanup.prepare("DELETE FROM audit_log WHERE entity_type='appointment' AND entity_id=?").run(id);
+      cleanup.prepare('DELETE FROM appointments WHERE id = ?').run(id);
+    } catch { /* на запись сослались — пусть остаётся */ }
+  }
+  for (const id of made.users) {
+    try {
+      cleanup.prepare('DELETE FROM notifications WHERE user_id = ?').run(id);
+      cleanup.prepare('DELETE FROM slot_holds WHERE client_id = ?').run(id);
+      cleanup.prepare('DELETE FROM sessions WHERE user_id = ?').run(id);
+      cleanup.prepare('DELETE FROM user_roles WHERE user_id = ?').run(id);
+      cleanup.prepare('DELETE FROM users WHERE id = ?').run(id);
+    } catch { /* на аккаунт сослались — пусть остаётся */ }
   }
   cleanup.close();
 }

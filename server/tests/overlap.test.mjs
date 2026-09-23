@@ -232,7 +232,21 @@ check('предложены ближайшие свободные слоты',
   Array.isArray(r.body.error.details?.free_slots) && r.body.error.details.free_slots.length > 0);
 check('текста ошибки базы нет', !/appointment_overlap|SQLITE|constraint|trigger/i.test(JSON.stringify(r.body)));
 
-db.prepare('DELETE FROM appointments WHERE id = ?').run(sneakyId);
+// --- уборка ---
+// Победитель гонки — настоящая запись, созданная через API, и её тоже
+// надо убрать. Раньше удалялась только подложенная мимо API: выигранный
+// слот оставался занятым навсегда, и каждый прогон застраивал мастеру
+// ещё один час. За полтора десятка прогонов календарь забивался так,
+// что соседние наборы переставали находить свободное время.
+for (const id of [sneakyId, appointmentId]) {
+  try {
+    db.prepare('DELETE FROM appointment_services WHERE appointment_id = ?').run(id);
+    db.prepare('DELETE FROM notifications WHERE appointment_id = ?').run(id);
+    db.prepare('DELETE FROM slot_holds WHERE appointment_id = ? OR reschedule_of_id = ?').run(id, id);
+    db.prepare("DELETE FROM audit_log WHERE entity_type='appointment' AND entity_id=?").run(id);
+    db.prepare('DELETE FROM appointments WHERE id = ?').run(id);
+  } catch { /* на запись сослались — пусть остаётся */ }
+}
 
 console.log(`\nИтого: ${pass} пройдено, ${fail} провалено`);
 process.exit(fail ? 1 : 0);

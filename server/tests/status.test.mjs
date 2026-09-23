@@ -45,6 +45,40 @@ const client = await (async () => {
 const created = [];
 
 /**
+ * Уборка — на выходе из процесса, а не последней строкой файла.
+ *
+ * Обработчик `exit` срабатывает и при обычном завершении, и после
+ * необработанного исключения. Именно это здесь важно: прогон, упавший
+ * на середине, раньше оставлял в прошлом сдвинутые визиты, и следующий
+ * прогон ломался о них триггером. Записи SQLite синхронные, так что
+ * в обработчике они успевают выполниться.
+ */
+let cleaned = false;
+function cleanup() {
+  if (cleaned) return;
+  cleaned = true;
+  for (const id of created.reverse()) {
+    try {
+      db.prepare('DELETE FROM appointment_services WHERE appointment_id = ?').run(id);
+      db.prepare('DELETE FROM notifications WHERE appointment_id = ?').run(id);
+      db.prepare('DELETE FROM slot_holds WHERE appointment_id = ? OR reschedule_of_id = ?').run(id, id);
+      db.prepare("DELETE FROM audit_log WHERE entity_type='appointment' AND entity_id=?").run(id);
+      db.prepare('DELETE FROM appointments WHERE id = ?').run(id);
+    } catch { /* на выходе жаловаться некому и незачем */ }
+  }
+  try {
+    db.prepare('DELETE FROM notifications WHERE user_id = ?').run(client.id);
+    // Аккаунт проверки тоже убираем: иначе за прогон в базе оседает
+    // ещё один клиент, и так до тех пор, пока база не станет неотличима
+    // от свалки.
+    db.prepare('DELETE FROM sessions WHERE user_id = ?').run(client.id);
+    db.prepare('DELETE FROM user_roles WHERE user_id = ?').run(client.id);
+    db.prepare('DELETE FROM users WHERE id = ?').run(client.id);
+  } catch { /* на кого-то сослались — пусть остаётся */ }
+}
+process.on('exit', cleanup);
+
+/**
  * Визит в прошлом.
  *
  * Создаётся через API, а потом сдвигается в прошлое прямо в базе:
@@ -62,10 +96,37 @@ async function pastVisit(masterId = 1, hoursAgo = 3) {
   const id = r.body.appointment.id;
   created.push(id);
 
-  const starts = new Date(Date.now() - hoursAgo * 3600000).toISOString().slice(0, 19) + 'Z';
-  const ends = new Date(Date.now() - (hoursAgo - 1) * 3600000).toISOString().slice(0, 19) + 'Z';
+  const { starts, ends } = freePastHour(masterId, hoursAgo, id);
   db.prepare('UPDATE appointments SET starts_at = ?, ends_at = ? WHERE id = ?').run(starts, ends, id);
   return id;
+}
+
+/**
+ * Свободный час в прошлом у этого мастера.
+ *
+ * Раньше час брался жёстко — «три часа назад», — и это работало ровно
+ * до тех пор, пока прошлое оставалось пустым. Стоило одному прогону
+ * упасть, не добравшись до уборки, как сдвинутый в прошлое визит
+ * оставался в базе, и следующий прогон бил в него триггером
+ * appointment_overlap: набор падал не из-за кода, а из-за собственного
+ * мусора.
+ *
+ * Условие занятости — то же, что в триггере (миграция 002): пересечение
+ * по строгим неравенствам и только со статусом 'booked'. Отменённые
+ * время не держат.
+ */
+function freePastHour(masterId, hoursAgo, exceptId) {
+  for (let back = hoursAgo; back < hoursAgo + 24 * 30; back += 1) {
+    const starts = new Date(Date.now() - back * 3600000).toISOString().slice(0, 19) + 'Z';
+    const ends = new Date(Date.now() - (back - 1) * 3600000).toISOString().slice(0, 19) + 'Z';
+    const busy = db.prepare(
+      `SELECT 1 FROM appointments
+        WHERE master_id = ? AND status = 'booked' AND id <> ?
+          AND starts_at < ? AND ends_at > ?`,
+    ).get(masterId, exceptId, ends, starts);
+    if (!busy) return { starts, ends };
+  }
+  throw new Error(`У мастера ${masterId} не нашлось свободного часа в прошлом за месяц — база засорена`);
 }
 
 const statusOf = (id) => db.prepare('SELECT status FROM appointments WHERE id = ?').get(id).status;
@@ -182,15 +243,6 @@ try {
 check('на время завершённого визита можно записать снова', typeof again === 'number', again);
 if (typeof again === 'number') db.prepare('DELETE FROM appointments WHERE id = ?').run(again);
 
-// --- уборка ---
-for (const id of created.reverse()) {
-  db.prepare('DELETE FROM appointment_services WHERE appointment_id = ?').run(id);
-  db.prepare('DELETE FROM notifications WHERE appointment_id = ?').run(id);
-  db.prepare('DELETE FROM slot_holds WHERE appointment_id = ? OR reschedule_of_id = ?').run(id, id);
-  db.prepare("DELETE FROM audit_log WHERE entity_type='appointment' AND entity_id=?").run(id);
-  db.prepare('DELETE FROM appointments WHERE id = ?').run(id);
-}
-db.prepare('DELETE FROM notifications WHERE user_id = ?').run(client.id);
-
+// Уборка выполнится сама на выходе — см. cleanup() выше.
 console.log(`\nИтого: ${pass} пройдено, ${fail} провалено`);
 process.exit(fail ? 1 : 0);
